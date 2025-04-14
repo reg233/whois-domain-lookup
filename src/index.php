@@ -3,7 +3,7 @@ require_once "../config/config.php";
 require_once "../vendor/autoload.php";
 
 spl_autoload_register(function ($class) {
-  if (strpos($class, "Parser") === 0) {
+  if (str_starts_with($class, "Parser")) {
     require_once "Parsers/$class.php";
   } else {
     require_once "$class.php";
@@ -26,6 +26,10 @@ function parseDomain($domain)
   $parsedUrl = parse_url($domain);
   if (!empty($parsedUrl["host"])) {
     $domain = $parsedUrl["host"];
+  }
+
+  if (!empty(DEFAULT_EXTENSION) && strpos($domain, ".") === false) {
+    $domain .= "." . DEFAULT_EXTENSION;
   }
 
   $publicSuffixList = Rules::fromPath('./data/public-suffix-list.dat');

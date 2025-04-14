@@ -63,6 +63,7 @@ Download the [release](https://github.com/reg233/whois-domain-lookup/releases/la
 | :-- | :-- | :-- | :-- |
 | `BASE` | The `href` attribute of the `base` tag in HTML. <br> E.g.: `https://233333.best/whois/233333.best` | `/whois/` | `/` |
 | `USE_PATH_PARAM` | Whether to use path parameter. <br> E.g.: `https://whois.233333.best/233333.best` | `1` | `0` |
+| `DEFAULT_EXTENSION` | The default extension when no extension is entered. | `net` | `com` |
 | `HOSTED_ON` | Name of the hosting platform. | `Serv00` |  |
 | `HOSTED_ON_URL` | URL of the hosting platform. | `https://serv00.com` |  |
 

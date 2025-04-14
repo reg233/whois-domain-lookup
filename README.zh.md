@@ -63,6 +63,7 @@ docker compose up -d
 | :-- | :-- | :-- | :-- |
 | `BASE` | HTML 中 `base` 标签的 `href` 属性。 <br> 例如：`https://233333.best/whois/233333.best` | `/whois/` | `/` |
 | `USE_PATH_PARAM` | 是否使用路径参数。 <br> 例如：`https://whois.233333.best/233333.best` | `1` | `0` |
+| `DEFAULT_EXTENSION` | 没有输入后缀时的默认后缀 | `net` | `com` |
 | `HOSTED_ON` | 托管平台的名称 | `Serv00` |  |
 | `HOSTED_ON_URL` | 托管平台的 URL | `https://serv00.com` |  |
 
