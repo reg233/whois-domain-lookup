@@ -1,0 +1,12 @@
+services:
+  whois-domain-lookup:
+    container_name: whois-domain-lookup
+    image: reg233/whois-domain-lookup:latest
+    environment:
+      BASE: "/"
+      USE_PATH_PARAM: "0"
+      HOSTED_ON: ""
+      HOSTED_ON_URL: ""
+    restart: unless-stopped
+    ports:
+      - "10001:80"
