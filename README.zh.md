@@ -23,6 +23,7 @@
 
 - 简约、清晰的用户界面
 - 强大的 TLD 兼容性，包括大多数 ccTLD 和少数私有域名
+- 支持 WHOIS 和 RDAP
 - 显示域名年龄、剩余天数以及其他信息
 - 高亮显示原始数据中的网址和电子邮件
 - 支持 API 接口
@@ -64,6 +65,7 @@ docker compose up -d
 | `BASE` | HTML 中 `base` 标签的 `href` 属性。 <br> 例如：`https://233333.best/whois/233333.best` | `/whois/` | `/` |
 | `USE_PATH_PARAM` | 是否使用路径参数。 <br> 例如：`https://whois.233333.best/233333.best` | `1` | `0` |
 | `DEFAULT_EXTENSION` | 没有输入后缀时的默认后缀 | `net` | `com` |
+| `DATA_SOURCE` | 查找的数据源。 <br> 选项： `whois` 、`rdap` 、 `all` | `rdap` | `all` |
 | `HOSTED_ON` | 托管平台的名称 | `Serv00` |  |
 | `HOSTED_ON_URL` | 托管平台的 URL | `https://serv00.com` |  |
 
@@ -74,6 +76,10 @@ docker compose up -d
 define("BASE", getenv("BASE") ?: "/whois/");
 
 define("USE_PATH_PARAM", getenv("USE_PATH_PARAM") ?: "1");
+
+define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
+
+define("DATA_SOURCE", getenv("DATA_SOURCE") ?: "rdap");
 
 define('HOSTED_ON', getenv('HOSTED_ON') ?: "serv00");
 
@@ -107,7 +113,6 @@ Method: `GET`
 
 ## TODO
 
-- [ ] 支持 RDAP 数据
 - [ ] 从网页抓取 WHOIS 数据
 - [ ] 提取注册人信息
 - [ ] 完善保留域名检测
@@ -120,6 +125,6 @@ Method: `GET`
 
 ## 合作
 
-如果您知道这个项目缺少的 WHOIS 服务器地址，欢迎与我们合作！
+如果您知道这个项目缺少的 WHOIS 或 RDAP 服务器地址，欢迎与我们合作！
 
 如果遇到任何问题，欢迎创建一个[新问题](https://github.com/reg233/whois-domain-lookup/issues)。

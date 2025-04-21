@@ -23,6 +23,7 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 
 - Simple, Clear UI
 - Strong TLD compatibility, including most ccTLDs and a few private domains
+- WHOIS and RDAP support
 - Display age, remaining days, and other information
 - Highlight url and email in raw data
 - API support
@@ -64,6 +65,7 @@ Download the [release](https://github.com/reg233/whois-domain-lookup/releases/la
 | `BASE` | The `href` attribute of the `base` tag in HTML. <br> E.g.: `https://233333.best/whois/233333.best` | `/whois/` | `/` |
 | `USE_PATH_PARAM` | Whether to use path parameter. <br> E.g.: `https://whois.233333.best/233333.best` | `1` | `0` |
 | `DEFAULT_EXTENSION` | The default extension when no extension is entered. | `net` | `com` |
+| `DATA_SOURCE` | The data source for the lookup. <br> Options: `whois` , `rdap` , `all` | `rdap` | `all` |
 | `HOSTED_ON` | Name of the hosting platform. | `Serv00` |  |
 | `HOSTED_ON_URL` | URL of the hosting platform. | `https://serv00.com` |  |
 
@@ -74,6 +76,10 @@ If you deploy using web hosting, you should modify the `config/config.php` file,
 define("BASE", getenv("BASE") ?: "/whois/");
 
 define("USE_PATH_PARAM", getenv("USE_PATH_PARAM") ?: "1");
+
+define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
+
+define("DATA_SOURCE", getenv("DATA_SOURCE") ?: "rdap");
 
 define('HOSTED_ON', getenv('HOSTED_ON') ?: "serv00");
 
@@ -107,7 +113,6 @@ Method: `GET`
 
 ## TODO
 
-- [ ] Support RDAP data
 - [ ] Fetch WHOIS data from web page
 - [ ] Extract registrant information
 - [ ] Improve reserved domain detection
@@ -120,6 +125,6 @@ Method: `GET`
 
 ## Collaboration
 
-If you know the missing WHOIS server addresses for this project, feel free to collaborate with us!
+If you know the missing WHOIS or RDAP server addresses for this project, feel free to collaborate with us!
 
 If you encounter any issues, feel free to open a [new issue](https://github.com/reg233/whois-domain-lookup/issues).

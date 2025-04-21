@@ -1,6 +1,11 @@
 <?php
 class ParserAW extends Parser
 {
+  protected function getUnregisteredRegExp()
+  {
+    return "/is free/i";
+  }
+
   protected function getRegistrarRegExp()
   {
     return "/registrar:\r\n(.+)/i";

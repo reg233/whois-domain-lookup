@@ -35,6 +35,18 @@ body ::-moz-selection {
   color: #1f1f1f;
 }
 
+body :focus {
+  outline-color: #5ee8e8;
+}
+
+body :focus:not(:focus-visible) {
+  outline-color: transparent;
+}
+
+body :focus-visible {
+  outline-color: #5ee8e8;
+}
+
 header {
   background-color: #e1f9f9;
   height: 364px;
@@ -96,7 +108,6 @@ input::placeholder {
 
 input:focus {
   border: 1px solid #19cccc;
-  outline-color: #5ee8e8;
 }
 
 input:hover {
@@ -114,18 +125,6 @@ input:hover {
   outline: 3px solid transparent;
   -moz-appearance: button;
   -webkit-appearance: button;
-}
-
-.button:focus {
-  outline-color: #5ee8e8;
-}
-
-.button:focus:not(:focus-visible) {
-  outline-color: transparent;
-}
-
-.button:focus-visible {
-  outline-color: #5ee8e8;
 }
 
 .button-clear {
@@ -215,23 +214,19 @@ input:hover {
 }
 
 .message {
-  align-items: center;
   background-color: #ffffff;
   border-radius: 4px;
-  box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.05),
-    0px 12px 16px -4px rgba(0, 0, 0, 0.1), 0px 2px 4px -2px rgba(0, 0, 0, 0.06),
-    0px 4px 8px -2px rgba(0, 0, 0, 0.1);
-  display: grid;
-  gap: 12px 8px;
-  grid-template-columns: 16px 100px auto;
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05),
+    0 12px 16px -4px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06),
+    0 4px 8px -2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
   min-height: 64px;
   padding: 16px;
   padding-left: 12px;
   word-wrap: break-word;
-}
-
-.message > * {
-  min-width: 0;
 }
 
 .message-positive {
@@ -250,7 +245,14 @@ input:hover {
   border-left: 4px solid #fdb021;
 }
 
+.message-header {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
 .message-icon {
+  flex: 0 0 auto;
   font-size: 16px;
 }
 
@@ -273,8 +275,8 @@ input:hover {
 .message-title {
   font-size: 14px;
   font-weight: 600;
-  grid-column: 2 / span 2;
   margin: 0;
+  min-width: 0;
 }
 
 a {
@@ -288,21 +290,16 @@ a:hover {
   color: #139a9a;
 }
 
-a:focus {
-  outline-color: #5ee8e8;
-}
-
-a:focus:not(:focus-visible) {
-  outline-color: transparent;
-}
-
-a:focus-visible {
-  outline-color: #5ee8e8;
+.message-data {
+  align-items: center;
+  display: grid;
+  gap: 12px 8px;
+  grid-template-columns: max-content auto;
+  margin-left: 24px;
 }
 
 .message-label {
   color: #757575;
-  grid-column: 2;
 }
 
 .message-value-status > div,
@@ -317,8 +314,8 @@ a:focus-visible {
 .message-tags {
   display: flex;
   gap: 6px 8px;
-  grid-column: 2 / span 2;
   flex-wrap: wrap;
+  margin-left: 24px;
 }
 
 .message-tag {
@@ -372,7 +369,48 @@ a:focus-visible {
   color: #c6005c;
 }
 
-.results {
+.data-source {
+  text-align: center;
+}
+
+.data-source + .raw-data {
+  margin-top: 24px;
+}
+
+.segmented {
+  background-color: #f5f5f5;
+  border-radius: 6px;
+  display: inline-flex;
+  gap: 4px;
+  padding: 2px;
+}
+
+.segmented-item {
+  appearance: button;
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 28px;
+  outline: 2px solid transparent;
+  padding: 0 10px;
+  transition: background-color 190ms ease, box-shadow 190ms ease,
+    outline-color 190ms ease;
+  -moz-appearance: button;
+  -webkit-appearance: button;
+}
+
+.segmented-item-selected {
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03),
+    0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+}
+
+.raw-data {
   margin-left: auto;
   margin-right: auto;
   margin-top: 48px;
@@ -381,29 +419,25 @@ a:focus-visible {
   padding-right: 20px;
 }
 
-#raw-data {
+.raw-data-whois,
+.raw-data-rdap {
   border: 1px solid #2e2e2e;
   border-radius: 8px;
+  font-family: ui-monospace, monospace;
   font-size: 16px;
-  hyphens: none;
   line-height: 1.5;
-  padding: 16px;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  -webkit-hyphens: none;
-}
-
-#raw-data div {
-  border-radius: 4px;
   outline: 3px solid transparent;
-  padding-left: 8px;
-  padding-right: 8px;
-  transition: background-color 190ms ease, outline-color 190ms ease;
+  overflow: auto;
+  padding: 16px;
+  transition: outline-color 190ms ease;
 }
 
-#raw-data div:hover {
-  background-color: #e1f9f9;
-  outline-color: #5ee8e8;
+.raw-data-whois + .raw-data-rdap {
+  display: none;
+}
+
+code {
+  font-family: inherit;
 }
 
 footer {
@@ -448,13 +482,14 @@ footer {
     min-height: unset;
   }
 
-  .results {
+  .raw-data {
     margin-top: 32px;
     padding-left: 16px;
     padding-right: 16px;
   }
 
-  #raw-data {
+  .raw-data-whois,
+  .raw-data-rdap {
     font-size: 14px;
     line-height: 1.4286;
   }
@@ -491,10 +526,6 @@ footer {
     margin-left: 2px;
     position: absolute;
     width: 8px;
-  }
-
-  #raw-data {
-    white-space: pre-line;
   }
 }
 

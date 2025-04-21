@@ -1,5 +1,5 @@
 <?php
-class Whois
+class WHOIS
 {
   public $domain;
 
@@ -9,9 +9,9 @@ class Whois
 
   private $server;
 
-  private const TLD_SERVERS = "./data/tld-servers.json";
+  private const TLD_SERVERS = "./data/whois-tld-servers.json";
 
-  private const SLD_SERVERS = "./data/sld-servers.json";
+  private const SLD_SERVERS = "./data/whois-sld-servers.json";
 
   public function __construct($domain, $extension, $extensionTop)
   {
@@ -59,7 +59,7 @@ class Whois
     $server = $this->servers[idn_to_ascii($this->extension)] ?? "";
 
     if (empty($server)) {
-      throw new RuntimeException("'$this->domain' contains an unknown extension");
+      throw new RuntimeException("No WHOIS server found for '$this->domain'");
     }
 
     return $server;
@@ -80,6 +80,7 @@ class Whois
     $socket = @stream_socket_client("tcp://$host:43", $errno, $errstr, 10);
 
     if (!$socket) {
+      fclose($socket);
       throw new RuntimeException($errstr);
     }
 

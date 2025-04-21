@@ -3,6 +3,6 @@ class ParserSK extends Parser
 {
   protected function getRegistrarRegExp()
   {
-    return $this->getBaseRegExp("registrar:.+\nname");
+    return $this->getBaseRegExp("registrar:.+\nname:.+\norganization");
   }
 }

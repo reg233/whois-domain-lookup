@@ -5,7 +5,11 @@ class Parser
 
   protected $timezone = "UTC";
 
-  public $data = "";
+  protected $data = "";
+
+  public $whoisData = "";
+
+  public $rdapData = "";
 
   public $unknown = false;
 
@@ -56,6 +60,8 @@ class Parser
   public function __construct($data)
   {
     $this->data = $data;
+    $this->whoisData = $data;
+
     if (empty($this->data)) {
       $this->unknown = true;
       return;
@@ -89,6 +95,7 @@ class Parser
     $this->availableDateISO8601 = $this->getAvailableDateISO8601();
 
     $this->status = $this->getStatus();
+    $this->setStatusUrl();
 
     $this->nameServers = $this->getNameServers();
 
@@ -128,7 +135,7 @@ class Parser
 
   protected function getReserved()
   {
-    return preg_match($this->getReservedRegExp(), $this->data);
+    return (bool)preg_match($this->getReservedRegExp(), $this->data);
   }
 
   private const UNREGISTERED_KEYWORDS = [
@@ -137,19 +144,20 @@ class Parser
     "not exist", // ad
     "no data", // ae
     "nothing found", // at
-    "is free", // aw
     "status:\tavailable", // be
     "no object found", // bf
     "status: available", // bg
+    "domain is available", // co.ca
     "no entries found", // cl
     "status: free", // de
-    "is available", // dm
+    "is available for registration", // dm
     "has not been registered", // hk
     "no such domain", // lu
     "object_not_found", // mx
     "domain unknown", // pf
     "not registered", // pk
     "no information", // pl
+    "is available for purchase", // tm
     "no found", // tw
   ];
 
@@ -319,7 +327,7 @@ class Parser
     return $this->getISO8601($this->expirationDate);
   }
 
-  private const UPDATED_DATE_KEYWORDS = [
+  protected const UPDATED_DATE_KEYWORDS = [
     "updated date", // com
     "last modified", // am
     "changed", // ar
@@ -464,6 +472,32 @@ class Parser
     "registry status", // укр
   ];
 
+  protected const STATUS_MAP = [
+    "addPeriod" => "https://icann.org/epp#addPeriod",
+    "autoRenewPeriod" => "https://icann.org/epp#autoRenewPeriod",
+    "inactive" => "https://icann.org/epp#inactive",
+    "ok" => "https://icann.org/epp#ok",
+    "pendingCreate" => "https://icann.org/epp#pendingCreate",
+    "pendingDelete" => "https://icann.org/epp#pendingDelete",
+    "pendingRenew" => "https://icann.org/epp#pendingRenew",
+    "pendingRestore" => "https://icann.org/epp#pendingRestore",
+    "pendingTransfer" => "https://icann.org/epp#pendingTransfer",
+    "pendingUpdate" => "https://icann.org/epp#pendingUpdate",
+    "redemptionPeriod" => "https://icann.org/epp#redemptionPeriod",
+    "renewPeriod" => "https://icann.org/epp#renewPeriod",
+    "serverDeleteProhibited" => "https://icann.org/epp#serverDeleteProhibited",
+    "serverHold" => "https://icann.org/epp#serverHold",
+    "serverRenewProhibited" => "https://icann.org/epp#serverRenewProhibited",
+    "serverTransferProhibited" => "https://icann.org/epp#serverTransferProhibited",
+    "serverUpdateProhibited" => "https://icann.org/epp#serverUpdateProhibited",
+    "transferPeriod" => "https://icann.org/epp#transferPeriod",
+    "clientDeleteProhibited" => "https://icann.org/epp#clientDeleteProhibited",
+    "clientHold" => "https://icann.org/epp#clientHold",
+    "clientRenewProhibited" => "https://icann.org/epp#clientRenewProhibited",
+    "clientTransferProhibited" => "https://icann.org/epp#clientTransferProhibited",
+    "clientUpdateProhibited" => "https://icann.org/epp#clientUpdateProhibited",
+  ];
+
   protected function getStatusRegExp()
   {
     return $this->getBaseRegExp(implode("|", self::STATUS_KEYWORDS));
@@ -499,6 +533,15 @@ class Parser
     }
 
     return [];
+  }
+
+  private function setStatusUrl()
+  {
+    array_walk($this->status, function (&$item) {
+      if (empty($item["url"])) {
+        $item["url"] = self::STATUS_MAP[$item["text"]] ?? "";
+      }
+    });
   }
 
   private const NAME_SERVERS_KEYWORDS = [
@@ -537,19 +580,19 @@ class Parser
     return [];
   }
 
-  private const GRACE_PERIOD_KEYWORDS = [
+  protected const GRACE_PERIOD_KEYWORDS = [
     "autoRenewPeriod", // com
   ];
 
-  private const REDEMPTION_PERIOD_KEYWORDS = [
+  protected const REDEMPTION_PERIOD_KEYWORDS = [
     "redemptionPeriod", // com
   ];
 
-  private const PENDING_DELETE_KEYWORDS = [
+  protected const PENDING_DELETE_KEYWORDS = [
     "pendingDelete", // com
   ];
 
-  private function hasKeywordInStatus($keywords)
+  protected function hasKeywordInStatus($keywords)
   {
     $texts = array_map("strtolower", array_column($this->status, "text"));
     $keywords = array_map("strtolower", $keywords);
@@ -570,6 +613,7 @@ class Parser
   ];
 
   private const EMPTY_VALUES = [
+    "http://null", // ml
     "none", // nc
     "<no", // uz
     "-", // uz
@@ -607,7 +651,7 @@ class Parser
     }
   }
 
-  protected function getUnknown()
+  public function getUnknown()
   {
     return empty($this->registrar) &&
       empty($this->creationDate) &&
