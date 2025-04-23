@@ -1,6 +1,6 @@
 <?php
-require_once "../config/config.php";
-require_once "../vendor/autoload.php";
+require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 
 spl_autoload_register(function ($class) {
   if (str_starts_with($class, "Parser")) {
@@ -61,25 +61,26 @@ if (!empty($_GET["json"])) {
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#e1f9f9" />
-  <meta name="description" content="A simple WHOIS domain lookup website with strong TLD compatibility." />
-  <meta name="keywords" content="whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org" />
-  <link rel="shortcut icon" href="favicon.ico" />
+  <meta name="description" content="<?= SITE_DESCRIPTION ?>" />
+  <meta name="keywords" content="<?= SITE_KEYWORDS ?>" />
+  <link rel="shortcut icon" href="public/favicon.ico" />
   <link rel="icon" href="public/images/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="public/images/apple-icon-180.png" />
   <link rel="manifest" href="public/manifest.json" />
-  <title>WHOIS domain lookup</title>
+  <title><?= SITE_TITLE ?></title>
   <link rel="stylesheet" href="public/css/index.css" />
   <link rel="stylesheet" href="public/css/json.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap" rel="stylesheet" />
+  <?= CUSTOM_HEAD ?>
 </head>
 
 <body>
   <main>
     <header>
       <div>
-        <h1>WHOIS domain lookup</h1>
+        <h1><?= SITE_TITLE ?></h1>
         <form action="" method="get" onsubmit="handleSubmit(event)">
           <div>
             <input
@@ -354,27 +355,6 @@ if (!empty($_GET["json"])) {
 
     function handleSubmit(event) {
       document.getElementById("search-icon").classList.add("searching");
-
-      <?php if (USE_PATH_PARAM): ?>
-        event.preventDefault();
-
-        let domain = document.getElementById("domain").value;
-
-        if (domain) {
-          const baseElement = document.querySelector("base");
-          const baseHref =
-            baseElement && baseElement.getAttribute("href") ?
-            baseElement.getAttribute("href") :
-            "/";
-
-          try {
-            const url = new URL(domain);
-            domain = url.hostname;
-          } catch (error) {}
-
-          window.location.href = `${baseHref}${encodeURIComponent(domain)}`;
-        }
-      <?php endif; ?>
     }
   </script>
   <?php if (!empty($whoisData) || !empty($rdapData)): ?>
@@ -507,6 +487,7 @@ if (!empty($_GET["json"])) {
       });
     </script>
   <?php endif; ?>
+  <?= CUSTOM_SCRIPT ?>
 </body>
 
 </html>

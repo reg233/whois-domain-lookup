@@ -9,7 +9,7 @@ class RDAP
 
   private $server;
 
-  private const RDAP_SERVERS = "./data/rdap-tld-servers.json";
+  private const RDAP_SERVERS = __DIR__ . "/data/rdap-tld-servers.json";
 
   public function __construct($domain, $extension, $extensionTop)
   {
@@ -81,7 +81,7 @@ class RDAP
 
     curl_close($curl);
 
-    if (!preg_match("/^application\/(rdap\+)?json/", $contentType)) {
+    if (!preg_match("/^application\/(rdap\+)?json/i", $contentType)) {
       $response = "";
     }
 

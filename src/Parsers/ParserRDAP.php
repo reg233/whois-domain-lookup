@@ -73,7 +73,9 @@ class ParserRDAP extends Parser
             switch ($item[0]) {
               case "fn":
               case "org":
-                $this->registrar = $item[3];
+                if (!$this->registrar) {
+                  $this->registrar = $item[3];
+                }
                 break;
               case "url":
                 $this->registrarURL = $this->formatURL($item[3]);
@@ -115,6 +117,8 @@ class ParserRDAP extends Parser
 
   protected const EXPIRATION_DATE_KEYWORDS = [
     "expiration", // com
+    "soft expiration", // is
+    "record expires", // kg
   ];
 
   protected function getDate()

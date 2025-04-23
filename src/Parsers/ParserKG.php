@@ -1,8 +1,6 @@
 <?php
 class ParserKG extends Parser
 {
-  protected $timezone = "Asia/Bishkek";
-
   protected function getDomainRegExp()
   {
     return "/^domain (.+) \(.+\)$/im";

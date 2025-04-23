@@ -55,7 +55,7 @@ class Lookup
       $domain .= "." . DEFAULT_EXTENSION;
     }
 
-    $publicSuffixList = Rules::fromPath('./data/public-suffix-list.dat');
+    $publicSuffixList = Rules::fromPath(__DIR__ . "/data/public-suffix-list.dat");
     $domain = Domain::fromIDNA2008($domain);
 
     try {

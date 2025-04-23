@@ -8,7 +8,4 @@ RewriteEngine On
 # RewriteCond %{HTTP:CF-Visitor} !{"scheme":"https"}
 # RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# RewriteRule \.(css|ico|js|json|php|png|svg)$ - [L]
-# RewriteRule ^(.*)$ src/index.php?domain=$1 [B,L,QSA]
-
 RewriteRule ^$ src/index.php [B,L,QSA]

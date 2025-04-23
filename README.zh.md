@@ -30,6 +30,21 @@
 
 ## 部署
 
+### Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
+
+> [!WARNING]
+> 由于 `vercel-php` 项目中的 [#573](https://github.com/vercel-community/php/issues/573) 问题，您需要手动将项目设置中的 `Node.js Version` 更改为 `18.x` 并重新部署。
+
+步骤1
+
+![Step 1](resources/vercel-step-1.png)
+
+步骤2
+
+![Step 2](resources/vercel-step-2.png)
+
 ### Docker Compose
 
 #### 部署
@@ -62,10 +77,14 @@ docker compose up -d
 
 | Key | Description | Example | Default |
 | :-- | :-- | :-- | :-- |
-| `BASE` | HTML 中 `base` 标签的 `href` 属性。 <br> 例如：`https://233333.best/whois/233333.best` | `/whois/` | `/` |
-| `USE_PATH_PARAM` | 是否使用路径参数。 <br> 例如：`https://whois.233333.best/233333.best` | `1` | `0` |
-| `DEFAULT_EXTENSION` | 没有输入后缀时的默认后缀 | `net` | `com` |
 | `DATA_SOURCE` | 查找的数据源。 <br> 选项： `whois` 、`rdap` 、 `all` | `rdap` | `all` |
+| `DEFAULT_EXTENSION` | 没有输入后缀时的默认后缀 | `net` | `com` |
+| `SITE_TITLE` | 网站的标题 | `WHOIS lookup` | `WHOIS domain lookup` |
+| `SITE_DESCRIPTION` | 网站的描述 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
+| `SITE_KEYWORDS` | 网站的关键词 | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
+| `BASE` | HTML 中 `base` 标签的 `href` 属性 | `/whois/` | `/` |
+| `CUSTOM_HEAD` | 在 HTML 中的 `head` 结束标记之前插入的自定义内容 | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT` | 在 HTML 中的 `body` 结束标记之前插入的自定义内容 | `<script>alert('Welcome')</script>` |  |
 | `HOSTED_ON` | 托管平台的名称 | `Serv00` |  |
 | `HOSTED_ON_URL` | 托管平台的 URL | `https://serv00.com` |  |
 
@@ -73,41 +92,16 @@ docker compose up -d
 
 ```php
 <?php
-define("BASE", getenv("BASE") ?: "/whois/");
-
-define("USE_PATH_PARAM", getenv("USE_PATH_PARAM") ?: "1");
+define("DATA_SOURCE", getenv("DATA_SOURCE") ?: "rdap");
 
 define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
-define("DATA_SOURCE", getenv("DATA_SOURCE") ?: "rdap");
-
-define('HOSTED_ON', getenv('HOSTED_ON') ?: "serv00");
-
-define('HOSTED_ON_URL', getenv('HOSTED_ON_URL') ?: "https://serv00.com");
-```
-
-并且如果您将 `USE_PATH_PARAM` 设置为 true，您还需要修改 `.htaccess` 文件，如下所示：
-
-```
-Options -Indexes
-
-RewriteEngine On
-
-# Uncomment the four lines below to enable force https.
-# RewriteCond %{HTTP:X-Forwarded-Proto} !https
-# RewriteCond %{HTTPS} off
-# RewriteCond %{HTTP:CF-Visitor} !{"scheme":"https"}
-# RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-RewriteRule \.(css|ico|js|json|php|png|svg)$ - [L]
-RewriteRule ^(.*)$ src/index.php?domain=$1 [B,L,QSA]
-
-# RewriteRule ^$ src/index.php [B,L,QSA]
+...
 ```
 
 ## API
 
-URL: `https://whois.233333.best?domain=233333.best&json=1` 或 `https://whois.233333.best/233333.best?json=1`
+URL: `https://whois.233333.best?domain=233333.best&json=1`
 
 Method: `GET`
 

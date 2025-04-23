@@ -1,11 +1,11 @@
-.git/
-.vercel/
-.vscode/
-api/
-resources/
+.git
+.vercel
+.vscode
+resources
 **/.DS_Store
 .dockerignore
 .gitignore
+.htaccess
 .vercelignore
 composer.json
 composer.lock
@@ -13,4 +13,3 @@ docker-compose.yml
 Dockerfile
 README*.md
 test*.php
-vercel.json

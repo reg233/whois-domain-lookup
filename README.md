@@ -30,6 +30,21 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 
 ## Deployment
 
+### Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
+
+> [!WARNING]
+> Due to the issue [#573](https://github.com/vercel-community/php/issues/573) in the `vercel-php` project, you need to manually change the `Node.js Version` in the project settings to `18.x` and redeploy.
+
+Step 1
+
+![Step 1](resources/vercel-step-1.png)
+
+Step 2
+
+![Step 2](resources/vercel-step-2.png)
+
 ### Docker Compose
 
 #### Deploy
@@ -62,52 +77,31 @@ Download the [release](https://github.com/reg233/whois-domain-lookup/releases/la
 
 | Key | Description | Example | Default |
 | :-- | :-- | :-- | :-- |
-| `BASE` | The `href` attribute of the `base` tag in HTML. <br> E.g.: `https://233333.best/whois/233333.best` | `/whois/` | `/` |
-| `USE_PATH_PARAM` | Whether to use path parameter. <br> E.g.: `https://whois.233333.best/233333.best` | `1` | `0` |
+| `DATA_SOURCE` | The data source for the lookup. <br> Options: `whois` , `rdap` , `all` . | `rdap` | `all` |
 | `DEFAULT_EXTENSION` | The default extension when no extension is entered. | `net` | `com` |
-| `DATA_SOURCE` | The data source for the lookup. <br> Options: `whois` , `rdap` , `all` | `rdap` | `all` |
+| `SITE_TITLE` | Title of the website. | `WHOIS lookup` | `WHOIS domain lookup` |
+| `SITE_DESCRIPTION` | Description of the website. | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
+| `SITE_KEYWORDS` | Keywords of the website. | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
+| `BASE` | The `href` attribute of the `base` tag in HTML. | `/whois/` | `/` |
+| `CUSTOM_HEAD` | The custom content to be inserted before the `head` closing tag in HTML. | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT` | The custom content to be inserted before the `body` closing tag in HTML. | `<script>alert('Welcome')</script>` |  |
 | `HOSTED_ON` | Name of the hosting platform. | `Serv00` |  |
 | `HOSTED_ON_URL` | URL of the hosting platform. | `https://serv00.com` |  |
 
-If you deploy using web hosting, you should modify the `config/config.php` file, like this:
+If you deploy using `web hosting`, you should modify the `config/config.php` file, like this:
 
 ```php
 <?php
-define("BASE", getenv("BASE") ?: "/whois/");
-
-define("USE_PATH_PARAM", getenv("USE_PATH_PARAM") ?: "1");
+define("DATA_SOURCE", getenv("DATA_SOURCE") ?: "rdap");
 
 define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
-define("DATA_SOURCE", getenv("DATA_SOURCE") ?: "rdap");
-
-define('HOSTED_ON', getenv('HOSTED_ON') ?: "serv00");
-
-define('HOSTED_ON_URL', getenv('HOSTED_ON_URL') ?: "https://serv00.com");
-```
-
-and if you set `USE_PATH_PARAM` to true, you also need to modify the `.htaccess` file, like this:
-
-```
-Options -Indexes
-
-RewriteEngine On
-
-# Uncomment the four lines below to enable force https.
-# RewriteCond %{HTTP:X-Forwarded-Proto} !https
-# RewriteCond %{HTTPS} off
-# RewriteCond %{HTTP:CF-Visitor} !{"scheme":"https"}
-# RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-RewriteRule \.(css|ico|js|json|php|png|svg)$ - [L]
-RewriteRule ^(.*)$ src/index.php?domain=$1 [B,L,QSA]
-
-# RewriteRule ^$ src/index.php [B,L,QSA]
+...
 ```
 
 ## API
 
-URL: `https://whois.233333.best?domain=233333.best&json=1` or `https://whois.233333.best/233333.best?json=1`
+URL: `https://whois.233333.best?domain=233333.best&json=1`
 
 Method: `GET`
 

@@ -66,6 +66,7 @@ class ParserFactory
     "tn" => ["tn", "تونس"],
     "tr" => ["tr"],
     "tw" => ["tw", "台湾", "台灣"],
+    "tz" => ["tz"],
     "ua" => ["ua"],
     "ua1" => ["укр"],
     "uk" => ["uk"],

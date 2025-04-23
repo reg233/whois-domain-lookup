@@ -9,9 +9,9 @@ class WHOIS
 
   private $server;
 
-  private const TLD_SERVERS = "./data/whois-tld-servers.json";
+  private const TLD_SERVERS = __DIR__ . "/data/whois-tld-servers.json";
 
-  private const SLD_SERVERS = "./data/whois-sld-servers.json";
+  private const SLD_SERVERS = __DIR__ . "/data/whois-sld-servers.json";
 
   public function __construct($domain, $extension, $extensionTop)
   {
@@ -80,7 +80,6 @@ class WHOIS
     $socket = @stream_socket_client("tcp://$host:43", $errno, $errstr, 10);
 
     if (!$socket) {
-      fclose($socket);
       throw new RuntimeException($errstr);
     }
 

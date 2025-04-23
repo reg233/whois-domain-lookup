@@ -8,8 +8,4 @@ RUN apt-get update && apt-get install -y libicu-dev && \
 
 COPY . ./
 
-RUN mv entrypoint.sh /usr/local/bin/whois-domain-lookup-entrypoint && \
-    chmod +x /usr/local/bin/whois-domain-lookup-entrypoint
-
-ENTRYPOINT ["whois-domain-lookup-entrypoint"]
 CMD ["apache2-foreground"]
