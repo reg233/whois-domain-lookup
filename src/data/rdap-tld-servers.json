@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-04-11T15:00:02Z",
+  "publication": "2025-04-25T00:00:01Z",
   "services": [
     [
       [
@@ -106,6 +106,14 @@
     ],
     [
       [
+        "blog"
+      ],
+      [
+        "https://rdap.blog.fury.ca/rdap/"
+      ]
+    ],
+    [
+      [
         "ca"
       ],
       [
@@ -182,14 +190,6 @@
       ],
       [
         "https://rdap.centralnic.com/best/"
-      ]
-    ],
-    [
-      [
-        "blog"
-      ],
-      [
-        "https://rdap.centralnic.com/blog/"
       ]
     ],
     [
@@ -4188,14 +4188,6 @@
     ],
     [
       [
-        "bentley"
-      ],
-      [
-        "https://rdap.nominet.uk/bentley/"
-      ]
-    ],
-    [
-      [
         "bing"
       ],
       [
@@ -5480,6 +5472,14 @@
       ],
       [
         "https://whois.uniregistry.net/rdap/"
+      ]
+    ],
+    [
+      [
+        "fj"
+      ],
+      [
+        "https://www.rdap.fj/"
       ]
     ],
     [

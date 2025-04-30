@@ -69,7 +69,10 @@ class ParserRDAP extends Parser
             $this->registrar = $entity["handle"];
           }
         } else {
-          foreach ($entity["vcardArray"][1] as $item) {
+          $vcardArray = isset($entity["vcardArray"]["elements"])
+            ? $entity["vcardArray"]["elements"]
+            : $entity["vcardArray"][1];
+          foreach ($vcardArray as $item) {
             switch ($item[0]) {
               case "fn":
               case "org":
@@ -152,12 +155,13 @@ class ParserRDAP extends Parser
 
     $this->status = array_map(
       function ($item) {
-        $text = str_replace(" ", "", lcfirst(ucwords($item)));
-        if ($text === "active") {
-          $text = "ok";
+        $key = str_replace(" ", "", strtolower($item));
+        if (isset(self::STATUS_MAP[$key])) {
+          $value = self::STATUS_MAP[$key];
+          return ["text" => $value, "url" => "https://icann.org/epp#$value"];
         }
 
-        return ["text" => $text, "url" => self::STATUS_MAP[$text] ?? ""];
+        return ["text" => $item, "url" => ""];
       },
       $this->json["status"],
     );

@@ -158,6 +158,7 @@ class Parser
     "not registered", // pk
     "no information", // pl
     "is available for purchase", // tm
+    "domain name is available", // tt
     "no found", // tw
   ];
 
@@ -473,29 +474,30 @@ class Parser
   ];
 
   protected const STATUS_MAP = [
-    "addPeriod" => "https://icann.org/epp#addPeriod",
-    "autoRenewPeriod" => "https://icann.org/epp#autoRenewPeriod",
-    "inactive" => "https://icann.org/epp#inactive",
-    "ok" => "https://icann.org/epp#ok",
-    "pendingCreate" => "https://icann.org/epp#pendingCreate",
-    "pendingDelete" => "https://icann.org/epp#pendingDelete",
-    "pendingRenew" => "https://icann.org/epp#pendingRenew",
-    "pendingRestore" => "https://icann.org/epp#pendingRestore",
-    "pendingTransfer" => "https://icann.org/epp#pendingTransfer",
-    "pendingUpdate" => "https://icann.org/epp#pendingUpdate",
-    "redemptionPeriod" => "https://icann.org/epp#redemptionPeriod",
-    "renewPeriod" => "https://icann.org/epp#renewPeriod",
-    "serverDeleteProhibited" => "https://icann.org/epp#serverDeleteProhibited",
-    "serverHold" => "https://icann.org/epp#serverHold",
-    "serverRenewProhibited" => "https://icann.org/epp#serverRenewProhibited",
-    "serverTransferProhibited" => "https://icann.org/epp#serverTransferProhibited",
-    "serverUpdateProhibited" => "https://icann.org/epp#serverUpdateProhibited",
-    "transferPeriod" => "https://icann.org/epp#transferPeriod",
-    "clientDeleteProhibited" => "https://icann.org/epp#clientDeleteProhibited",
-    "clientHold" => "https://icann.org/epp#clientHold",
-    "clientRenewProhibited" => "https://icann.org/epp#clientRenewProhibited",
-    "clientTransferProhibited" => "https://icann.org/epp#clientTransferProhibited",
-    "clientUpdateProhibited" => "https://icann.org/epp#clientUpdateProhibited",
+    "addperiod" => "addPeriod",
+    "autorenewperiod" => "autoRenewPeriod",
+    "inactive" => "inactive",
+    "ok" => "ok",
+    "active" => "ok",
+    "pendingcreate" => "pendingCreate",
+    "pendingdelete" => "pendingDelete",
+    "pendingrenew" => "pendingRenew",
+    "pendingrestore" => "pendingRestore",
+    "pendingtransfer" => "pendingTransfer",
+    "pendingupdate" => "pendingUpdate",
+    "redemptionperiod" => "redemptionPeriod",
+    "renewperiod" => "renewPeriod",
+    "serverdeleteprohibited" => "serverDeleteProhibited",
+    "serverhold" => "serverHold",
+    "serverrenewprohibited" => "serverRenewProhibited",
+    "servertransferprohibited" => "serverTransferProhibited",
+    "serverupdateprohibited" => "serverUpdateProhibited",
+    "transferperiod" => "transferPeriod",
+    "clientdeleteprohibited" => "clientDeleteProhibited",
+    "clienthold" => "clientHold",
+    "clientrenewprohibited" => "clientRenewProhibited",
+    "clienttransferprohibited" => "clientTransferProhibited",
+    "clientupdateprohibited" => "clientUpdateProhibited",
   ];
 
   protected function getStatusRegExp()
@@ -538,8 +540,11 @@ class Parser
   private function setStatusUrl()
   {
     array_walk($this->status, function (&$item) {
-      if (empty($item["url"])) {
-        $item["url"] = self::STATUS_MAP[$item["text"]] ?? "";
+      $key = str_replace(" ", "", strtolower($item["text"]));
+      if (isset(self::STATUS_MAP[$key])) {
+        $value = self::STATUS_MAP[$key];
+        $item["text"] = $value;
+        $item["url"] = "https://icann.org/epp#$value";
       }
     });
   }
@@ -568,12 +573,12 @@ class Parser
     return [];
   }
 
-  protected function getNameServersFromMultiLine()
+  protected function getNameServersFromExplode($separator)
   {
     if (preg_match($this->getNameServersRegExp(), $this->data, $matches)) {
       return array_map(
         fn($item) => strtolower(explode(" ", $item)[0]),
-        array_unique(array_filter(array_map("trim", explode("\n", $matches[1])))),
+        array_unique(array_filter(array_map("trim", explode($separator, $matches[1])))),
       );
     }
 

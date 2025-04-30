@@ -107,7 +107,6 @@ Method: `GET`
 
 ## TODO
 
-- [ ] Fetch WHOIS data from web page
 - [ ] Extract registrant information
 - [ ] Improve reserved domain detection
 

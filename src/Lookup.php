@@ -157,6 +157,10 @@ class Lookup
       throw new RuntimeException("No WHOIS or RDAP server found for '$this->domain'");
     }
 
+    if (($this->whoisError && $this->rdapUnknown) || ($this->whoisUnknown && $this->rdapError)) {
+      throw new RuntimeException($this->whoisError ?: $this->rdapError);
+    }
+
     if ($this->whoisError && $this->rdapError) {
       throw new RuntimeException("A temporary error has occurred");
     }

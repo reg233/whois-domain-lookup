@@ -16,12 +16,12 @@ use Pdp\UnableToResolveDomain;
 $domain = htmlspecialchars($_GET["domain"] ?? "", ENT_QUOTES, "UTF-8");
 $domain = preg_replace("/\s+/", "", $domain);
 
-$whoisData;
-$rdapData;
-$error;
+$whoisData = null;
+$rdapData = null;
+$error = null;
 $parser = new Parser("");
 
-if (!empty($domain)) {
+if ($domain) {
   try {
     $lookup = new Lookup($domain);
     $domain = $lookup->domain;
@@ -35,19 +35,19 @@ if (!empty($domain)) {
       $error = $e->getMessage();
     }
   }
-}
 
-if (!empty($_GET["json"])) {
-  header("Content-Type: application/json");
+  if ($_GET["json"] ?? "") {
+    header("Content-Type: application/json");
 
-  if (empty($error)) {
-    $value = ["code" => 0, "msg" => "Query successful", "data" => $parser];
-  } else {
-    $value = ["code" => 1, "msg" => $error, "data" => null];
+    if ($error) {
+      $value = ["code" => 0, "msg" => "Query successful", "data" => $parser];
+    } else {
+      $value = ["code" => 1, "msg" => $error, "data" => null];
+    }
+
+    echo json_encode($value, JSON_UNESCAPED_UNICODE);
+    die;
   }
-
-  echo json_encode($value, JSON_UNESCAPED_UNICODE);
-  die;
 }
 ?>
 
@@ -87,7 +87,7 @@ if (!empty($_GET["json"])) {
               autocapitalize="off"
               autocomplete="domain"
               autocorrect="off"
-              <?= empty($domain) ? 'autofocus="autofocus"' : ""; ?>
+              <?= $domain ? "" : 'autofocus="autofocus"'; ?>
               id="domain"
               inputmode="url"
               name="domain"
@@ -95,13 +95,13 @@ if (!empty($_GET["json"])) {
               required="required"
               type="text"
               value="<?= $domain; ?>" />
-            <button class="button button-clear" id="domain-clear" type="button" aria-label="Clear">
+            <button class="button-clear" id="domain-clear" type="button" aria-label="Clear">
               <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
               </svg>
             </button>
           </div>
-          <button class="button button-search">
+          <button class="button-search">
             <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" id="search-icon">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
             </svg>
@@ -110,10 +110,10 @@ if (!empty($_GET["json"])) {
         </form>
       </div>
     </header>
-    <?php if (!empty($domain)): ?>
+    <?php if ($domain): ?>
       <section class="messages">
         <div>
-          <?php if (!empty($error)): ?>
+          <?php if ($error): ?>
             <div class="message message-negative">
               <div class="message-header">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="message-icon">
@@ -133,7 +133,7 @@ if (!empty($_GET["json"])) {
                   <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94" />
                 </svg>
                 <h2 class="message-title">
-                  <?= $domain; ?> is unknown
+                  &#39;<?= $domain; ?>&#39; is unknown
                 </h2>
               </div>
             </div>
@@ -144,7 +144,7 @@ if (!empty($_GET["json"])) {
                   <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
                 </svg>
                 <h2 class="message-title">
-                  <?= $domain; ?> has already been reserved
+                  &#39;<?= $domain; ?>&#39; has already been reserved
                 </h2>
               </div>
             </div>
@@ -156,79 +156,111 @@ if (!empty($_GET["json"])) {
                   <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
                 </svg>
                 <h2 class="message-title">
-                  <a href="http://<?= $domain; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $domain; ?></a> <?= empty($parser->domain) ? "v_v" : ""; ?> has already been registered
+                  <a href="http://<?= $domain; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $domain; ?></a> <?= $parser->domain ? "" : "v_v"; ?> has already been registered
                 </h2>
               </div>
               <div class="message-data">
-                <?php if (!empty($parser->registrar)): ?>
+                <?php if ($parser->registrar): ?>
                   <div class="message-label">
                     Registrar
                   </div>
                   <div>
-                    <?php if (empty($parser->registrarURL)): ?>
-                      <?= $parser->registrar; ?>
-                    <?php else: ?>
+                    <?php if ($parser->registrarURL): ?>
                       <a href="<?= $parser->registrarURL; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $parser->registrar; ?></a>
+                    <?php else: ?>
+                      <?= $parser->registrar; ?>
                     <?php endif; ?>
                   </div>
                 <?php endif; ?>
-                <?php if (!empty($parser->creationDate)): ?>
+                <?php if ($parser->creationDate): ?>
                   <div class="message-label">
                     Creation Date
                   </div>
                   <div>
-                    <span id="creation-date" <?= empty($parser->creationDateISO8601) ? "" : "data-iso8601=\"$parser->creationDateISO8601\""; ?>>
-                      <?= $parser->creationDate; ?>
-                    </span>
+                    <?php if ($parser->creationDateISO8601 === null): ?>
+                      <span><?= $parser->creationDate; ?></span>
+                    <?php elseif (str_ends_with($parser->creationDateISO8601, "Z")): ?>
+                      <button id="creation-date" data-iso8601="<?= $parser->creationDateISO8601; ?>">
+                        <?= $parser->creationDate; ?>
+                      </button>
+                    <?php else: ?>
+                      <span id="creation-date" data-iso8601="<?= $parser->creationDateISO8601; ?>">
+                        <?= $parser->creationDate; ?>
+                      </span>
+                    <?php endif; ?>
                   </div>
                 <?php endif; ?>
-                <?php if (!empty($parser->expirationDate)): ?>
+                <?php if ($parser->expirationDate): ?>
                   <div class="message-label">
                     Expiration Date
                   </div>
                   <div>
-                    <span id="expiration-date" <?= empty($parser->expirationDateISO8601) ? "" : "data-iso8601=\"$parser->expirationDateISO8601\""; ?>>
-                      <?= $parser->expirationDate; ?>
-                    </span>
+                    <?php if ($parser->expirationDateISO8601 === null): ?>
+                      <span><?= $parser->expirationDate; ?></span>
+                    <?php elseif (str_ends_with($parser->expirationDateISO8601, "Z")): ?>
+                      <button id="expiration-date" data-iso8601="<?= $parser->expirationDateISO8601; ?>">
+                        <?= $parser->expirationDate; ?>
+                      </button>
+                    <?php else: ?>
+                      <span id="expiration-date" data-iso8601="<?= $parser->expirationDateISO8601; ?>">
+                        <?= $parser->expirationDate; ?>
+                      </span>
+                    <?php endif; ?>
                   </div>
                 <?php endif; ?>
-                <?php if (!empty($parser->updatedDate)): ?>
+                <?php if ($parser->updatedDate): ?>
                   <div class="message-label">
                     Updated Date
                   </div>
                   <div>
-                    <span id="updated-date" <?= empty($parser->updatedDateISO8601) ? "" : "data-iso8601=\"$parser->updatedDateISO8601\""; ?>>
-                      <?= $parser->updatedDate; ?>
-                    </span>
+                    <?php if ($parser->updatedDateISO8601 === null): ?>
+                      <span><?= $parser->updatedDate; ?></span>
+                    <?php elseif (str_ends_with($parser->updatedDateISO8601, "Z")): ?>
+                      <button id="updated-date" data-iso8601="<?= $parser->updatedDateISO8601; ?>">
+                        <?= $parser->updatedDate; ?>
+                      </button>
+                    <?php else: ?>
+                      <span id="updated-date" data-iso8601="<?= $parser->updatedDateISO8601; ?>">
+                        <?= $parser->updatedDate; ?>
+                      </span>
+                    <?php endif; ?>
                   </div>
                 <?php endif; ?>
-                <?php if (!empty($parser->availableDate)): ?>
+                <?php if ($parser->availableDate): ?>
                   <div class="message-label">
                     Available Date
                   </div>
                   <div>
-                    <span id="available-date" <?= empty($parser->availableDateISO8601) ? "" : "data-iso8601=\"$parser->availableDateISO8601\""; ?>>
-                      <?= $parser->availableDate; ?>
-                    </span>
+                    <?php if ($parser->availableDateISO8601 === null): ?>
+                      <span><?= $parser->availableDate; ?></span>
+                    <?php elseif (str_ends_with($parser->availableDateISO8601, "Z")): ?>
+                      <button id="available-date" data-iso8601="<?= $parser->availableDateISO8601; ?>">
+                        <?= $parser->availableDate; ?>
+                      </button>
+                    <?php else: ?>
+                      <span id="available-date" data-iso8601="<?= $parser->availableDateISO8601; ?>">
+                        <?= $parser->availableDate; ?>
+                      </span>
+                    <?php endif; ?>
                   </div>
                 <?php endif; ?>
-                <?php if (!empty($parser->status)): ?>
+                <?php if ($parser->status): ?>
                   <div class="message-label">
                     Status
                   </div>
                   <div class="message-value-status">
                     <?php foreach ($parser->status as $status): ?>
                       <div>
-                        <?php if (empty($status["url"])): ?>
-                          <?= $status["text"]; ?>
-                        <?php else: ?>
+                        <?php if ($status["url"]): ?>
                           <a href="<?= $status["url"]; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $status["text"]; ?></a>
+                        <?php else: ?>
+                          <?= $status["text"]; ?>
                         <?php endif; ?>
                       </div>
                     <?php endforeach; ?>
                   </div>
                 <?php endif; ?>
-                <?php if (!empty($parser->nameServers)): ?>
+                <?php if ($parser->nameServers): ?>
                   <div class="message-label">
                     Name Servers
                   </div>
@@ -241,24 +273,24 @@ if (!empty($_GET["json"])) {
                   </div>
                 <?php endif; ?>
               </div>
-              <?php if (!empty($parser->age) || !empty($parser->remaining) || $parser->pendingDelete || $parser->gracePeriod || $parser->redemptionPeriod): ?>
+              <?php if ($parser->age || $parser->remaining || $parser->pendingDelete || $parser->gracePeriod || $parser->redemptionPeriod): ?>
                 <div class="message-tags">
-                  <?php if (!empty($parser->age)): ?>
-                    <span class="message-tag message-tag-gray" id="age" <?= empty($parser->ageSeconds) ? "" : "data-seconds=\"$parser->ageSeconds\""; ?>>
+                  <?php if ($parser->age): ?>
+                    <button class="message-tag message-tag-gray" id="age" data-seconds="<?= $parser->ageSeconds; ?>">
                       <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                         <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z" />
                         <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0" />
                       </svg>
                       <span><?= $parser->age; ?></span>
-                    </span>
+                    </button>
                   <?php endif; ?>
-                  <?php if (!empty($parser->remaining)): ?>
-                    <span class="message-tag message-tag-gray" id="remaining" <?= empty($parser->remainingSeconds) ? "" : "data-seconds=\"$parser->remainingSeconds\""; ?>>
+                  <?php if ($parser->remaining): ?>
+                    <button class="message-tag message-tag-gray" id="remaining" data-seconds="<?= $parser->remainingSeconds; ?>">
                       <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                         <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z" />
                       </svg>
                       <span><?= $parser->remaining; ?></span>
-                    </span>
+                    </button>
                   <?php endif; ?>
                   <?php if ($parser->ageSeconds && $parser->ageSeconds < 7 * 24 * 60 * 60): ?>
                     <span class="message-tag message-tag-green">New</span>
@@ -287,7 +319,7 @@ if (!empty($_GET["json"])) {
                   <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
                 </svg>
                 <h2 class="message-title">
-                  <?= $domain; ?> does not appear registered yet
+                  &#39;<?= $domain; ?>&#39; does not appear registered yet
                 </h2>
               </div>
             </div>
@@ -295,7 +327,7 @@ if (!empty($_GET["json"])) {
         </div>
       </section>
     <?php endif; ?>
-    <?php if (!empty($whoisData) && !empty($rdapData)): ?>
+    <?php if ($whoisData && $rdapData): ?>
       <section class="data-source">
         <div class="segmented">
           <button class="segmented-item segmented-item-selected" id="data-source-whois" type="button">WHOIS</button>
@@ -303,31 +335,36 @@ if (!empty($_GET["json"])) {
         </div>
       </section>
     <?php endif; ?>
-    <?php if (!empty($whoisData) || !empty($rdapData)): ?>
+    <?php if ($whoisData || $rdapData): ?>
       <section class="raw-data">
-        <?php if (!empty($whoisData)): ?>
+        <?php if ($whoisData): ?>
           <pre class="raw-data-whois" id="raw-data-whois" tabindex="0"><?= $whoisData; ?></pre>
         <?php endif; ?>
-        <?php if (!empty($rdapData)): ?>
+        <?php if ($rdapData): ?>
           <pre class="raw-data-rdap" id="raw-data-rdap"><code class="language-json"><?= $rdapData; ?></code></pre>
         <?php endif; ?>
       </section>
     <?php endif; ?>
     <footer>
-      <?php if (!empty(HOSTED_ON)): ?>
+      <?php if (HOSTED_ON): ?>
         <div>
           Hosted on
-          <?php if (empty(HOSTED_ON_URL)): ?>
-            <?= HOSTED_ON; ?>
+          <?php if (HOSTED_ON_URL): ?>
+            <a href="<?= HOSTED_ON_URL; ?>" rel="noopener" target="_blank"><?= HOSTED_ON; ?></a>
           <?php else: ?>
-            <a href="<?= HOSTED_ON_URL; ?>" rel="noopener" target="_blank">
-              <?= HOSTED_ON; ?>
-            </a>
+            <?= HOSTED_ON; ?>
           <?php endif; ?>
         </div>
       <?php endif; ?>
-      <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank">GitHub</a>
+      <div>
+        v0.4.0 <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank">GitHub</a>
+      </div>
     </footer>
+    <button class="back-to-top" id="back-to-top">
+      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" fill-rule="evenodd" />
+      </svg>
+    </button>
   </main>
   <script>
     const domainElement = document.getElementById("domain");
@@ -356,8 +393,28 @@ if (!empty($_GET["json"])) {
     function handleSubmit(event) {
       document.getElementById("search-icon").classList.add("searching");
     }
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({
+        behavior: "smooth",
+        top: 0,
+      });
+    });
+
+    window.addEventListener("scroll", () => {
+      if (document.documentElement.scrollTop > 360) {
+        if (!backToTop.classList.contains("visible")) {
+          backToTop.classList.add("visible");
+        }
+      } else {
+        if (backToTop.classList.contains("visible")) {
+          backToTop.classList.remove("visible");
+        }
+      }
+    });
   </script>
-  <?php if (!empty($whoisData) || !empty($rdapData)): ?>
+  <?php if ($whoisData || $rdapData): ?>
     <script>
       function updateDateElementText(elementId) {
         const element = document.getElementById(elementId);
@@ -475,15 +532,20 @@ if (!empty($_GET["json"])) {
           });
         }
 
-        if (rawDataWHOIS) {
-          rawDataWHOIS.innerHTML = linkifyHtml(rawDataWHOIS.innerHTML, {
-            rel: "nofollow noopener noreferrer",
-            target: "_blank",
-            validate: {
-              url: (value) => /^https?:\/\//.test(value),
-            },
-          });
+        function linkifyRawData(element) {
+          if (element) {
+            element.innerHTML = linkifyHtml(element.innerHTML, {
+              rel: "nofollow noopener noreferrer",
+              target: "_blank",
+              validate: {
+                url: (value) => /^https?:\/\//.test(value),
+              },
+            });
+          }
         }
+
+        linkifyRawData(rawDataWHOIS);
+        linkifyRawData(rawDataRDAP);
       });
     </script>
   <?php endif; ?>

@@ -10,6 +10,6 @@ class ParserSM extends Parser
 
   protected function getNameServers()
   {
-    return $this->getNameServersFromMultiLine();
+    return $this->getNameServersFromExplode("\n");
   }
 }
