@@ -291,8 +291,11 @@ a:hover {
 
 .message-data button {
   border-radius: 0;
-  cursor: default;
+  cursor: text;
   outline-offset: 4px;
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
 }
 
 .message-label {
@@ -318,13 +321,23 @@ a:hover {
 .message-tag {
   align-items: center;
   border-radius: 4px;
-  cursor: default;
   display: flex;
   font-size: 12px;
   font-weight: 500;
   gap: 4px;
   line-height: 24px;
   padding: 0 6px;
+}
+
+button.message-tag {
+  cursor: default;
+}
+
+button.message-tag > span {
+  cursor: text;
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
 }
 
 .message-tag-gray {

@@ -107,7 +107,6 @@ Method: `GET`
 
 ## TODO
 
-- [ ] Extract registrant information
 - [ ] Improve reserved domain detection
 
 ## Thanks

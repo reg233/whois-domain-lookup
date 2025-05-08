@@ -40,9 +40,9 @@ if ($domain) {
     header("Content-Type: application/json");
 
     if ($error) {
-      $value = ["code" => 0, "msg" => "Query successful", "data" => $parser];
-    } else {
       $value = ["code" => 1, "msg" => $error, "data" => null];
+    } else {
+      $value = ["code" => 0, "msg" => "Query successful", "data" => $parser];
     }
 
     echo json_encode($value, JSON_UNESCAPED_UNICODE);
@@ -357,7 +357,7 @@ if ($domain) {
         </div>
       <?php endif; ?>
       <div>
-        v0.4.0 <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank">GitHub</a>
+        v0.4.1 <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank">GitHub</a>
       </div>
     </footer>
     <button class="back-to-top" id="back-to-top">
