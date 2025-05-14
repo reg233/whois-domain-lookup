@@ -101,7 +101,7 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
 ## API
 
-URL: `https://whois.233333.best?domain=233333.best&json=1`
+URL: `https://whois.233333.best/api/?domain=233333.best`
 
 Method: `GET`
 

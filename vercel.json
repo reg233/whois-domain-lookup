@@ -5,8 +5,9 @@
       "maxDuration": 22
     }
   },
-  "routes": [
-    { "src": "/public/(.*)", "dest": "/$1" },
-    { "src": "/", "dest": "/api/vercel.php" }
+  "rewrites": [
+    { "source": "/public/:path*", "destination": "/:path*" },
+    { "source": "/api/", "destination": "/api/vercel.php?json=1" },
+    { "source": "/", "destination": "/api/vercel.php" }
   ]
 }

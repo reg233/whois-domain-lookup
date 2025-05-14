@@ -9,3 +9,4 @@ RewriteEngine On
 # RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 RewriteRule ^$ src/index.php [B,L,QSA]
+RewriteRule ^api/$ src/index.php?json=1 [B,L,QSA]

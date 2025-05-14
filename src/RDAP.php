@@ -9,7 +9,9 @@ class RDAP
 
   private $server;
 
-  private const RDAP_SERVERS = __DIR__ . "/data/rdap-tld-servers.json";
+  private const TLD_SERVERS = __DIR__ . "/data/rdap-tld-servers.json";
+
+  private const SLD_SERVERS = __DIR__ . "/data/rdap-sld-servers.json";
 
   public function __construct($domain, $extension, $extensionTop)
   {
@@ -30,8 +32,8 @@ class RDAP
     $servers = [];
 
     if (
-      file_exists(self::RDAP_SERVERS) &&
-      ($json = file_get_contents(self::RDAP_SERVERS)) !== false
+      file_exists(self::TLD_SERVERS) &&
+      ($json = file_get_contents(self::TLD_SERVERS)) !== false
     ) {
       $decoded = json_decode($json, true);
       if (is_array($decoded)) {
@@ -43,6 +45,16 @@ class RDAP
             $servers[$tld] = $server;
           }
         }
+      }
+    }
+
+    if (
+      file_exists(self::SLD_SERVERS) &&
+      ($json = file_get_contents(self::SLD_SERVERS)) !== false
+    ) {
+      $decoded = json_decode($json, true);
+      if (is_array($decoded)) {
+        $servers = array_merge($servers, $decoded);
       }
     }
 

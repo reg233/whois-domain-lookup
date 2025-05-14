@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-04-25T00:00:01Z",
+  "publication": "2025-04-29T23:00:02Z",
   "services": [
     [
       [
@@ -2760,14 +2760,6 @@
       ],
       [
         "https://rdap.nic.lacaixa/"
-      ]
-    ],
-    [
-      [
-        "lancaster"
-      ],
-      [
-        "https://rdap.nic.lancaster/"
       ]
     ],
     [
