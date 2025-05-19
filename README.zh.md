@@ -78,7 +78,7 @@ docker compose up -d
 | Key | Description | Example | Default |
 | :-- | :-- | :-- | :-- |
 | `DATA_SOURCE` | 查找的数据源。 <br> 选项： `whois` 、`rdap` 、 `all` | `rdap` | `all` |
-| `DEFAULT_EXTENSION` | 没有输入后缀时的默认后缀 | `com` | `` |
+| `DEFAULT_EXTENSION` | 没有输入后缀时的默认后缀 | `com` |  |
 | `SITE_TITLE` | 网站的标题 | `WHOIS lookup` | `WHOIS domain lookup` |
 | `SITE_DESCRIPTION` | 网站的描述 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | 网站的关键词 | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
