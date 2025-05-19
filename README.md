@@ -78,7 +78,7 @@ Download the [release](https://github.com/reg233/whois-domain-lookup/releases/la
 | Key | Description | Example | Default |
 | :-- | :-- | :-- | :-- |
 | `DATA_SOURCE` | The data source for the lookup. <br> Options: `whois` , `rdap` , `all` . | `rdap` | `all` |
-| `DEFAULT_EXTENSION` | The default extension when no extension is entered. | `net` | `com` |
+| `DEFAULT_EXTENSION` | The default extension when no extension is entered. | `com` | `` |
 | `SITE_TITLE` | Title of the website. | `WHOIS lookup` | `WHOIS domain lookup` |
 | `SITE_DESCRIPTION` | Description of the website. | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | Keywords of the website. | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |

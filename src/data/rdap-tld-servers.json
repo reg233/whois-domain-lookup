@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-04-29T23:00:02Z",
+  "publication": "2025-05-16T22:00:01Z",
   "services": [
     [
       [
@@ -3248,14 +3248,6 @@
       ],
       [
         "https://rdap.nic.porn/"
-      ]
-    ],
-    [
-      [
-        "pramerica"
-      ],
-      [
-        "https://rdap.nic.pramerica/"
       ]
     ],
     [

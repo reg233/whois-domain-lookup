@@ -63,6 +63,10 @@ class RDAP
 
   private function getServer()
   {
+    if ($this->extension === "iana") {
+      return "https://rdap.iana.org/";
+    }
+
     $server = $this->servers[idn_to_ascii($this->extension)] ?? "";
 
     if (empty($server)) {

@@ -56,6 +56,10 @@ class WHOIS
 
   private function getServer()
   {
+    if ($this->extension === "iana") {
+      return "whois.iana.org";
+    }
+
     $server = $this->servers[idn_to_ascii($this->extension)] ?? "";
 
     if (empty($server) && !in_array($this->extension, WHOISWeb::EXTENSIONS)) {

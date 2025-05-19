@@ -69,8 +69,11 @@ class Lookup
         $this->extension = $domainName->suffix()->toString();
         $this->extensionTop = $domainName->domain()->label(0);
       } catch (Throwable $t) {
-        if (
-          str_starts_with($t->getMessage(), "The public suffix and the domain name are identical") &&
+        if ($t->getMessage() === "The domain \"{$domain->toString()}\" can not contain a public suffix.") {
+          $this->domain = $domain->toString();
+          $this->extension = "iana";
+        } else if (
+          $t->getMessage() === "The public suffix and the domain name are identical `{$domain->toString()}`." &&
           count($domain->labels()) > 1
         ) {
           $this->domain = $domain->toString();

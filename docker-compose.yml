@@ -4,7 +4,7 @@ services:
     image: reg233/whois-domain-lookup:latest
     environment:
       DATA_SOURCE: "all"
-      DEFAULT_EXTENSION: "com"
+      DEFAULT_EXTENSION: ""
       BASE: "/"
       HOSTED_ON: ""
       HOSTED_ON_URL: ""
