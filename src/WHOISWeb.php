@@ -7,8 +7,11 @@ class WHOISWeb
 
   public const EXTENSIONS = [
     "bb",
+    "hm",
+    "nr",
     "ph",
     "tj",
+    "to",
     "tt",
   ];
 
@@ -48,6 +51,165 @@ class WHOISWeb
     }
 
     return $response;
+  }
+
+  private function getHM()
+  {
+    $curl = curl_init("https://www.registry.hm");
+    curl_setopt_array($curl, [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 10,
+      CURLOPT_HEADER => true,
+      CURLOPT_NOBODY => true,
+    ]);
+
+    $response = curl_exec($curl);
+    if ($response === false) {
+      $error = curl_error($curl);
+      curl_close($curl);
+      throw new RuntimeException($error);
+    }
+
+    $sessionId = "";
+    if (preg_match_all("/^Set-Cookie:\s*([^;]*)/im", $response, $matches)) {
+      foreach ($matches[1] as $cookie) {
+        if (str_starts_with($cookie, "PHPSESSID=")) {
+          $sessionId = $cookie;
+          break;
+        }
+      }
+    }
+
+    curl_close($curl);
+
+    $curl = curl_init("https://www.registry.hm/HR_whois2.php");
+
+    $data = [
+      "domain_name" => $this->domain,
+      "submit" => "Check WHOIS record",
+    ];
+
+    curl_setopt_array($curl, [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 10,
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+      CURLOPT_COOKIE => $sessionId,
+    ]);
+
+    $response = curl_exec($curl);
+    if ($response === false) {
+      $error = curl_error($curl);
+      curl_close($curl);
+      throw new RuntimeException($error);
+    }
+
+    curl_close($curl);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $whois = "";
+
+    $preTags = $document->getElementsByTagName("pre");
+    if ($preTags->length) {
+      foreach ($preTags->item(0)->childNodes as $child) {
+        if ($child->nodeName === "a") {
+          $class = $child->attributes->getNamedItem("class")->nodeValue;
+          $cfEmail = $child->attributes->getNamedItem("data-cfemail")->nodeValue;
+          if ($class === "__cf_email__" && $cfEmail) {
+            $whois .= $this->decodeCFEmail($cfEmail);
+          } else {
+            $whois .= $document->saveHTML($child);
+          }
+        } else if ($child->nodeName === "br") {
+          $whois .= "\n";
+        } else {
+          $whois .= $document->saveHTML($child);
+        }
+      }
+    }
+
+    return $whois;
+  }
+
+  private function getNR()
+  {
+    $domain = substr($this->domain, 0, -3);
+
+    $curl = curl_init("https://www.cenpac.net.nr/dns/whois.html?subdomain={$domain}&tld=nr&whois=Submit");
+
+    curl_setopt_array($curl, [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 10,
+    ]);
+
+    $response = curl_exec($curl);
+    if ($response === false) {
+      $error = curl_error($curl);
+      curl_close($curl);
+      throw new RuntimeException($error);
+    }
+
+    curl_close($curl);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $whois = "";
+
+    $xPath = new DOMXPath($document);
+    $hrs = $xPath->query("//body//hr");
+    $lastHr = $hrs->item($hrs->length - 1);
+
+    $next = $lastHr->nextSibling;
+    while ($next) {
+      if ($next->nodeName === "table") {
+        foreach ($next->childNodes as $tr) {
+          if ($tr->childNodes->length === 1) {
+            $td = $tr->childNodes->item(0);
+            if ($td->childNodes->item(0)->nodeName === "table") {
+              $whois .= "\n";
+              foreach ($td->childNodes->item(0)->childNodes as $tr) {
+                if ($tr->childNodes->length === 2) {
+                  $key = trim($tr->childNodes->item(0)->textContent);
+                  $value = $tr->childNodes->item(1)->textContent;
+
+                  $whois .= "$key $value\n";
+                } else if ($tr->childNodes->length > 0) {
+                  $text = $tr->childNodes->item(0)->childNodes->item(0)->textContent;
+                  if ($text === html_entity_decode("&nbsp;")) {
+                    $whois .= "\n";
+                  } else {
+                    $whois .= "$text\n";
+                  }
+                }
+              }
+            } else {
+              $text = $td->childNodes->item(0)->textContent;
+              if ($text === html_entity_decode("&nbsp;")) {
+                $whois .= "\n";
+              } else {
+                $whois .= "$text\n";
+              }
+            }
+          } else if ($tr->childNodes->length === 2) {
+            $key = trim($tr->childNodes->item(0)->textContent);
+            $value = $tr->childNodes->item(1)->textContent;
+
+            $whois .= "$key $value\n";
+          }
+        }
+      } else {
+        $whois .= $next->textContent;
+      }
+
+      $next = $next->nextSibling;
+    }
+
+    return str_replace(" (modify)", "", ltrim($whois));
   }
 
   private function getPH()
@@ -170,6 +332,27 @@ class WHOISWeb
     return $whois;
   }
 
+  private function getTO()
+  {
+    $curl = curl_init("https://www.tonic.to/whois?{$this->domain}");
+
+    curl_setopt_array($curl, [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 10,
+    ]);
+
+    $response = curl_exec($curl);
+    if ($response === false) {
+      $error = curl_error($curl);
+      curl_close($curl);
+      throw new RuntimeException($error);
+    }
+
+    curl_close($curl);
+
+    return trim(strip_tags($response));
+  }
+
   private function getTT()
   {
     $curl = curl_init("https://www.nic.tt/cgi-bin/search.pl");
@@ -237,5 +420,18 @@ class WHOISWeb
     }
 
     return $whois;
+  }
+
+  private function decodeCFEmail($cfEmail)
+  {
+    $result = "";
+
+    $key = hexdec(substr($cfEmail, 0, 2));
+
+    for ($i = 2; $i < strlen($cfEmail); $i += 2) {
+      $result .= chr(hexdec(substr($cfEmail, $i, 2)) ^ $key);
+    }
+
+    return $result;
   }
 }

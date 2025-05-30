@@ -47,6 +47,17 @@ body :focus-visible {
   outline-color: #5ee8e8;
 }
 
+a {
+  color: #1f1f1f;
+  outline: 3px solid transparent;
+  outline-offset: 4px;
+  transition: color 190ms ease, outline-color 190ms ease;
+}
+
+a:hover {
+  color: #139a9a;
+}
+
 button {
   align-items: center;
   appearance: button;
@@ -95,6 +106,10 @@ h1 {
   margin: 0 0 16px;
   text-align: center;
   text-wrap: balance;
+}
+
+h1 a {
+  text-decoration: none;
 }
 
 form {
@@ -268,17 +283,6 @@ input:hover {
   font-weight: 600;
   margin: 0;
   min-width: 0;
-}
-
-a {
-  color: #1f1f1f;
-  outline: 3px solid transparent;
-  outline-offset: 4px;
-  transition: color 190ms ease, outline-color 190ms ease;
-}
-
-a:hover {
-  color: #139a9a;
 }
 
 .message-data {

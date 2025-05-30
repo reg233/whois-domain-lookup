@@ -5465,23 +5465,6 @@
       [
         "https://www.rdap.fj/"
       ]
-    ],
-    [
-      [
-        "ch",
-        "li"
-      ],
-      [
-        "https://rdap.nic.ch/"
-      ]
-    ],
-    [
-      [
-        "de"
-      ],
-      [
-        "https://rdap.denic.de/"
-      ]
     ]
   ],
   "version": "1.0"

@@ -9,10 +9,10 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 <table>
   <tr>
     <td>
-      <img alt="Screenshot" src="resources/desktop.png" />
+      <img alt="Screenshot" src="public/images/manifest-screenshot-wide.png" />
     </td>
     <td>
-      <img alt="Screenshot" src="resources/mobile.png" />
+      <img alt="Screenshot" src="public/images/manifest-screenshot-narrow.png" />
     </td>
   </tr>
 </table>
@@ -77,16 +77,17 @@ Download the [release](https://github.com/reg233/whois-domain-lookup/releases/la
 
 | Key | Description | Example | Default |
 | :-- | :-- | :-- | :-- |
-| `DATA_SOURCE` | The data source for the lookup. <br> Options: `whois` , `rdap` , `all` . | `rdap` | `all` |
+| `DATA_SOURCE` | Data source: `whois` , `rdap` or `all` . | `rdap` | `all` |
 | `DEFAULT_EXTENSION` | The default extension when no extension is entered. | `com` |  |
 | `SITE_TITLE` | Title of the website. | `WHOIS lookup` | `WHOIS domain lookup` |
-| `SITE_DESCRIPTION` | Description of the website. | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
-| `SITE_KEYWORDS` | Keywords of the website. | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
-| `BASE` | The `href` attribute of the `base` tag in HTML. | `/whois/` | `/` |
-| `CUSTOM_HEAD` | The custom content to be inserted before the `head` closing tag in HTML. | `<style>h1{color:red}</style>` |  |
-| `CUSTOM_SCRIPT` | The custom content to be inserted before the `body` closing tag in HTML. | `<script>alert('Welcome')</script>` |  |
-| `HOSTED_ON` | Name of the hosting platform. | `Serv00` |  |
-| `HOSTED_ON_URL` | URL of the hosting platform. | `https://serv00.com` |  |
+| `SITE_SHORT_TITLE` | Short title of the website, used for the mobile home screen. | `RDAP` | `WHOIS` |
+| `SITE_DESCRIPTION` | Description of the website, used for SEO | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
+| `SITE_KEYWORDS` | Keywords of the website, used for SEO | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
+| `BASE` | The `href` attribute of the `base` tag in the HTML. | `/whois/` | `/` |
+| `CUSTOM_HEAD` | Custom content to insert before `</head>` in the HTML (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT` | Custom content to insert before `</body>` in the HTML (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
+| `HOSTED_ON` | Name of the hosting platform, displayed at the bottom of the page. | `Serv00` |  |
+| `HOSTED_ON_URL` | URL of the hosting platform, used together with `HOSTED_ON` . | `https://serv00.com` |  |
 
 If you deploy using `web hosting`, you should modify the `config/config.php` file, like this:
 
@@ -101,9 +102,15 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
 ## API
 
-URL: `https://whois.233333.best/api/?domain=233333.best`
+URL: `https://whois.233333.best/api/`
+
+Params: `domain` , `data-source`
 
 Method: `GET`
+
+Example 1: https://whois.233333.best/api/?domain=233333.best
+
+Example 2: https://whois.233333.best/api/?domain=233333.best&data-source=rdap
 
 ## TODO
 

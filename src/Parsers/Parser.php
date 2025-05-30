@@ -260,6 +260,7 @@ class Parser
     "created", // br
     "registration time", // cn
     "domain name commencement date", // hk
+    "domain creation date", // hm
     "record created", // hu
     "created on", // id
     "assigned", // il
@@ -296,6 +297,7 @@ class Parser
     "expiration date", // bn
     "expiration time", // cn
     "expiry date", // fr
+    "domain expiration date", // hm
     "registrar registration expiration date", // hr
     "validity", // il
     "expire date", // it
@@ -343,6 +345,7 @@ class Parser
     "lastmod", // co.pl
     "modification date", // rs
     "updated", // sk
+    "last edited on", // to
   ];
 
   protected function getUpdatedDateRegExp()

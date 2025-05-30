@@ -9,10 +9,10 @@
 <table>
   <tr>
     <td>
-      <img alt="Screenshot" src="resources/desktop.png" />
+      <img alt="Screenshot" src="public/images/manifest-screenshot-wide.png" />
     </td>
     <td>
-      <img alt="Screenshot" src="resources/mobile.png" />
+      <img alt="Screenshot" src="public/images/manifest-screenshot-narrow.png" />
     </td>
   </tr>
 </table>
@@ -75,18 +75,19 @@ docker compose up -d
 
 ## 环境变量
 
-| Key | Description | Example | Default |
+| 键 | 描述 | 示例值 | 默认值 |
 | :-- | :-- | :-- | :-- |
-| `DATA_SOURCE` | 查找的数据源。 <br> 选项： `whois` 、`rdap` 、 `all` | `rdap` | `all` |
+| `DATA_SOURCE` | 数据源：`whois` 、`rdap` 或 `all` | `rdap` | `all` |
 | `DEFAULT_EXTENSION` | 没有输入后缀时的默认后缀 | `com` |  |
 | `SITE_TITLE` | 网站的标题 | `WHOIS lookup` | `WHOIS domain lookup` |
-| `SITE_DESCRIPTION` | 网站的描述 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
-| `SITE_KEYWORDS` | 网站的关键词 | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
+| `SITE_SHORT_TITLE` | 网站的短标题，用于移动端的主屏幕 | `RDAP` | `WHOIS` |
+| `SITE_DESCRIPTION` | 网站的描述，用于搜索引擎优化 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
+| `SITE_KEYWORDS` | 网站的关键词，用于搜索引擎优化 | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
 | `BASE` | HTML 中 `base` 标签的 `href` 属性 | `/whois/` | `/` |
-| `CUSTOM_HEAD` | 在 HTML 中的 `head` 结束标记之前插入的自定义内容 | `<style>h1{color:red}</style>` |  |
-| `CUSTOM_SCRIPT` | 在 HTML 中的 `body` 结束标记之前插入的自定义内容 | `<script>alert('Welcome')</script>` |  |
-| `HOSTED_ON` | 托管平台的名称 | `Serv00` |  |
-| `HOSTED_ON_URL` | 托管平台的 URL | `https://serv00.com` |  |
+| `CUSTOM_HEAD` | 插入到 HTML 中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT` | 插入到 HTML 中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
+| `HOSTED_ON` | 托管平台的名称，显示在页面底部 | `Serv00` |  |
+| `HOSTED_ON_URL` | 托管平台的网址，与 `HOSTED_ON` 一起使用 | `https://serv00.com` |  |
 
 如果您使用 `网站托管` 部署，您需要修改 `config/config.php` 文件，如下所示：
 
@@ -101,9 +102,15 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
 ## API
 
-URL: `https://whois.233333.best/api/?domain=233333.best`
+地址：`https://whois.233333.best/api/`
 
-Method: `GET`
+参数：`domain` , `data-source`
+
+方法：`GET`
+
+示例 1：https://whois.233333.best/api/?domain=233333.best
+
+示例 2：https://whois.233333.best/api/?domain=233333.best&data-source=rdap
 
 ## TODO
 

@@ -7,6 +7,7 @@
   },
   "rewrites": [
     { "source": "/public/:path*", "destination": "/:path*" },
+    { "source": "/manifest", "destination": "/api/vercel.php" },
     { "source": "/api/", "destination": "/api/vercel.php?json=1" },
     { "source": "/", "destination": "/api/vercel.php" }
   ]

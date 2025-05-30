@@ -9,9 +9,9 @@ class WHOIS
 
   private $server;
 
-  private const TLD_SERVERS = __DIR__ . "/data/whois-tld-servers.json";
+  private const SERVERS_IANA = __DIR__ . "/data/whois-servers-iana.json";
 
-  private const SLD_SERVERS = __DIR__ . "/data/whois-sld-servers.json";
+  private const SERVERS_EXTRA = __DIR__ . "/data/whois-servers-extra.json";
 
   public function __construct($domain, $extension, $extensionTop)
   {
@@ -32,8 +32,8 @@ class WHOIS
     $servers = [];
 
     if (
-      file_exists(self::TLD_SERVERS) &&
-      ($json = file_get_contents(self::TLD_SERVERS)) !== false
+      file_exists(self::SERVERS_IANA) &&
+      ($json = file_get_contents(self::SERVERS_IANA)) !== false
     ) {
       $decoded = json_decode($json, true);
       if (is_array($decoded)) {
@@ -42,8 +42,8 @@ class WHOIS
     }
 
     if (
-      file_exists(self::SLD_SERVERS) &&
-      ($json = file_get_contents(self::SLD_SERVERS)) !== false
+      file_exists(self::SERVERS_EXTRA) &&
+      ($json = file_get_contents(self::SERVERS_EXTRA)) !== false
     ) {
       $decoded = json_decode($json, true);
       if (is_array($decoded)) {
