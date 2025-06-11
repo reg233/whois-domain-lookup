@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-05-16T22:00:01Z",
+  "publication": "2025-05-29T22:00:01Z",
   "services": [
     [
       [
@@ -16,22 +16,6 @@
       ],
       [
         "https://api.rdap.nic.xn--p1acf/"
-      ]
-    ],
-    [
-      [
-        "moscow"
-      ],
-      [
-        "https://flexireg.net/moscow/rdap/"
-      ]
-    ],
-    [
-      [
-        "xn--80adxhks"
-      ],
-      [
-        "https://flexireg.net/xn--80adxhks/rdap/"
       ]
     ],
     [
@@ -1003,6 +987,15 @@
     ],
     [
       [
+        "moscow",
+        "xn--80adxhks"
+      ],
+      [
+        "https://rdap.flexireg.net/"
+      ]
+    ],
+    [
+      [
         "bridgestone",
         "brother",
         "canon",
@@ -1203,6 +1196,7 @@
         "direct",
         "directory",
         "discount",
+        "discover",
         "dish",
         "doctor",
         "dog",
@@ -2232,14 +2226,6 @@
       ],
       [
         "https://rdap.nic.design/"
-      ]
-    ],
-    [
-      [
-        "discover"
-      ],
-      [
-        "https://rdap.nic.discover/"
       ]
     ],
     [
@@ -4104,6 +4090,14 @@
       ],
       [
         "https://rdap.nic.zm/"
+      ]
+    ],
+    [
+      [
+        "in"
+      ],
+      [
+        "https://rdap.nixiregistry.in/rdap/"
       ]
     ],
     [

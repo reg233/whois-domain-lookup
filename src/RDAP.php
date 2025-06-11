@@ -24,7 +24,12 @@ class RDAP
       $this->extension = $extensionTop;
     }
 
-    $this->server = $this->getServer();
+    $server = $_GET["rdap-server"] ?? "";
+    if ($server) {
+      $this->server = $server;
+    } else {
+      $this->server = $this->getServer();
+    }
   }
 
   private function getServers()

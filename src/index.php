@@ -395,7 +395,7 @@ if ($domain) {
         </div>
       <?php endif; ?>
       <div>
-        v0.5.0 <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank">GitHub</a>
+        v0.5.1 <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank">GitHub</a>
       </div>
     </footer>
     <button class="back-to-top" id="back-to-top">

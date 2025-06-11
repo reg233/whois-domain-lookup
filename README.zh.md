@@ -104,7 +104,7 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
 地址：`https://whois.233333.best/api/`
 
-参数：`domain` , `data-source`
+参数：`domain` , `data-source`, `whois-server`, `rdap-server`
 
 方法：`GET`
 

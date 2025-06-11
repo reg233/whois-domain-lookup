@@ -24,7 +24,12 @@ class WHOIS
       $this->extension = $extensionTop;
     }
 
-    $this->server = $this->getServer();
+    $server = $_GET["whois-server"] ?? "";
+    if ($server) {
+      $this->server = $server;
+    } else {
+      $this->server = $this->getServer();
+    }
   }
 
   private function getServers()

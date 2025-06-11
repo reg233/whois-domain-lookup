@@ -104,7 +104,7 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
 URL: `https://whois.233333.best/api/`
 
-Params: `domain` , `data-source`
+Params: `domain` , `data-source`, `whois-server`, `rdap-server`
 
 Method: `GET`
 
