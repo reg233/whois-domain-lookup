@@ -1,0 +1,35 @@
+name: Update public-suffix-list.dat and rdap-servers-iana.json
+
+on:
+  schedule:
+    - cron: "33 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Fetch
+      run: |
+        curl -sSL --fail 'https://publicsuffix.org/list/public_suffix_list.dat' -o src/data/public-suffix-list.dat
+        curl -sSL --fail 'https://data.iana.org/rdap/dns.json' -o src/data/rdap-servers-iana.json
+
+    - name: Commit and push
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        if [[ `git status --porcelain` ]]; then
+          git add src/data/public-suffix-list.dat src/data/rdap-servers-iana.json
+          git commit -m "Update public-suffix-list.dat and rdap-servers-iana.json"
+          git push
+        else
+          echo "No changes"
+        fi
