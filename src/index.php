@@ -1,4 +1,6 @@
 <?php
+define("VERSION", "v2025.6.16");
+
 require_once __DIR__ . "/../config/config.php";
 require_once __DIR__ . "/../vendor/autoload.php";
 
@@ -395,7 +397,7 @@ if ($domain) {
         </div>
       <?php endif; ?>
       <div>
-        v0.5.1 <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank">GitHub</a>
+        <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank"><?= VERSION ?></a>
       </div>
     </footer>
     <button class="back-to-top" id="back-to-top">
