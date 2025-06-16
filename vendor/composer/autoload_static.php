@@ -6,7 +6,17 @@ namespace Composer\Autoload;
 
 class ComposerStaticInite35c3f20853af295e6a68df58f5a1fb4
 {
+    public static $files = array (
+        'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
+        'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
+            'Symfony\\Polyfill\\Intl\\Idn\\' => 26,
+        ),
         'P' => 
         array (
             'Pdp\\' => 4,
@@ -14,6 +24,14 @@ class ComposerStaticInite35c3f20853af295e6a68df58f5a1fb4
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
+        ),
+        'Symfony\\Polyfill\\Intl\\Idn\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
+        ),
         'Pdp\\' => 
         array (
             0 => __DIR__ . '/..' . '/jeremykendall/php-domain-parser/src',
@@ -22,6 +40,7 @@ class ComposerStaticInite35c3f20853af295e6a68df58f5a1fb4
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

@@ -68,8 +68,7 @@ docker compose up -d
 
 Requirements:
 
-- PHP >= 8.0
-- `intl` extension
+- PHP >= 8.1
 
 Download the [release](https://github.com/reg233/whois-domain-lookup/releases/latest/download/whois-domain-lookup.zip), unzip it, and then upload it to the root directory of your website.
 

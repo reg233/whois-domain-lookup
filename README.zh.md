@@ -68,8 +68,7 @@ docker compose up -d
 
 要求：
 
-- PHP >= 8.0
-- `intl` 扩展
+- PHP >= 8.1
 
 下载[发布版本](https://github.com/reg233/whois-domain-lookup/releases/latest/download/whois-domain-lookup.zip)，解压后上传到网站的根目录。
 
