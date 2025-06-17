@@ -18,6 +18,9 @@ jobs:
         with:
           fetch-tags: true
 
+      - name: List tags
+        run: git tag
+
       - name: Fetch files
         run: |
           curl -fsSL "https://publicsuffix.org/list/public_suffix_list.dat" -o src/data/public-suffix-list.dat
