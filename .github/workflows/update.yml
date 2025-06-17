@@ -20,8 +20,8 @@ jobs:
 
       - name: Fetch files
         run: |
-          curl -sSL --fail "https://publicsuffix.org/list/public_suffix_list.dat" -o src/data/public-suffix-list.dat
-          curl -sSL --fail "https://data.iana.org/rdap/dns.json" -o src/data/rdap-servers-iana.json
+          curl -fsSL "https://publicsuffix.org/list/public_suffix_list.dat" -o src/data/public-suffix-list.dat
+          curl -fsSL "https://data.iana.org/rdap/dns.json" -o src/data/rdap-servers-iana.json
 
       - name: Commit and push
         run: |
