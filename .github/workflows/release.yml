@@ -6,6 +6,9 @@ on:
       - "v*"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -33,3 +36,11 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: reg233/whois-domain-lookup:latest
+
+      - name: Set up release zip file
+        run: zip -r whois-domain-lookup.zip config/ public/ src/ vendor/ .htaccess favicon.ico
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: whois-domain-lookup.zip
