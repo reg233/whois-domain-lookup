@@ -15,12 +15,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_GITHUB_TOKEN }}
 
       - name: Fetch tags
         run: git fetch --tags
-
-      - name: List tags
-        run: git tag
 
       - name: Download files
         run: |
@@ -29,10 +28,10 @@ jobs:
 
       - name: Commit and push
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
           if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+
             base_tag="v$(date -u +%Y.%-m.%-d)"
             tag="${base_tag}"
             i=1
