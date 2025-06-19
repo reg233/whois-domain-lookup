@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-06-12T18:00:02Z",
+  "publication": "2025-06-17T22:00:01Z",
   "services": [
     [
       [
@@ -1183,6 +1183,7 @@
         "contact",
         "contractors",
         "cool",
+        "coupon",
         "coupons",
         "credit",
         "creditcard",
@@ -1451,6 +1452,7 @@
         "software",
         "solar",
         "solutions",
+        "song",
         "spa",
         "srl",
         "stada",
@@ -1523,17 +1525,27 @@
         "world",
         "wtf",
         "xin",
+        "xn--1ck2e1b",
         "xn--5tzm5g",
         "xn--6frz82g",
         "xn--9krt00a",
         "xn--b4w605ferd",
+        "xn--bck1b9a5dre4c",
+        "xn--cck2b3b",
         "xn--czrs0t",
+        "xn--eckvdtc9d",
+        "xn--fct429k",
         "xn--fjq720a",
         "xn--fzys8d69uvgm",
+        "xn--gckr3f0f",
+        "xn--gk3at1e",
+        "xn--jvr189m",
+        "xn--rovu88b",
         "xn--unup4y",
         "xn--vhquv",
         "yahoo",
         "zara",
+        "zero",
         "zone"
       ],
       [
@@ -2130,14 +2142,6 @@
       ],
       [
         "https://rdap.nic.corsica/"
-      ]
-    ],
-    [
-      [
-        "coupon"
-      ],
-      [
-        "https://rdap.nic.coupon/"
       ]
     ],
     [
@@ -3478,14 +3482,6 @@
     ],
     [
       [
-        "song"
-      ],
-      [
-        "https://rdap.nic.song/"
-      ]
-    ],
-    [
-      [
         "sport"
       ],
       [
@@ -3878,14 +3874,6 @@
     ],
     [
       [
-        "xn--1ck2e1b"
-      ],
-      [
-        "https://rdap.nic.xn--1ck2e1b/"
-      ]
-    ],
-    [
-      [
         "xn--80aqecdr1a"
       ],
       [
@@ -3910,66 +3898,10 @@
     ],
     [
       [
-        "xn--bck1b9a5dre4c"
-      ],
-      [
-        "https://rdap.nic.xn--bck1b9a5dre4c/"
-      ]
-    ],
-    [
-      [
-        "xn--cck2b3b"
-      ],
-      [
-        "https://rdap.nic.xn--cck2b3b/"
-      ]
-    ],
-    [
-      [
-        "xn--eckvdtc9d"
-      ],
-      [
-        "https://rdap.nic.xn--eckvdtc9d/"
-      ]
-    ],
-    [
-      [
-        "xn--fct429k"
-      ],
-      [
-        "https://rdap.nic.xn--fct429k/"
-      ]
-    ],
-    [
-      [
         "xn--g2xx48c"
       ],
       [
         "https://rdap.nic.xn--g2xx48c/"
-      ]
-    ],
-    [
-      [
-        "xn--gckr3f0f"
-      ],
-      [
-        "https://rdap.nic.xn--gckr3f0f/"
-      ]
-    ],
-    [
-      [
-        "xn--gk3at1e"
-      ],
-      [
-        "https://rdap.nic.xn--gk3at1e/"
-      ]
-    ],
-    [
-      [
-        "xn--jvr189m"
-      ],
-      [
-        "https://rdap.nic.xn--jvr189m/"
       ]
     ],
     [
@@ -4038,14 +3970,6 @@
     ],
     [
       [
-        "xn--rovu88b"
-      ],
-      [
-        "https://rdap.nic.xn--rovu88b/"
-      ]
-    ],
-    [
-      [
         "xn--tiq49xqyj"
       ],
       [
@@ -4082,14 +4006,6 @@
       ],
       [
         "https://rdap.nic.yt/"
-      ]
-    ],
-    [
-      [
-        "zero"
-      ],
-      [
-        "https://rdap.nic.zero/"
       ]
     ],
     [
