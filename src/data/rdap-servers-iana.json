@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-06-17T22:00:01Z",
+  "publication": "2025-06-27T17:00:02Z",
   "services": [
     [
       [
@@ -5350,6 +5350,14 @@
       ],
       [
         "https://whois.nic.xn--d1acj3b/rdap/"
+      ]
+    ],
+    [
+      [
+        "sr"
+      ],
+      [
+        "https://whois.sr/rdap/"
       ]
     ],
     [
