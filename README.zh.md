@@ -83,6 +83,7 @@ docker compose up -d
 | `SITE_DESCRIPTION` | 网站的描述，用于搜索引擎优化 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | 网站的关键词，用于搜索引擎优化 | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
 | `BASE` | HTML 中 `base` 标签的 `href` 属性 | `/whois/` | `/` |
+| `FETCH_PRICES` | 是否通过 [tian.hu](https://tian.hu) 的 API 获取价格 | `true` | `false` |
 | `CUSTOM_HEAD` | 插入到 HTML 中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT` | 插入到 HTML 中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
 | `HOSTED_ON` | 托管平台的名称，显示在页面底部 | `Serv00` |  |
@@ -120,6 +121,7 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 - [WhoisQuery](https://github.com/GitHubPangHu/whoisQuery)
 - [Gandi](https://whois.gandi.net)
 - [WHO.CX](https://who.cx)
+- [tian.hu](https://tian.hu)
 
 ## 合作
 

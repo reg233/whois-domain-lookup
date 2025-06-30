@@ -15,18 +15,36 @@ spl_autoload_register(function ($class) {
 use Pdp\SyntaxError;
 use Pdp\UnableToResolveDomain;
 
-$domain = htmlspecialchars($_GET["domain"] ?? "", ENT_QUOTES, "UTF-8");
-$domain = preg_replace("/\s+/", "", $domain);
+function cleanDomain()
+{
+  $domain = htmlspecialchars($_GET["domain"] ?? "", ENT_QUOTES, "UTF-8");
+  $domain = trim(preg_replace(["/\s+/", "/\.{2,}/"], ["", "."], $domain), ".");
 
+  $parsedUrl = parse_url($domain);
+  if (!empty($parsedUrl["host"])) {
+    $domain = $parsedUrl["host"];
+  }
+
+  if (DEFAULT_EXTENSION && strpos($domain, ".") === false) {
+    $domain .= "." . DEFAULT_EXTENSION;
+  }
+
+  return $domain;
+}
+
+$domain = cleanDomain();
+
+$fetchPrices = false;
 $whoisData = null;
 $rdapData = null;
-$error = null;
 $parser = new Parser("");
+$error = null;
 
 if ($domain) {
   try {
     $lookup = new Lookup($domain);
     $domain = $lookup->domain;
+    $fetchPrices = FETCH_PRICES && $lookup->extension !== "iana";
     $whoisData = $lookup->whoisData;
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
@@ -107,12 +125,12 @@ if ($domain) {
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
   <link rel="manifest" href="manifest<?= $domain ? "?domain=$domain" : "" ?>" />
-  <title><?= SITE_TITLE . ($domain ? " - $domain" : "") ?></title>
+  <title><?= ($domain ? "$domain | " : "") . SITE_TITLE ?></title>
   <link rel="stylesheet" href="public/css/index.css" />
   <link rel="stylesheet" href="public/css/json.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap" />
   <?= CUSTOM_HEAD ?>
 </head>
 
@@ -176,6 +194,11 @@ if ($domain) {
                   &#39;<?= $domain; ?>&#39; is unknown
                 </h2>
               </div>
+              <?php if ($fetchPrices): ?>
+                <div class="message-price" id="message-price">
+                  <div class="skeleton"></div>
+                </div>
+              <?php endif; ?>
             </div>
           <?php elseif ($parser->reserved): ?>
             <div class="message message-notice">
@@ -187,6 +210,11 @@ if ($domain) {
                   &#39;<?= $domain; ?>&#39; has already been reserved
                 </h2>
               </div>
+              <?php if ($fetchPrices): ?>
+                <div class="message-price" id="message-price">
+                  <div class="skeleton"></div>
+                </div>
+              <?php endif; ?>
             </div>
           <?php elseif ($parser->registered): ?>
             <div class="message message-positive">
@@ -199,6 +227,11 @@ if ($domain) {
                   <a href="http://<?= $domain; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $domain; ?></a> <?= $parser->domain ? "" : "v_v"; ?> has already been registered
                 </h2>
               </div>
+              <?php if ($fetchPrices): ?>
+                <div class="message-price" id="message-price">
+                  <div class="skeleton"></div>
+                </div>
+              <?php endif; ?>
               <div class="message-data">
                 <?php if ($parser->registrar): ?>
                   <div class="message-label">
@@ -362,6 +395,11 @@ if ($domain) {
                   &#39;<?= $domain; ?>&#39; does not appear registered yet
                 </h2>
               </div>
+              <?php if ($fetchPrices): ?>
+                <div class="message-price" id="message-price">
+                  <div class="skeleton"></div>
+                </div>
+              <?php endif; ?>
             </div>
           <?php endif; ?>
         </div>
@@ -499,7 +537,7 @@ if ($domain) {
     <script src="public/js/linkify-html.min.js" defer></script>
     <script src="public/js/prism.js" defer></script>
     <script>
-      window.addEventListener("load", function() {
+      window.addEventListener("DOMContentLoaded", function() {
         tippy.setDefaultProps({
           arrow: false,
           offset: [0, 8],
@@ -586,6 +624,90 @@ if ($domain) {
 
         linkifyRawData(rawDataWHOIS);
         linkifyRawData(rawDataRDAP);
+      });
+    </script>
+  <?php endif; ?>
+  <?php if ($fetchPrices): ?>
+    <script>
+      window.addEventListener("DOMContentLoaded", async () => {
+        const messagePrice = document.getElementById("message-price");
+
+        if (!messagePrice) {
+          return;
+        }
+
+        const startTime = Date.now();
+
+        try {
+          const response = await fetch("https://api.tian.hu/whois.php?domain=<?= $domain; ?>&action=checkPrice");
+
+          if (!response.ok) {
+            throw new Error();
+          }
+
+          const data = await response.json();
+
+          if (data.code !== "200") {
+            throw new Error();
+          }
+
+          let innerHTML = "";
+
+          const isPremium = data.data.premium === "true";
+
+          if (isPremium) {
+            innerHTML = `
+              <button class="message-tag message-tag-purple" id="price-premium">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z" />
+                </svg>
+              </button>
+            `;
+          }
+
+          let registerUSD = data.data.register_usd;
+          let renewUSD = data.data.renew_usd;
+          let registerCNY = data.data.register;
+          let renewCNY = data.data.renew;
+
+          registerUSD = registerUSD === "unknow" ? "?" : registerUSD;
+          renewUSD = renewUSD === "unknow" ? "?" : renewUSD;
+          registerCNY = registerCNY === "unknow" ? "?" : registerCNY;
+          renewCNY = renewCNY === "unknow" ? "?" : renewCNY;
+
+          innerHTML = `
+            ${innerHTML}
+            <button class="message-tag message-tag-gray" id="price-register">
+              <span>Register: $${registerUSD}</span>
+            </button>
+            <button class="message-tag message-tag-gray" id="price-renew">
+              <span>Renew: $${renewUSD}</span>
+            </button>
+          `;
+
+          setTimeout(() => {
+            messagePrice.innerHTML = innerHTML;
+
+            if (isPremium) {
+              tippy("#price-premium", {
+                content: "Premium",
+                placement: "bottom",
+              });
+            }
+            tippy("#price-register", {
+              content: `¥${registerCNY}`,
+              placement: "bottom"
+            });
+            tippy("#price-renew", {
+              content: `¥${renewCNY}`,
+              placement: "bottom"
+            });
+          }, Math.max(0, 500 - (Date.now() - startTime)));
+        } catch {
+          setTimeout(() => {
+            messagePrice.innerHTML = `<span class="message-tag message-tag-pink">Failed to fetch prices</span>`;
+          }, Math.max(0, 500 - (Date.now() - startTime)));
+        }
       });
     </script>
   <?php endif; ?>

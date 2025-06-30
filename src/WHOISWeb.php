@@ -7,6 +7,7 @@ class WHOISWeb
 
   public const EXTENSIONS = [
     "bb",
+    "cy",
     "hm",
     "nr",
     "ph",
@@ -28,14 +29,14 @@ class WHOISWeb
     return $this->$functionName();
   }
 
-  private function getBB()
+  private function request($url, $options = [])
   {
-    $curl = curl_init("https://whois.telecoms.gov.bb/status/{$this->domain}");
+    $curl = curl_init($url);
 
-    curl_setopt_array($curl, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 10,
-    ]);
+    curl_setopt_array(
+      $curl,
+      array_replace([CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 10], $options),
+    );
 
     $response = curl_exec($curl);
     if ($response === false) {
@@ -46,6 +47,15 @@ class WHOISWeb
 
     curl_close($curl);
 
+    return $response;
+  }
+
+  private function getBB()
+  {
+    $url = "https://whois.telecoms.gov.bb/status/" . $this->domain;
+
+    $response = $this->request($url);
+
     if (preg_match("/<\/table>(.+<\/pre>)/is", $response, $matches)) {
       return ltrim(preg_replace("/<\/?pre>/", "", $matches[1]));
     }
@@ -53,22 +63,90 @@ class WHOISWeb
     return $response;
   }
 
+  private function getCY()
+  {
+    $url = "https://registry.nic.cy/api/domains/_search";
+
+    $firstDotPos = strpos($this->domain, ".");
+
+    $data = [
+      "domainEndingName" => substr($this->domain, $firstDotPos + 1),
+      "domainName" => substr($this->domain, 0, $firstDotPos),
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => json_encode($data),
+      CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
+    ];
+
+    $response = $this->request($url, $options);
+
+    $json = json_decode($response, true);
+
+    if (!$json) {
+      return $response;
+    } else if ($json[0]["status"] === "Διαθέσιμο") {
+      return "status: available";
+    }
+
+    $url = "https://registry.nic.cy/api/whoIs/" . $json[0]["id"];
+
+    $response = $this->request($url);
+
+    $json = json_decode($response, true);
+
+    $whois = "";
+    if (isset($json["domainWhoIs"])) {
+      $domain = $json["domainWhoIs"];
+      if (array_key_exists("domainFullname", $domain)) {
+        $whois .= "Domain Name: " . $domain["domainFullname"] . "\n";
+      }
+      if (array_key_exists("domainCreationDate", $domain)) {
+        $whois .= "Creation Date: " . implode("-", $domain["domainCreationDate"] ?: []) . "\n";
+      }
+      if (array_key_exists("domainExpirationDate", $domain)) {
+        $whois .= "Registry Expiry Date: " . implode("-", $domain["domainExpirationDate"] ?: []) . "\n";
+      }
+      if (array_key_exists("domainServers", $domain)) {
+        $servers = $domain["domainServers"] ?: [];
+        foreach ($servers as $server) {
+          if (array_key_exists("name", $server)) {
+            $whois .= "Name Server: " . $server["name"] . "\n";
+          }
+        }
+      }
+    }
+    if (isset($json["registrantWhoIs"]["personWhoIs"])) {
+      foreach ($json["registrantWhoIs"]["personWhoIs"] as $key => $value) {
+        $label = $key === "personPostalCode"
+          ? "Postal Code"
+          : str_replace("person", "", $key);
+        $whois .= "Registrant " . $label . ": " . ($value ?? "") . "\n";
+      }
+    }
+    if (isset($json["registrantWhoIs"]["organizationWhoIs"])) {
+      foreach ($json["registrantWhoIs"]["organizationWhoIs"] as $key => $value) {
+        $label = str_replace("company", "", $key);
+        if ($label === "Adress") {
+          $label = "Address";
+        } else if ($label === "PostalCode") {
+          $label = "Postal Code";
+        }
+        $whois .= "Registrant " . $label . ": " . ($value ?? "") . "\n";
+      }
+    }
+
+    return $whois;
+  }
+
   private function getHM()
   {
-    $curl = curl_init("https://www.registry.hm");
-    curl_setopt_array($curl, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 10,
-      CURLOPT_HEADER => true,
-      CURLOPT_NOBODY => true,
-    ]);
+    $url = "https://www.registry.hm";
 
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException($error);
-    }
+    $options = [CURLOPT_HEADER => true, CURLOPT_NOBODY => true];
+
+    $response = $this->request($url, $options);
 
     $sessionId = "";
     if (preg_match_all("/^Set-Cookie:\s*([^;]*)/im", $response, $matches)) {
@@ -80,31 +158,20 @@ class WHOISWeb
       }
     }
 
-    curl_close($curl);
-
-    $curl = curl_init("https://www.registry.hm/HR_whois2.php");
+    $url = "https://www.registry.hm/HR_whois2.php";
 
     $data = [
       "domain_name" => $this->domain,
       "submit" => "Check WHOIS record",
     ];
 
-    curl_setopt_array($curl, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 10,
+    $options = [
       CURLOPT_POST => true,
       CURLOPT_POSTFIELDS => $data,
       CURLOPT_COOKIE => $sessionId,
-    ]);
+    ];
 
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException($error);
-    }
-
-    curl_close($curl);
+    $response = $this->request($url, $options);
 
     libxml_use_internal_errors(true);
     $document = new DOMDocument();
@@ -138,21 +205,9 @@ class WHOISWeb
   {
     $domain = substr($this->domain, 0, -3);
 
-    $curl = curl_init("https://www.cenpac.net.nr/dns/whois.html?subdomain={$domain}&tld=nr&whois=Submit");
+    $url = "https://www.cenpac.net.nr/dns/whois.html?subdomain={$domain}&tld=nr&whois=Submit";
 
-    curl_setopt_array($curl, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 10,
-    ]);
-
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException($error);
-    }
-
-    curl_close($curl);
+    $response = $this->request($url);
 
     libxml_use_internal_errors(true);
     $document = new DOMDocument();
@@ -214,21 +269,9 @@ class WHOISWeb
 
   private function getPH()
   {
-    $curl = curl_init("https://whois.dot.ph/?search={$this->domain}");
+    $url = "https://whois.dot.ph/?search=" . $this->domain;
 
-    curl_setopt_array($curl, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 10,
-    ]);
-
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException($error);
-    }
-
-    curl_close($curl);
+    $response = $this->request($url);
 
     libxml_use_internal_errors(true);
     $document = new DOMDocument();
@@ -274,21 +317,9 @@ class WHOISWeb
   {
     $domain = substr($this->domain, 0, -3);
 
-    $curl = curl_init("http://www.nic.tj/cgi/whois2?domain={$domain}");
+    $url = "http://www.nic.tj/cgi/whois2?domain={$domain}";
 
-    curl_setopt_array($curl, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 10,
-    ]);
-
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException($error);
-    }
-
-    curl_close($curl);
+    $response = $this->request($url);
 
     libxml_use_internal_errors(true);
     $document = new DOMDocument();
@@ -334,49 +365,25 @@ class WHOISWeb
 
   private function getTO()
   {
-    $curl = curl_init("https://www.tonic.to/whois?{$this->domain}");
+    $url = "https://www.tonic.to/whois?" . $this->domain;
 
-    curl_setopt_array($curl, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 10,
-    ]);
-
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException($error);
-    }
-
-    curl_close($curl);
+    $response = $this->request($url);
 
     return trim(strip_tags($response));
   }
 
   private function getTT()
   {
-    $curl = curl_init("https://www.nic.tt/cgi-bin/search.pl");
+    $url = "https://www.nic.tt/cgi-bin/search.pl";
 
     $data = [
       "name" => $this->domain,
       "Search" => "Search",
     ];
 
-    curl_setopt_array($curl, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 10,
-      CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => $data,
-    ]);
+    $options = [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $data];
 
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException($error);
-    }
-
-    curl_close($curl);
+    $response = $this->request($url, $options);
 
     libxml_use_internal_errors(true);
     $document = new DOMDocument();

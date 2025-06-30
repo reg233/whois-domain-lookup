@@ -285,6 +285,35 @@ input:hover {
   min-width: 0;
 }
 
+.message-price {
+  display: flex;
+  gap: 6px 8px;
+  flex-wrap: wrap;
+  margin-left: 24px;
+}
+
+.skeleton {
+  animation: skeleton-loading;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  height: 24px;
+  mask-image: linear-gradient(75deg, #000000 30%, rgba(0, 0, 0, 0.65) 80%);
+  mask-size: 200%;
+  width: 250px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    mask-position: 200%;
+  }
+
+  100% {
+    mask-position: 0%;
+  }
+}
+
 .message-data {
   align-items: center;
   display: grid;

@@ -13,6 +13,8 @@ define("SITE_KEYWORDS", getenv("SITE_KEYWORDS") ?: "whois, rdap, domain lookup, 
 
 define("BASE", getenv("BASE") ?: "/");
 
+define("FETCH_PRICES", filter_var(getenv("FETCH_PRICES") ?: "", FILTER_VALIDATE_BOOLEAN));
+
 define("CUSTOM_HEAD", getenv("CUSTOM_HEAD") ?: "");
 
 define("CUSTOM_SCRIPT", getenv("CUSTOM_SCRIPT") ?: "");

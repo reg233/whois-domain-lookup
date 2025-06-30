@@ -10,7 +10,7 @@ $id = "/";
 $domain = $_GET["domain"] ?? "";
 if ($domain) {
   $shortName = $domain;
-  $name = SITE_TITLE . " - " . $domain;
+  $name = $domain . " | " . SITE_TITLE;
   $id = "/?domain=$domain";
 }
 

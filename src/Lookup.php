@@ -7,7 +7,7 @@ class Lookup
 {
   public $domain;
 
-  private $extension;
+  public $extension;
 
   private $extensionTop;
 
@@ -53,15 +53,6 @@ class Lookup
 
   private function parseDomain($domain)
   {
-    $parsedUrl = parse_url($domain);
-    if (!empty($parsedUrl["host"])) {
-      $domain = $parsedUrl["host"];
-    }
-
-    if (!empty(DEFAULT_EXTENSION) && strpos($domain, ".") === false) {
-      $domain .= "." . DEFAULT_EXTENSION;
-    }
-
     $publicSuffixList = Rules::fromPath(__DIR__ . "/data/public-suffix-list.dat");
     $domain = Domain::fromIDNA2008($domain);
 

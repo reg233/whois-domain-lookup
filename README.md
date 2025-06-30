@@ -83,6 +83,7 @@ Download the [release](https://github.com/reg233/whois-domain-lookup/releases/la
 | `SITE_DESCRIPTION` | Description of the website, used for SEO | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | Keywords of the website, used for SEO | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
 | `BASE` | The `href` attribute of the `base` tag in the HTML. | `/whois/` | `/` |
+| `FETCH_PRICES` | Whether to fetch prices via the [tian.hu](https://tian.hu) API. | `true` | `false` |
 | `CUSTOM_HEAD` | Custom content to insert before `</head>` in the HTML (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT` | Custom content to insert before `</body>` in the HTML (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
 | `HOSTED_ON` | Name of the hosting platform, displayed at the bottom of the page. | `Serv00` |  |
@@ -120,6 +121,7 @@ Example 2: https://whois.233333.best/api/?domain=233333.best&data-source=rdap
 - [WhoisQuery](https://github.com/GitHubPangHu/whoisQuery)
 - [Gandi](https://whois.gandi.net)
 - [WHO.CX](https://who.cx)
+- [tian.hu](https://tian.hu)
 
 ## Collaboration
 
