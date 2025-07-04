@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-06-27T17:00:02Z",
+  "publication": "2025-07-04T00:22:15Z",
   "services": [
     [
       [
@@ -1130,7 +1130,6 @@
         "bingo",
         "bio",
         "black",
-        "blockbuster",
         "bloomberg",
         "blue",
         "bm",
@@ -1191,7 +1190,6 @@
         "cruise",
         "cruises",
         "dance",
-        "data",
         "dating",
         "deals",
         "degree",
@@ -1206,14 +1204,10 @@
         "directory",
         "discount",
         "discover",
-        "dish",
         "doctor",
         "dog",
         "domains",
-        "dot",
-        "dtv",
         "dunlop",
-        "dvr",
         "edeka",
         "education",
         "email",
@@ -1323,7 +1317,6 @@
         "land",
         "landrover",
         "lasalle",
-        "latino",
         "lawyer",
         "lds",
         "lease",
@@ -1355,7 +1348,6 @@
         "memorial",
         "mit",
         "mobi",
-        "mobile",
         "moda",
         "money",
         "mormon",
@@ -1373,18 +1365,15 @@
         "nowtv",
         "nra",
         "obi",
-        "ollo",
         "onl",
         "oracle",
         "orange",
         "organic",
         "origins",
-        "ott",
         "partners",
         "parts",
         "pccw",
         "pet",
-        "phone",
         "photography",
         "photos",
         "pictet",
@@ -1446,7 +1435,6 @@
         "sina",
         "singles",
         "ski",
-        "sling",
         "soccer",
         "social",
         "software",
@@ -1590,6 +1578,25 @@
       ],
       [
         "https://rdap.mls.fury.ca/rdap/"
+      ]
+    ],
+    [
+      [
+        "blockbuster",
+        "data",
+        "dish",
+        "dot",
+        "dtv",
+        "dvr",
+        "latino",
+        "mobile",
+        "ollo",
+        "ott",
+        "phone",
+        "sling"
+      ],
+      [
+        "https://rdap.mobile-registry.com/rdap/"
       ]
     ],
     [
