@@ -1,6 +1,12 @@
 <?php
 define("VERSION", "v2025.7.10");
 
+if ($_SERVER["REQUEST_METHOD"] !== "GET") {
+  http_response_code(405);
+  header("Allow: GET");
+  die;
+}
+
 require_once __DIR__ . "/../config/config.php";
 require_once __DIR__ . "/../vendor/autoload.php";
 
@@ -57,6 +63,7 @@ if ($domain) {
   }
 
   if ($_GET["json"] ?? "") {
+    header("Access-Control-Allow-Origin: *");
     header("Content-Type: application/json");
 
     if ($error) {
