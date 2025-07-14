@@ -157,6 +157,7 @@ class Parser
     "domain unknown", // pf
     "not registered", // pk
     "no information", // pl
+    "no records found", // tj
     "is available for purchase", // tm
     "domain name is available", // tt
     "no found", // tw
@@ -259,11 +260,13 @@ class Parser
     "registered", // am
     "created", // br
     "registration time", // cn
+    "submission date", // gw
     "domain name commencement date", // hk
     "domain creation date", // hm
     "record created", // hu
     "created on", // id
     "assigned", // il
+    "first registered date", // np
     "registered date", // kr
     "registered on", // ro
     "registration date", // rs
@@ -342,6 +345,7 @@ class Parser
     "last update", // it
     "last updated", // jp
     "record last updated on", // kg
+    "last updated date", // np
     "lastmod", // co.pl
     "modification date", // rs
     "updated", // sk

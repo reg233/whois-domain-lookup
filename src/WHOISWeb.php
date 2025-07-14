@@ -7,10 +7,18 @@ class WHOISWeb
 
   public const EXTENSIONS = [
     "bb",
+    "bt",
     "cy",
+    "gm",
+    "gw",
     "hm",
+    "mt",
+    "ni",
+    "np",
     "nr",
+    "pa",
     "ph",
+    "sv",
     "tj",
     "to",
     "tt",
@@ -24,19 +32,22 @@ class WHOISWeb
 
   public function getData()
   {
-    $functionName = "get" . strtoupper(str_replace(".", "", $this->extension));
+    $functionName = "get" . strtoupper($this->extension);
 
     return $this->$functionName();
   }
 
-  private function request($url, $options = [])
+  private function request($url, $options = [], $returnArray = false)
   {
     $curl = curl_init($url);
 
-    curl_setopt_array(
-      $curl,
-      array_replace([CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 10], $options),
-    );
+    $defaultOptions = [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_TIMEOUT => 10,
+    ];
+
+    curl_setopt_array($curl, array_replace($defaultOptions, $options));
 
     $response = curl_exec($curl);
     if ($response === false) {
@@ -45,7 +56,18 @@ class WHOISWeb
       throw new RuntimeException($error);
     }
 
+    $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+
     curl_close($curl);
+
+    if ($returnArray) {
+      return [
+        "response" => $response,
+        "code" => $code,
+        "headerSize" => $headerSize,
+      ];
+    }
 
     return $response;
   }
@@ -56,22 +78,90 @@ class WHOISWeb
 
     $response = $this->request($url);
 
-    if (preg_match("/<\/table>(.+<\/pre>)/is", $response, $matches)) {
-      return ltrim(preg_replace("/<\/?pre>/", "", $matches[1]));
+    $response = str_replace(["<<<", ">>>"], ["&lt;&lt;&lt;", "&gt;&gt;&gt;"], $response);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $whois = "";
+
+    $table = $document->getElementsByTagName("table")->item(0);
+    if ($table) {
+      $next = $table->nextSibling;
+      while ($next) {
+        if ($next->nodeName === "p") {
+          break;
+        }
+
+        $text = trim($next->textContent);
+        if ($text) {
+          $whois .= "$text\n\n";
+        }
+
+        $next = $next->nextSibling;
+      }
     }
 
-    return $response;
+    return trim($whois);
+  }
+
+  private function getBT()
+  {
+    $domainParts = explode(".", $this->domain, 2);
+
+    $params = [
+      "query" => $domainParts[0],
+      "ext" => "." . $domainParts[1],
+    ];
+
+    $url = "https://www.nic.bt/search?" . http_build_query($params);
+
+    $response = $this->request($url);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $whois = "";
+
+    $table = $document->getElementsByTagName("table")->item(0);
+    if ($table) {
+      $whois .= trim($table->textContent);
+    } else {
+      $xPath = new DOMXPath($document);
+      $cardBodies = $xPath->query('//div[@class="card-body"]/div[@class="card-body"]');
+
+      foreach ($cardBodies as $cardBody) {
+        foreach ($cardBody->childNodes as $child) {
+          $text = trim($child->textContent);
+
+          switch ($child->nodeName) {
+            case "h5":
+              $whois .= str_replace(" :", "", $text) . "\n";
+              break;
+            case "p":
+              $whois .= str_replace(" :", ":", $text) . "\n";
+              break;
+          }
+        }
+
+        $whois .= "\n";
+      }
+    }
+
+    return $whois;
   }
 
   private function getCY()
   {
     $url = "https://registry.nic.cy/api/domains/_search";
 
-    $firstDotPos = strpos($this->domain, ".");
+    $domainParts = explode(".", $this->domain, 2);
 
     $data = [
-      "domainEndingName" => substr($this->domain, $firstDotPos + 1),
-      "domainName" => substr($this->domain, 0, $firstDotPos),
+      "domainName" => $domainParts[0],
+      "domainEndingName" => $domainParts[1],
     ];
 
     $options = [
@@ -85,9 +175,15 @@ class WHOISWeb
     $json = json_decode($response, true);
 
     if (!$json) {
-      return $response;
-    } else if ($json[0]["status"] === "Διαθέσιμο") {
-      return "status: available";
+      return "";
+    } else if (!isset($json[0]["id"])) {
+      if (isset($json[0]["description"])) {
+        return $json[0]["description"];
+      } else if (isset($json[0]["status"]) && $json[0]["status"] === "Διαθέσιμο") {
+        return "status: available";
+      }
+
+      return "";
     }
 
     $url = "https://registry.nic.cy/api/whoIs/" . $json[0]["id"];
@@ -122,7 +218,7 @@ class WHOISWeb
         $label = $key === "personPostalCode"
           ? "Postal Code"
           : str_replace("person", "", $key);
-        $whois .= "Registrant " . $label . ": " . ($value ?? "") . "\n";
+        $whois .= "Registrant $label: $value\n";
       }
     }
     if (isset($json["registrantWhoIs"]["organizationWhoIs"])) {
@@ -133,7 +229,104 @@ class WHOISWeb
         } else if ($label === "PostalCode") {
           $label = "Postal Code";
         }
-        $whois .= "Registrant " . $label . ": " . ($value ?? "") . "\n";
+        $whois .= "Registrant $label: $value\n";
+      }
+    }
+
+    return $whois;
+  }
+
+  private function getGM()
+  {
+    $url = "https://www.nic.gm/nic-scripts/checkdom.aspx?dname=" . $this->domain;
+
+    $response = $this->request($url);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $whois = "";
+
+    $tds = $document->getElementsByTagName("td");
+    foreach ($tds as $td) {
+      $text = "";
+
+      foreach ($td->childNodes as $child) {
+        switch ($child->nodeName) {
+          case "b":
+          case "h":
+          case "#text":
+            $textContent = trim($child->textContent);
+            if ($textContent) {
+              $text .= $text ? " $textContent" : $textContent;
+            }
+            break;
+          case "p":
+            $text = "";
+            foreach ($child->childNodes as $c) {
+              if ($c->nodeName !== "a") {
+                $text .= $c->textContent;
+              }
+            }
+            $text = trim($text);
+            if (str_starts_with($text, "Domain name:")) {
+              $text = "$text.gm";
+            }
+            $whois .= str_replace("\n", " ", $text) . "\n";
+            $text = "";
+            break;
+        }
+      }
+
+      if ($text) {
+        $whois .= "$text\n";
+      }
+    }
+
+    return $whois;
+  }
+
+  private function getGW()
+  {
+    $url = "https://registar.nic.gw/en/whois/" . $this->domain . "/";
+
+    ["response" => $response, "code" => $code] = $this->request($url, [], true);
+
+    if ($code === 404) {
+      return "Domain not found";
+    }
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $whois = "";
+
+    $domainName = $document->getElementsByTagName("h2")->item(0);
+    if ($domainName) {
+      $whois .= "Domain Name: " . $domainName->textContent . "\n";
+    }
+    $fieldsets = $document->getElementsByTagName("fieldset");
+    for ($i = 0; $i < $fieldsets->length; $i++) {
+      $fieldset = $fieldsets->item($i);
+      for ($j = 1; $j < $fieldset->childNodes->length; $j++) {
+        $prevNodeName = $fieldset->childNodes->item($j - 1)->nodeName;
+        $nodeName = $fieldset->childNodes->item($j)->nodeName;
+        $prevNodeValue = trim($fieldset->childNodes->item($j - 1)->nodeValue);
+        $nodeValue = trim($fieldset->childNodes->item($j)->nodeValue);
+
+        if ($nodeName === "span") {
+          $whois .= "\n$nodeValue\n\n";
+        } else if (
+          $nodeName === "#text" &&
+          $prevNodeName === "label" &&
+          $prevNodeValue !== "E-mail:"
+        ) {
+          $whois .= "$prevNodeValue $nodeValue\n";
+        } else if ($nodeName === "a") {
+          $whois .= "E-mail: $nodeValue\n";
+        }
       }
     }
 
@@ -149,7 +342,7 @@ class WHOISWeb
     $response = $this->request($url, $options);
 
     $sessionId = "";
-    if (preg_match_all("/^Set-Cookie:\s*([^;]*)/im", $response, $matches)) {
+    if (preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $response, $matches)) {
       foreach ($matches[1] as $cookie) {
         if (str_starts_with($cookie, "PHPSESSID=")) {
           $sessionId = $cookie;
@@ -179,21 +372,21 @@ class WHOISWeb
 
     $whois = "";
 
-    $preTags = $document->getElementsByTagName("pre");
-    if ($preTags->length) {
-      foreach ($preTags->item(0)->childNodes as $child) {
+    $pre = $document->getElementsByTagName("pre")->item(0);
+    if ($pre) {
+      foreach ($pre->childNodes as $child) {
         if ($child->nodeName === "a") {
-          $class = $child->attributes->getNamedItem("class")->nodeValue;
-          $cfEmail = $child->attributes->getNamedItem("data-cfemail")->nodeValue;
+          $class = $child->attributes->getNamedItem("class")->value;
+          $cfEmail = $child->attributes->getNamedItem("data-cfemail")->value;
           if ($class === "__cf_email__" && $cfEmail) {
             $whois .= $this->decodeCFEmail($cfEmail);
           } else {
-            $whois .= $document->saveHTML($child);
+            $whois .= $child->textContent;
           }
         } else if ($child->nodeName === "br") {
           $whois .= "\n";
         } else {
-          $whois .= $document->saveHTML($child);
+          $whois .= $child->textContent;
         }
       }
     }
@@ -201,11 +394,9 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getNR()
+  private function getMT()
   {
-    $domain = substr($this->domain, 0, -3);
-
-    $url = "https://www.cenpac.net.nr/dns/whois.html?subdomain={$domain}&tld=nr&whois=Submit";
+    $url = "https://www.nic.org.mt/dotmt/whois/?" . $this->domain;
 
     $response = $this->request($url);
 
@@ -215,56 +406,290 @@ class WHOISWeb
 
     $whois = "";
 
+    $pre = $document->getElementsByTagName("pre")->item(0);
+    if ($pre) {
+      $whois = $pre->textContent;
+    }
+
+    return $whois;
+  }
+
+  private function getNI()
+  {
+    $url = "https://apiecommercenic.uni.edu.ni/api/v1/dominios/whois?dominio=" . $this->domain;
+
+    $options = [CURLOPT_SSL_VERIFYPEER => false];
+
+    ["response" => $response, "code" => $code] = $this->request($url, $options, true);
+
+    if ($code === 404) {
+      return "Domain not found";
+    }
+
+    $json = json_decode($response, true);
+
+    $whois = "Domain Name: " . $this->domain . "\n";
+    if (isset($json["datos"])) {
+      $data = $json["datos"];
+      if (array_key_exists("fechaExpiracion", $data)) {
+        $whois .= "Registry Expiry Date: " . $data["fechaExpiracion"] . "\n";
+      }
+      if (array_key_exists("cliente", $data)) {
+        $whois .= "Registrant Name: " . $data["cliente"] . "\n";
+      }
+      if (array_key_exists("direccion", $data)) {
+        $whois .= "Registrant Address: " . $data["direccion"] . "\n";
+      }
+    }
+    if (isset($json["contactos"])) {
+      $contacts = $json["contactos"];
+      if (array_key_exists("tipoContacto", $contacts)) {
+        $whois .= "Contact Type: " . $contacts["tipoContacto"] . "\n";
+      }
+      if (array_key_exists("nombre", $contacts)) {
+        $whois .= "Contact Name: " . $contacts["nombre"] . "\n";
+      }
+      if (array_key_exists("correoElectronico", $contacts)) {
+        $emails = implode(",", array_column($contacts["correoElectronico"] ?? [], "value"));
+        $whois .= "Contact Email: $emails\n";
+      }
+      if (array_key_exists("telefono", $contacts)) {
+        $whois .= "Contact Phone: " . $contacts["telefono"] . "\n";
+      }
+      if (array_key_exists("celular", $contacts)) {
+        $whois .= "Contact Cellphone: " . $contacts["celular"] . "\n";
+      }
+    }
+
+    return $whois;
+  }
+
+  private function getNP()
+  {
+    $url = "https://register.com.np/whois-lookup";
+
+    $options = [CURLOPT_HEADER => true];
+
+    ["response" => $response, "headerSize" => $headerSize] = $this->request($url, $options, true);
+
+    $headers = substr($response, 0, $headerSize);
+    $body = substr($response, $headerSize);
+
+    preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
+    $cookies = implode("; ", $matches[1]);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($body);
+
+    $token = "";
+
+    $inputs = $document->getElementsByTagName("input");
+    foreach ($inputs as $input) {
+      if ($input->attributes->getNamedItem("name")->value === "_token") {
+        $token = $input->attributes->getNamedItem("value")->value;
+        break;
+      }
+    }
+
+    if (!$token) {
+      return "";
+    }
+
+    $url = "https://register.com.np/checkdomain_whois";
+
+    $domainParts = explode(".", $this->domain, 2);
+
+    $data = [
+      "_token" => $token,
+      "domainName" => $domainParts[0],
+      "domainExtension" => "." . $domainParts[1],
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+      CURLOPT_COOKIE => $cookies,
+    ];
+
+    $response = $this->request($url, $options);
+
+    $document->loadHTML($response);
+
+    $whois = "";
+
     $xPath = new DOMXPath($document);
-    $hrs = $xPath->query("//body//hr");
-    $lastHr = $hrs->item($hrs->length - 1);
+    $error = $xPath->query('//p[@class="error"] | //h1[@class="break-long-words exception-message"]');
 
-    $next = $lastHr->nextSibling;
+    if ($error->length) {
+      return trim($error->item(0)->textContent);
+    }
+
+    $trs = $document->getElementsByTagName("tr");
+    foreach ($trs as $tr) {
+      $tds = $tr->getElementsByTagName("td");
+      if ($tds->length === 2) {
+        $key = trim($tds->item(0)->textContent);
+        $value = trim($tds->item(1)->textContent);
+
+        $whois .= "$key $value\n";
+      } else {
+        $ths = $tr->getElementsByTagName("th");
+        if ($ths->item(1) && trim($ths->item(1)->textContent) === "Status" && $tds->item(1)) {
+          $whois = "Status: " . trim($tds->item(1)->textContent);
+          break;
+        }
+      }
+    }
+
+    return $whois;
+  }
+
+  private function getNR()
+  {
+    $domainParts = explode(".", $this->domain, 2);
+
+    $params = [
+      "subdomain" => $domainParts[0],
+      "tld" => $domainParts[1],
+      "whois" => "Submit",
+    ];
+
+    $url = "https://www.cenpac.net.nr/dns/whois.html?" . http_build_query($params);
+
+    $response = $this->request($url);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $whois = "";
+
+    $form = $document->getElementsByTagName("form")->item(0);
+    if (!$form) {
+      return "";
+    }
+
+    $next = $form->nextSibling;
     while ($next) {
-      if ($next->nodeName === "table") {
-        foreach ($next->childNodes as $tr) {
-          if ($tr->childNodes->length === 1) {
-            $td = $tr->childNodes->item(0);
-            if ($td->childNodes->item(0)->nodeName === "table") {
-              $whois .= "\n";
-              foreach ($td->childNodes->item(0)->childNodes as $tr) {
-                if ($tr->childNodes->length === 2) {
-                  $key = trim($tr->childNodes->item(0)->textContent);
-                  $value = $tr->childNodes->item(1)->textContent;
+      switch ($next->nodeName) {
+        case "a":
+        case "#text":
+          $whois .= $next->textContent;
+          break;
+        case "table":
+          foreach ($next->childNodes as $tr) {
+            if ($tr->childNodes->length === 1) {
+              $td = $tr->childNodes->item(0);
+              if ($td->childNodes->item(0)->nodeName === "table") {
+                $whois .= "\n";
+                foreach ($td->childNodes->item(0)->childNodes as $tr) {
+                  if ($tr->childNodes->length === 2) {
+                    $key = trim($tr->childNodes->item(0)->textContent);
+                    $value = $tr->childNodes->item(1)->textContent;
 
-                  $whois .= "$key $value\n";
-                } else if ($tr->childNodes->length > 0) {
-                  $text = $tr->childNodes->item(0)->childNodes->item(0)->textContent;
-                  if ($text === html_entity_decode("&nbsp;")) {
-                    $whois .= "\n";
-                  } else {
-                    $whois .= "$text\n";
+                    $whois .= "$key $value\n";
+                  } else if ($tr->childNodes->length > 0) {
+                    $text = $tr->childNodes->item(0)->textContent;
+                    if ($text === html_entity_decode("&nbsp;")) {
+                      $whois .= "\n";
+                    } else {
+                      $whois .= "$text\n";
+                    }
                   }
                 }
-              }
-            } else {
-              $text = $td->childNodes->item(0)->textContent;
-              if ($text === html_entity_decode("&nbsp;")) {
-                $whois .= "\n";
               } else {
-                $whois .= "$text\n";
+                $text = $td->textContent;
+                if ($text === html_entity_decode("&nbsp;")) {
+                  $whois .= "\n";
+                } else {
+                  $whois .= "$text\n";
+                }
               }
-            }
-          } else if ($tr->childNodes->length === 2) {
-            $key = trim($tr->childNodes->item(0)->textContent);
-            $value = $tr->childNodes->item(1)->textContent;
+            } else if ($tr->childNodes->length === 2) {
+              $key = trim($tr->childNodes->item(0)->textContent);
+              $value = $tr->childNodes->item(1)->textContent;
 
-            $whois .= "$key $value\n";
+              $whois .= "$key $value\n";
+            }
           }
-        }
-      } else {
-        $whois .= $next->textContent;
+          break;
       }
 
       $next = $next->nextSibling;
     }
 
-    return str_replace(" (modify)", "", ltrim($whois));
+    return str_replace(" (modify)", "", $whois);
+  }
+
+  private function getPA()
+  {
+    $url = "https://nic.pa:8080/whois/" . $this->domain;
+
+    $options = [CURLOPT_SSL_VERIFYPEER => false];
+
+    ["response" => $response, "code" => $code] = $this->request($url, $options, true);
+
+    if ($code === 404) {
+      return "Domain not found";
+    }
+
+    $json = json_decode($response, true);
+
+    $whois = "";
+    if (isset($json["payload"])) {
+      $payload = $json["payload"];
+      if (array_key_exists("Dominio", $payload)) {
+        $whois .= "Domain Name: " . $payload["Dominio"] . "\n";
+      }
+      if (array_key_exists("fecha_actualizacion", $payload)) {
+        $whois .= "Updated Date: " . $payload["fecha_actualizacion"] . "\n";
+      }
+      if (array_key_exists("fecha_creacion", $payload)) {
+        $whois .= "Creation Date: " . $payload["fecha_creacion"] . "\n";
+      }
+      if (array_key_exists("fecha_expiracion", $payload)) {
+        $whois .= "Registry Expiry Date: " . $payload["fecha_expiracion"] . "\n";
+      }
+      if (array_key_exists("Estatus", $payload)) {
+        $whois .= "Domain Status: " . $payload["Estatus"] . "\n";
+      }
+      if (isset($payload["NS"])) {
+        foreach ($payload["NS"] as $nameServer) {
+          $whois .= "Name Server: " . $nameServer . "\n";
+        }
+      }
+      if (isset($payload["titular"]["contacto"])) {
+        $contact = $payload["titular"]["contacto"];
+        if (array_key_exists("nombre", $contact)) {
+          $whois .= "Registrant Name: " . $contact["nombre"] . "\n";
+        }
+        if (array_key_exists("direccion1", $contact) && array_key_exists("direccion2", $contact)) {
+          $street = implode(", ", array_filter([$contact["direccion1"], $contact["direccion2"]]));
+          $whois .= "Registrant Street: " . $street . "\n";
+        }
+        if (array_key_exists("ciudad", $contact)) {
+          $whois .= "Registrant City: " . $contact["ciudad"] . "\n";
+        }
+        if (array_key_exists("estado", $contact)) {
+          $whois .= "Registrant State/Province: " . $contact["estado"] . "\n";
+        }
+        if (array_key_exists("ubicacion", $contact)) {
+          $whois .= "Registrant Country: " . $contact["ubicacion"] . "\n";
+        }
+        if (array_key_exists("telefono", $contact) && array_key_exists("telefono_oficina", $contact)) {
+          $phone = implode(", ", array_filter([$contact["telefono"], $contact["telefono_oficina"]]));
+          $whois .= "Registrant Phone: " . $phone . "\n";
+        }
+        if (array_key_exists("email", $contact)) {
+          $whois .= "Registrant Email: " . $contact["email"] . "\n";
+        }
+      }
+    } else if (isset($json["mensaje"])) {
+      $whois .= $json["mensaje"];
+    }
+
+    return $whois;
   }
 
   private function getPH()
@@ -279,21 +704,25 @@ class WHOISWeb
 
     $message = $document->getElementById("alert-message");
     if ($message) {
-      return trim($message->nodeValue);
+      return trim($message->textContent);
     }
 
-    $preTags = $document->getElementsByTagName("pre");
-    if ($preTags->length) {
-      $whois = "";
-      foreach ($preTags->item(0)->childNodes as $child) {
-        if ($child->nodeName === "b") {
-          continue;
-        }
+    $whois = "";
 
-        if ($child->nodeName === "br") {
-          $whois .= "\n";
-        } else {
-          $whois .= $document->saveHTML($child);
+    $pre = $document->getElementsByTagName("pre")->item(0);
+    if ($pre) {
+      foreach ($pre->childNodes as $child) {
+        switch ($child->nodeName) {
+          case "b":
+          case "#text":
+            $whois .= $child->textContent;
+            break;
+          case "br":
+            $whois .= "\n";
+            break;
+          case "span":
+            $whois .= $document->saveHTML($child);
+            break;
         }
       }
 
@@ -306,18 +735,80 @@ class WHOISWeb
       if (preg_match("/updateDate = moment\('(.+?)'\)/", $response, $matches)) {
         $whois = str_replace('<span id="update-date"></span>', $matches[1], $whois);
       }
-
-      return ltrim($whois);
     }
 
-    return $response;
+    return $whois;
+  }
+
+  private function getSV()
+  {
+    $url = "https://svnet.sv/accion/procesos.php";
+
+    $data = [
+      "key" => "Buscar",
+      "nombre" => explode(".", $this->domain, 2)[0],
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+    ];
+
+    $response = $this->request($url, $options);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $xPath = new DOMXPath($document);
+    $button = $xPath->query("//strong[text()='$this->domain']/following-sibling::button[1]");
+
+    $id = "";
+
+    if ($button->length) {
+      $onClick = $button->item(0)->attributes->getNamedItem("onclick");
+      if ($onClick && preg_match("/\((\d+)\)/", $onClick->value, $matches)) {
+        $id = $matches[1];
+      }
+    }
+
+    if (!$id) {
+      return "DOMINIO NO REGISTRADO";
+    }
+
+    $data = [
+      "key" => "Whois",
+      "ID" => $id,
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+    ];
+
+    $response = $this->request($url, $options);
+
+    $document->loadHTML('<?xml encoding="UTF-8"?>' . str_replace("&nbsp;", "", $response));
+
+    $whois = "";
+
+    $trs = $document->getElementsByTagName("tr");
+    foreach ($trs as $tr) {
+      $tds = $tr->getElementsByTagName("td");
+      if ($tds->length === 2) {
+        $key = trim($tds->item(0)->textContent);
+        $value = trim($tds->item(1)->textContent);
+
+        $whois .= "$key $value\n";
+      }
+    }
+
+    return $whois;
   }
 
   private function getTJ()
   {
-    $domain = substr($this->domain, 0, -3);
-
-    $url = "http://www.nic.tj/cgi/whois2?domain={$domain}";
+    $url = "http://www.nic.tj/cgi/whois2?domain=" . substr($this->domain, 0, -3);
 
     $response = $this->request($url);
 
@@ -325,38 +816,32 @@ class WHOISWeb
     $document = new DOMDocument();
     $document->loadHTML($response);
 
-    $xPath = new DOMXPath($document);
-    $table = $xPath->query('//table')->item(0);
-
     $whois = "";
-    if ($table) {
-      $rows = $xPath->query(".//tr", $table);
 
-      foreach ($rows as $row) {
-        $cols = $xPath->query("td", $row);
-        if ($cols->length === 1) {
-          $whois .= "\n" . strtoupper($cols->item(0)->nodeValue) . "\n";
-        } else if ($cols->length === 2) {
-          $class = $cols->item(0)->attributes->getNamedItem("class");
-          $key = $cols->item(0)->nodeValue;
-          if ($class->nodeValue === "subfield") {
+    $trs = $document->getElementsByTagName("tr");
+    if ($trs->length) {
+      foreach ($trs as $tr) {
+        $tds = $tr->getElementsByTagName("td");
+        if ($tds->length === 1) {
+          $whois .= "\n" . strtoupper(trim($tds->item(0)->textContent)) . "\n";
+        } else if ($tds->length === 2) {
+          $class = $tds->item(0)->attributes->getNamedItem("class");
+          $key = trim($tds->item(0)->textContent);
+          if ($class && $class->value === "subfield") {
             $key = "  $key";
           } else {
             $key = ucwords($key, " -");
           }
 
-          $value = "";
-          foreach ($cols->item(1)->childNodes as $child) {
-            $value .= $document->saveHTML($child);
-          }
+          $value = trim($tds->item(1)->textContent);
 
-          $whois .= ($value === "\u{00A0}" ? "$key" : "$key: $value") . "\n";
+          $whois .= ($value === html_entity_decode("&nbsp;") ? "$key" : "$key: $value") . "\n";
         }
       }
     } else {
-      $body = $xPath->query("//body")->item(0);
-      if ($body) {
-        $whois = trim($body->nodeValue);
+      $p = $document->getElementsByTagName("p")->item(0);
+      if ($p) {
+        $whois = trim($p->textContent);
       }
     }
 
@@ -387,46 +872,36 @@ class WHOISWeb
 
     libxml_use_internal_errors(true);
     $document = new DOMDocument();
-    $document->loadHTML($response);
-
-    $xPath = new DOMXPath($document);
-    $elements = $xPath->query('//*[@class="main"]');
+    $document->loadHTML(str_replace("&nbsp", " ", $response));
 
     $whois = "";
-    if ($elements->length && $elements->item(0)->childNodes->length > 1) {
-      $target = $elements->item(0)->childNodes->item(1);
-      if ($target->nodeName === "table") {
-        $rows = $xPath->query(".//tr", $target);
 
-        foreach ($rows as $row) {
-          $cols = $xPath->query("td", $row);
-          if ($cols->length === 2) {
-            $key = $cols->item(0)->nodeValue;
+    $xPath = new DOMXPath($document);
+    $main = $xPath->query('//div[@class="main"]')->item(0);
 
-            if ($key === "Expiration Date") {
-              $value = str_replace("&nbsp", " ", $cols->item(1)->nodeValue);
-            } else {
-              $value = "";
-              foreach ($cols->item(1)->childNodes as $child) {
-                $value .= $document->saveHTML($child);
+    if ($main) {
+      foreach ($main->childNodes as $child) {
+        switch ($child->nodeName) {
+          case "table":
+            $trs = $xPath->query("./tr", $child);
+            foreach ($trs as $tr) {
+              $tds = $tr->childNodes;
+              if ($tds->length === 3) {
+                $key = trim($tds->item(0)->textContent);
+                $value = trim($tds->item(2)->textContent);
+
+                $whois .= "$key: $value\n";
               }
             }
-
-            $whois .= "$key: $value\n";
-          }
-        }
-      } else {
-        foreach ($elements->item(0)->childNodes as $key => $child) {
-          if ($key === 0) {
-            continue;
-          }
-
-          $whois .= $document->saveHTML($child);
+            break;
+          case "#text":
+            $whois .= trim($child->textContent) . "\n";
+            break;
         }
       }
     }
 
-    return $whois;
+    return str_replace(" (owner can view under Retrieve->Domain Details)", "", $whois);
   }
 
   private function decodeCFEmail($cfEmail)
