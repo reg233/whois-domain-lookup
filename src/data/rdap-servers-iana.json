@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-07-04T00:22:15Z",
+  "publication": "2025-07-15T19:00:02Z",
   "services": [
     [
       [
@@ -24,6 +24,22 @@
       ],
       [
         "https://api.rdap.nic.xn--p1acf/"
+      ]
+    ],
+    [
+      [
+        "xn--kpry57d"
+      ],
+      [
+        "https://ccrdap.twnic.tw/taiwan/"
+      ]
+    ],
+    [
+      [
+        "tw"
+      ],
+      [
+        "https://ccrdap.twnic.tw/tw/"
       ]
     ],
     [
@@ -2117,6 +2133,14 @@
       ],
       [
         "https://rdap.nic.club/"
+      ]
+    ],
+    [
+      [
+        "cm"
+      ],
+      [
+        "https://rdap.nic.cm/"
       ]
     ],
     [
