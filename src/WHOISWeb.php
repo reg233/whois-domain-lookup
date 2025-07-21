@@ -9,6 +9,7 @@ class WHOISWeb
     "bb",
     "bt",
     "cy",
+    "dz",
     "gm",
     "gw",
     "hm",
@@ -231,6 +232,76 @@ class WHOISWeb
         }
         $whois .= "Registrant $label: $value\n";
       }
+    }
+
+    return $whois;
+  }
+
+  private function getDZ()
+  {
+    $url = "https://api.nic.dz/v1/domains/" . $this->domain;
+
+    $options = [CURLOPT_SSL_VERIFYPEER => false];
+
+    $response = $this->request($url, $options);
+
+    $json = json_decode($response, true);
+
+    if (isset($json["title"])) {
+      return $json["title"];
+    }
+
+    $whois = "";
+    if (array_key_exists("domainName", $json)) {
+      $whois .= "Domain Name: " . $json["domainName"] . "\n";
+    }
+    if (array_key_exists("registrar", $json)) {
+      $whois .= "Registrar: " . $json["registrar"] . "\n";
+    }
+    if (array_key_exists("creationDate", $json)) {
+      $whois .= "Creation Date: " . $json["creationDate"] . "\n";
+    }
+    if (array_key_exists("orgName", $json)) {
+      $whois .= "Registrant Organization: " . $json["orgName"] . "\n";
+    }
+    if (array_key_exists("addressOrg", $json)) {
+      $whois .= "Registrant Address: " . $json["addressOrg"] . "\n";
+    }
+    if (array_key_exists("contactAdm", $json)) {
+      $whois .= "Admin Name: " . $json["contactAdm"] . "\n";
+    }
+    if (array_key_exists("orgNameAdm", $json)) {
+      $whois .= "Admin Organization: " . $json["orgNameAdm"] . "\n";
+    }
+    if (array_key_exists("addressAdm", $json)) {
+      $whois .= "Admin Address: " . $json["addressAdm"] . "\n";
+    }
+    if (array_key_exists("phoneAdm", $json)) {
+      $whois .= "Admin Phone: " . $json["phoneAdm"] . "\n";
+    }
+    if (array_key_exists("faxAdm", $json)) {
+      $whois .= "Admin Fax: " . $json["faxAdm"] . "\n";
+    }
+    if (array_key_exists("emailAdm", $json)) {
+      $whois .= "Admin Email: " . $json["emailAdm"] . "\n";
+    }
+    if (array_key_exists("contactTech", $json)) {
+      $whois .= "Tech Name: " . $json["contactTech"] . "\n";
+    }
+    if (array_key_exists("orgNameTech", $json)) {
+      $whois .= "Tech Organization: " . $json["orgNameTech"] . "\n";
+    }
+    if (array_key_exists("addressTech", $json)) {
+      $whois .= "Tech Address: " . $json["addressTech"] . "\n";
+    }
+    if (array_key_exists("phoneTech", $json)) {
+      $whois .= "Tech Phone: " . $json["phoneTech"] . "\n";
+    }
+    if (array_key_exists("faxTech", $json)) {
+      $whois .= "Tech Fax: " . $json["faxTech"] . "\n";
+    }
+    if (array_key_exists("emailTech", $json)) {
+      $whois .= "Tech Email: " . $json["emailTech"] . "\n";
     }
 
     return $whois;
