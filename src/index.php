@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "v2025.7.21");
+define("VERSION", "v2025.7.22");
 
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);
@@ -72,7 +72,14 @@ if ($domain) {
       $value = ["code" => 0, "msg" => "Query successful", "data" => $parser];
     }
 
-    echo json_encode($value, JSON_UNESCAPED_UNICODE);
+    $json = json_encode($value, JSON_UNESCAPED_UNICODE);
+
+    if ($json === false) {
+      $value = ["code" => 1, "msg" => json_last_error_msg(), "data" => null];
+      echo json_encode($value, JSON_UNESCAPED_UNICODE);
+    } else {
+      echo $json;
+    }
     die;
   }
 }

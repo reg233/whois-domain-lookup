@@ -102,6 +102,11 @@ class WHOIS
 
     $data = stream_get_contents($socket);
 
+    $encoding = mb_detect_encoding($data, ["UTF-8", "ISO-8859-1"], true);
+    if ($encoding && $encoding !== "UTF-8") {
+      $data = mb_convert_encoding($data, "UTF-8", $encoding);
+    }
+
     $metaData = stream_get_meta_data($socket);
     if ($metaData["timed_out"]) {
       fclose($socket);
