@@ -13,6 +13,7 @@ class WHOISWeb
     "gm",
     "gw",
     "hm",
+    "lk",
     "mt",
     "ni",
     "np",
@@ -460,6 +461,46 @@ class WHOISWeb
           $whois .= $child->textContent;
         }
       }
+    }
+
+    return $whois;
+  }
+
+  private function getLK()
+  {
+    $url = "https://www.domains.lk/wp-content/themes/bridge-child/getDomainData.php?domainname=" . $this->domain;
+
+    $response = $this->request($url);
+
+    $json = json_decode($response, true);
+
+    $whois = "";
+
+    $available = $json["Required"]["Available"] ?? -1;
+    $message = $json["Message"] ?? "";
+
+    if ($available === 0) {
+      $messageCode = $json["MessageCode"] ?? -1;
+      if ($messageCode === 105 || $messageCode === 106) {
+        $domain = $json["DomainName"] ?? "";
+
+        $expiryDate = trim(explode("-", $json["ExpireDate"] ?? "")[1] ?? "");
+        $expiryDate = DateTime::createFromFormat("l, jS F, Y", $expiryDate);
+        $expiryDate = $expiryDate ? $expiryDate->format("Y-m-d") : "";
+
+        if ($messageCode === 105) {
+          $whois .= "$domain is registered\n\n";
+        } else {
+          $whois .= "$domain is suspended\n\n";
+        }
+        $whois .= "Domain Name: $domain\n";
+        $whois .= "Registry Expiry Date: " . $expiryDate . "\n";
+        $whois .= "Registrant Name: " . trim(explode("-", $message)[1] ?? "") . "\n";
+      } else {
+        $whois = $message;
+      }
+    } else if ($available === 1) {
+      $whois = $message;
     }
 
     return $whois;
