@@ -34,17 +34,6 @@
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
 
-> [!WARNING]
-> 由于 `vercel-php` 项目中的 [#573](https://github.com/vercel-community/php/issues/573) 问题，您需要手动将项目设置中的 `Node.js Version` 更改为 `18.x` 并重新部署。
-
-步骤1
-
-![Step 1](resources/vercel-step-1.png)
-
-步骤2
-
-![Step 2](resources/vercel-step-2.png)
-
 ### Docker Compose
 
 #### 部署
