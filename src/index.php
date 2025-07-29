@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "v2025.7.29");
+define("VERSION", "v2025.7.29+1");
 
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);
@@ -105,6 +105,11 @@ if ($domain) {
     die;
   }
 }
+
+$manifestHref = "manifest";
+if ($_SERVER["QUERY_STRING"] ?? "") {
+  $manifestHref .= "?" . htmlspecialchars($_SERVER["QUERY_STRING"], ENT_QUOTES, "UTF-8");
+}
 ?>
 
 <!DOCTYPE html>
@@ -160,7 +165,7 @@ if ($domain) {
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="manifest" href="manifest<?= $_SERVER["QUERY_STRING"] ? "?" . $_SERVER["QUERY_STRING"] : ""; ?>" />
+  <link rel="manifest" href="<?= $manifestHref; ?>" />
   <title><?= ($domain ? "$domain | " : "") . SITE_TITLE ?></title>
   <link rel="stylesheet" href="public/css/index.css" />
   <link rel="stylesheet" href="public/css/json.css" />
