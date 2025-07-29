@@ -65,14 +65,12 @@ docker compose up -d
 
 | 键 | 描述 | 示例值 | 默认值 |
 | :-- | :-- | :-- | :-- |
-| `DATA_SOURCE` | 数据源：`whois` 、`rdap` 或 `all` | `rdap` | `all` |
 | `DEFAULT_EXTENSION` | 没有输入后缀时的默认后缀 | `com` |  |
 | `SITE_TITLE` | 网站的标题 | `WHOIS lookup` | `WHOIS domain lookup` |
 | `SITE_SHORT_TITLE` | 网站的短标题，用于移动端的主屏幕 | `RDAP` | `WHOIS` |
 | `SITE_DESCRIPTION` | 网站的描述，用于搜索引擎优化 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | 网站的关键词，用于搜索引擎优化 | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
 | `BASE` | HTML 中 `base` 标签的 `href` 属性 | `/whois/` | `/` |
-| `FETCH_PRICES` | 是否通过 [tian.hu](https://tian.hu) 的 API 获取价格 | `true` | `false` |
 | `CUSTOM_HEAD` | 插入到 HTML 中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT` | 插入到 HTML 中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
 | `HOSTED_ON` | 托管平台的名称，显示在页面底部 | `Serv00` |  |
@@ -82,9 +80,7 @@ docker compose up -d
 
 ```php
 <?php
-define("DATA_SOURCE", getenv("DATA_SOURCE") ?: "rdap");
-
-define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
+define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "com");
 
 ...
 ```
@@ -93,13 +89,19 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
 地址：`https://whois.233333.best/api/`
 
-参数：`domain` , `data-source`, `whois-server`, `rdap-server`
+参数：`domain` , `whois`, `rdap`, `whois-server`, `rdap-server`
 
 方法：`GET`
 
 示例 1：https://whois.233333.best/api/?domain=233333.best
 
-示例 2：https://whois.233333.best/api/?domain=233333.best&data-source=rdap
+示例 2：https://whois.233333.best/api/?domain=233333.best&whois=1
+
+示例 3：https://whois.233333.best/api/?domain=233333.best&rdap=1
+
+示例 4：https://whois.233333.best/api/?domain=233333.best&whois-server=whois.spaceship.com
+
+示例 5：https://whois.233333.best/api/?domain=233333.best&rdap-server=https://rdap.spaceship.com/
 
 ## TODO
 

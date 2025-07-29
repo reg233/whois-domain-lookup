@@ -5,13 +5,12 @@ header("Content-Type: application/json");
 
 $shortName = SITE_SHORT_TITLE;
 $name = SITE_TITLE;
-$id = "/";
+$id = $_SERVER["QUERY_STRING"] ? ("/?" . $_SERVER["QUERY_STRING"]) : "/";
 
 $domain = $_GET["domain"] ?? "";
 if ($domain) {
   $shortName = $domain;
   $name = $domain . " | " . SITE_TITLE;
-  $id = "/?domain=$domain";
 }
 
 $manifest = [

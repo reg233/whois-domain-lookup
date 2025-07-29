@@ -65,14 +65,12 @@ Download the [release](https://github.com/reg233/whois-domain-lookup/releases/la
 
 | Key | Description | Example | Default |
 | :-- | :-- | :-- | :-- |
-| `DATA_SOURCE` | Data source: `whois` , `rdap` or `all` . | `rdap` | `all` |
 | `DEFAULT_EXTENSION` | The default extension when no extension is entered. | `com` |  |
 | `SITE_TITLE` | Title of the website. | `WHOIS lookup` | `WHOIS domain lookup` |
 | `SITE_SHORT_TITLE` | Short title of the website, used for the mobile home screen. | `RDAP` | `WHOIS` |
 | `SITE_DESCRIPTION` | Description of the website, used for SEO | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | Keywords of the website, used for SEO | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
 | `BASE` | The `href` attribute of the `base` tag in the HTML. | `/whois/` | `/` |
-| `FETCH_PRICES` | Whether to fetch prices via the [tian.hu](https://tian.hu) API. | `true` | `false` |
 | `CUSTOM_HEAD` | Custom content to insert before `</head>` in the HTML (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT` | Custom content to insert before `</body>` in the HTML (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
 | `HOSTED_ON` | Name of the hosting platform, displayed at the bottom of the page. | `Serv00` |  |
@@ -82,9 +80,7 @@ If you deploy using `web hosting`, you should modify the `config/config.php` fil
 
 ```php
 <?php
-define("DATA_SOURCE", getenv("DATA_SOURCE") ?: "rdap");
-
-define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
+define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "com");
 
 ...
 ```
@@ -93,13 +89,19 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "net");
 
 URL: `https://whois.233333.best/api/`
 
-Params: `domain` , `data-source`, `whois-server`, `rdap-server`
+Params: `domain` , `whois`, `rdap`, `whois-server`, `rdap-server`
 
 Method: `GET`
 
-Example 1: https://whois.233333.best/api/?domain=233333.best
+Example 1：https://whois.233333.best/api/?domain=233333.best
 
-Example 2: https://whois.233333.best/api/?domain=233333.best&data-source=rdap
+Example 2：https://whois.233333.best/api/?domain=233333.best&whois=1
+
+Example 3：https://whois.233333.best/api/?domain=233333.best&rdap=1
+
+Example 4：https://whois.233333.best/api/?domain=233333.best&whois-server=whois.spaceship.com
+
+Example 5：https://whois.233333.best/api/?domain=233333.best&rdap-server=https://rdap.spaceship.com/
 
 ## TODO
 

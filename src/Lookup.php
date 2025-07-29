@@ -11,7 +11,7 @@ class Lookup
 
   private $extensionTop;
 
-  private $dataSource;
+  private $dataSource = [];
 
   public $whoisData;
 
@@ -31,22 +31,18 @@ class Lookup
 
   public $parser;
 
-  public function __construct($domain)
+  public function __construct($domain, $dataSource)
   {
     $this->parseDomain($domain);
+    $this->dataSource = $dataSource;
 
-    $this->dataSource = $_GET["data-source"] ?? DATA_SOURCE;
-    if (!in_array($this->dataSource, ["all", "whois", "rdap"])) {
-      $this->dataSource = "all";
-    }
-
-    if ($this->dataSource === "whois" || $this->dataSource === "all") {
+    if (in_array("whois", $dataSource, true)) {
       $this->getWHOIS();
     }
-    if ($this->dataSource === "rdap" || $this->dataSource === "all") {
+    if (in_array("rdap", $dataSource, true)) {
       $this->getRDAP();
     }
-    if ($this->dataSource === "all") {
+    if (in_array("whois", $dataSource, true) && in_array("rdap", $dataSource, true)) {
       $this->merge();
     }
   }
@@ -92,7 +88,7 @@ class Lookup
       $this->whoisData = $data;
 
       $parser = ParserFactory::create($whois->extension, $data);
-      if ($this->dataSource === "whois") {
+      if ($this->dataSource === ["whois"]) {
         $this->parser = $parser;
 
         if (!empty($this->parser->domain)) {
@@ -102,7 +98,7 @@ class Lookup
         $this->whoisParser = $parser;
       }
     } catch (Exception $e) {
-      if ($this->dataSource === "whois") {
+      if ($this->dataSource === ["whois"]) {
         throw $e;
       }
 
@@ -130,7 +126,7 @@ class Lookup
       }
 
       $parser = new ParserRDAP($code, $data, $json);
-      if ($this->dataSource === "rdap") {
+      if ($this->dataSource === ["rdap"]) {
         $this->parser = $parser;
 
         if (!empty($this->parser->domain)) {
@@ -140,7 +136,7 @@ class Lookup
         $this->rdapParser = $parser;
       }
     } catch (Exception $e) {
-      if ($this->dataSource === "rdap") {
+      if ($this->dataSource === ["rdap"]) {
         throw $e;
       }
 

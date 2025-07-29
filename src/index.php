@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "v2025.7.24");
+define("VERSION", "v2025.7.29");
 
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);
@@ -38,8 +38,30 @@ function cleanDomain()
   return $domain;
 }
 
+function getDataSource()
+{
+  $whois = filter_var($_GET["whois"] ?? 0, FILTER_VALIDATE_BOOL);
+  $rdap = filter_var($_GET["rdap"] ?? 0, FILTER_VALIDATE_BOOL);
+
+  if (!$whois && !$rdap) {
+    $whois = $rdap = true;
+  }
+
+  $dataSource = [];
+
+  if ($whois) {
+    $dataSource[] = "whois";
+  }
+  if ($rdap) {
+    $dataSource[] = "rdap";
+  }
+
+  return $dataSource;
+}
+
 $domain = cleanDomain();
 
+$dataSource = $domain ? getDataSource() : [];
 $fetchPrices = false;
 $whoisData = null;
 $rdapData = null;
@@ -48,9 +70,9 @@ $error = null;
 
 if ($domain) {
   try {
-    $lookup = new Lookup($domain);
+    $lookup = new Lookup($domain, $dataSource);
     $domain = $lookup->domain;
-    $fetchPrices = FETCH_PRICES && $lookup->extension !== "iana";
+    $fetchPrices = filter_var($_GET["prices"] ?? 0, FILTER_VALIDATE_BOOL) && $lookup->extension !== "iana";
     $whoisData = $lookup->whoisData;
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
@@ -138,7 +160,7 @@ if ($domain) {
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="manifest" href="manifest<?= $domain ? "?domain=$domain" : "" ?>" />
+  <link rel="manifest" href="manifest<?= $_SERVER["QUERY_STRING"] ? "?" . $_SERVER["QUERY_STRING"] : ""; ?>" />
   <title><?= ($domain ? "$domain | " : "") . SITE_TITLE ?></title>
   <link rel="stylesheet" href="public/css/index.css" />
   <link rel="stylesheet" href="public/css/json.css" />
@@ -154,12 +176,13 @@ if ($domain) {
       <div>
         <h1><a href="<?= BASE; ?>"><?= SITE_TITLE ?></a></h1>
         <form action="" method="get" onsubmit="handleSubmit(event)">
-          <div>
+          <div class="search-box">
             <input
               autocapitalize="off"
               autocomplete="domain"
               autocorrect="off"
               <?= $domain ? "" : 'autofocus="autofocus"'; ?>
+              class="search-input"
               id="domain"
               inputmode="url"
               name="domain"
@@ -167,18 +190,47 @@ if ($domain) {
               required="required"
               type="text"
               value="<?= $domain; ?>" />
-            <button class="button-clear" id="domain-clear" type="button" aria-label="Clear">
+            <button class="search-clear" id="domain-clear" type="button" aria-label="Clear">
               <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
               </svg>
             </button>
           </div>
-          <button class="button-search">
+          <button class="search-button">
             <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" id="search-icon">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
             </svg>
             <span>Search</span>
           </button>
+          <div class="checkboxes">
+            <div class="checkbox">
+              <input <?= in_array("whois", $dataSource, true) ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-whois" name="whois" type="checkbox" value="1" />
+              <label class="checkbox-label" for="checkbox-whois">WHOIS</label>
+              <div class="checkbox-icon-wrapper">
+                <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
+                  <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="checkbox">
+              <input <?= in_array("rdap", $dataSource, true) ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-rdap" name="rdap" type="checkbox" value="1" />
+              <label class="checkbox-label" for="checkbox-rdap">RDAP</label>
+              <div class="checkbox-icon-wrapper">
+                <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
+                  <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="checkbox">
+              <input <?= $fetchPrices ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-prices" name="prices" type="checkbox" value="1" />
+              <label class="checkbox-label" for="checkbox-prices">PRICES</label>
+              <div class="checkbox-icon-wrapper">
+                <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
+                  <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </header>
@@ -481,6 +533,27 @@ if ($domain) {
       }
       domainClearElement.classList.remove("visible");
     });
+
+    const checkboxNames = ["whois", "rdap", "prices"];
+    <?php if ($domain): ?>
+      checkboxNames.forEach((name) => {
+        const checkbox = document.getElementById(`checkbox-${name}`);
+        localStorage.setItem(`checkbox-${name}`, +checkbox.checked);
+      });
+    <?php else: ?>
+      const whoisValue = localStorage.getItem("checkbox-whois") || "0";
+      const rdapValue = localStorage.getItem("checkbox-rdap") || "0";
+
+      checkboxNames.forEach((name) => {
+        const checkbox = document.getElementById(`checkbox-${name}`);
+
+        if (!+whoisValue && !+rdapValue && name !== "prices") {
+          checkbox.checked = true;
+        } else {
+          checkbox.checked = localStorage.getItem(`checkbox-${name}`) === "1";
+        }
+      });
+    <?php endif; ?>
 
     function handleSubmit(event) {
       document.getElementById("search-icon").classList.add("searching");
