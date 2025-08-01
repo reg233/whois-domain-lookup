@@ -133,6 +133,7 @@ form {
   height: 48px;
   line-height: 1.5;
   outline: 3px solid transparent;
+  outline-offset: 0;
   padding: 8px 36px 8px 16px;
   transition: border-color 190ms ease, outline-color 190ms ease;
   width: 100%;

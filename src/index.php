@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "v2025.7.29+1");
+define("VERSION", "v2025.8.1");
 
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);
@@ -61,7 +61,7 @@ function getDataSource()
 
 $domain = cleanDomain();
 
-$dataSource = $domain ? getDataSource() : [];
+$dataSource = [];
 $fetchPrices = false;
 $whoisData = null;
 $rdapData = null;
@@ -69,13 +69,19 @@ $parser = new Parser("");
 $error = null;
 
 if ($domain) {
+  $dataSource = getDataSource();
+  $fetchPrices = filter_var($_GET["prices"] ?? 0, FILTER_VALIDATE_BOOL);
+
   try {
     $lookup = new Lookup($domain, $dataSource);
     $domain = $lookup->domain;
-    $fetchPrices = filter_var($_GET["prices"] ?? 0, FILTER_VALIDATE_BOOL) && $lookup->extension !== "iana";
     $whoisData = $lookup->whoisData;
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
+
+    if ($lookup->extension === "iana") {
+      $fetchPrices = false;
+    }
   } catch (Exception $e) {
     if ($e instanceof SyntaxError || $e instanceof UnableToResolveDomain) {
       $error = "'$domain' is not a valid domain";
@@ -84,7 +90,7 @@ if ($domain) {
     }
   }
 
-  if ($_GET["json"] ?? "") {
+  if (filter_var($_GET["json"] ?? 0, FILTER_VALIDATE_BOOL)) {
     header("Access-Control-Allow-Origin: *");
     header("Content-Type: application/json");
 
