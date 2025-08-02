@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-07-15T19:00:02Z",
+  "publication": "2025-08-01T17:00:01Z",
   "services": [
     [
       [
@@ -4938,6 +4938,14 @@
       ],
       [
         "https://rdap.thains.co.th/"
+      ]
+    ],
+    [
+      [
+        "to"
+      ],
+      [
+        "https://rdap.tonicregistry.to/rdap/"
       ]
     ],
     [
