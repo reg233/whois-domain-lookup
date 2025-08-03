@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "v2025.8.2");
+define("VERSION", "v2025.8.3");
 
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);

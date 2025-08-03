@@ -22,7 +22,6 @@ class WHOISWeb
     "ph",
     "sv",
     "tj",
-    "to",
     "tt",
   ];
 
@@ -958,15 +957,6 @@ class WHOISWeb
     }
 
     return $whois;
-  }
-
-  private function getTO()
-  {
-    $url = "https://www.tonic.to/whois?" . $this->domain;
-
-    $response = $this->request($url);
-
-    return trim(strip_tags($response));
   }
 
   private function getTT()

@@ -73,7 +73,6 @@ class ParserFactory
     "tg" => ["tg"],
     "tm" => ["tm"],
     "tn" => ["tn", "تونس"],
-    "to" => ["to"],
     "tr" => ["tr"],
     "tt" => ["tt"],
     "tw" => ["tw", "台湾", "台灣"],

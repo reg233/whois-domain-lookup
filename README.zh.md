@@ -4,7 +4,7 @@
 
 一个简约的 WHOIS 域名查询网站，具有强大的 TLD 兼容性。
 
-[Englist README](README.md)
+[English README](README.md)
 
 <table>
   <tr>
