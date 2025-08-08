@@ -625,10 +625,12 @@ class Parser
   ];
 
   private const EMPTY_VALUES = [
+    "http://registrarurl", // bf
     "http://null", // ml
     "none", // nc
     "<no", // uz
     "-", // uz
+    "not", // uz
     "not.defined." // uz
   ];
 

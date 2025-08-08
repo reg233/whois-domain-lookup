@@ -1,6 +1,4 @@
 <?php
-define("VERSION", "v2025.8.3");
-
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);
   header("Allow: GET");
@@ -20,6 +18,42 @@ spl_autoload_register(function ($class) {
 
 use Pdp\SyntaxError;
 use Pdp\UnableToResolveDomain;
+
+function checkPassword()
+{
+  if (!SITE_PASSWORD) {
+    return;
+  }
+
+  $password = $_COOKIE["password"] ?? null;
+  if ($password === hash("sha256", SITE_PASSWORD)) {
+    return;
+  }
+
+  $authorization = $_SERVER["HTTP_AUTHORIZATION"] ?? null;
+  $bearerPrefix = "Bearer ";
+  if ($authorization && str_starts_with($authorization, $bearerPrefix)) {
+    $hash = substr($authorization, strlen($bearerPrefix));
+    if ($hash === hash("sha256", SITE_PASSWORD)) {
+      return;
+    }
+  }
+
+  if (filter_var($_GET["json"] ?? 0, FILTER_VALIDATE_BOOL)) {
+    header("Access-Control-Allow-Origin: *");
+    header("Content-Type: application/json");
+    echo json_encode(["code" => 1, "msg" => "Incorrect password.", "data" => null]);
+  } else {
+    $requestUri = $_SERVER["REQUEST_URI"];
+    if ($requestUri === BASE) {
+      header("Location: " . BASE . "login");
+    } else {
+      header("Location: " . BASE . "login?redirect=" . urlencode($requestUri));
+    }
+  }
+
+  die;
+}
 
 function cleanDomain()
 {
@@ -58,6 +92,8 @@ function getDataSource()
 
   return $dataSource;
 }
+
+checkPassword();
 
 $domain = cleanDomain();
 
@@ -108,6 +144,7 @@ if ($domain) {
     } else {
       echo $json;
     }
+
     die;
   }
 }
@@ -122,129 +159,129 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
 <html lang="en-US">
 
 <head>
-  <base href="<?= BASE; ?>" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#e1f9f9" />
-  <meta name="description" content="<?= SITE_DESCRIPTION ?>" />
-  <meta name="keywords" content="<?= SITE_KEYWORDS ?>" />
-  <link rel="shortcut icon" href="public/favicon.ico" />
-  <link rel="icon" href="public/images/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="public/images/apple-icon-180.png" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2048-2732.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1668-2388.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1536-2048.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1640-2360.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1668-2224.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1620-2160.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1488-2266.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1320-2868.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1206-2622.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1290-2796.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1179-2556.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1284-2778.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1125-2436.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1242-2688.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-828-1792.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1242-2208.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-750-1334.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2732-2048.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2388-1668.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2048-1536.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2360-1640.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2224-1668.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2160-1620.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2266-1488.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2868-1320.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2622-1206.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2796-1290.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2556-1179.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2532-1170.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2778-1284.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2436-1125.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2688-1242.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1792-828.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
-  <link rel="manifest" href="<?= $manifestHref; ?>" />
+  <base href="<?= BASE; ?>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#e1f9f9">
+  <meta name="description" content="<?= SITE_DESCRIPTION ?>">
+  <meta name="keywords" content="<?= SITE_KEYWORDS ?>">
+  <link rel="shortcut icon" href="public/favicon.ico">
+  <link rel="icon" href="public/images/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="public/images/apple-icon-180.png">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2048-2732.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1668-2388.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1536-2048.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1640-2360.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1668-2224.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1620-2160.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1488-2266.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1320-2868.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1206-2622.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1290-2796.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1179-2556.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1284-2778.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1125-2436.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1242-2688.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-828-1792.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1242-2208.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-750-1334.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2732-2048.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2388-1668.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2048-1536.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2360-1640.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2224-1668.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2160-1620.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2266-1488.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2868-1320.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2622-1206.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2796-1290.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2556-1179.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2532-1170.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2778-1284.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2436-1125.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2688-1242.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1792-828.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="manifest" href="<?= $manifestHref; ?>">
   <title><?= ($domain ? "$domain | " : "") . SITE_TITLE ?></title>
-  <link rel="stylesheet" href="public/css/index.css" />
-  <link rel="stylesheet" href="public/css/json.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap" />
+  <link rel="stylesheet" href="public/css/global.css">
+  <link rel="stylesheet" href="public/css/index.css">
+  <link rel="stylesheet" href="public/css/json.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap">
   <?= CUSTOM_HEAD ?>
 </head>
 
 <body>
-  <main>
-    <header>
-      <div>
-        <h1><a href="<?= BASE; ?>"><?= SITE_TITLE ?></a></h1>
-        <form action="" method="get" onsubmit="handleSubmit(event)">
-          <div class="search-box">
-            <input
-              autocapitalize="off"
-              autocomplete="domain"
-              autocorrect="off"
-              <?= $domain ? "" : 'autofocus="autofocus"'; ?>
-              class="search-input"
-              id="domain"
-              inputmode="url"
-              name="domain"
-              placeholder="Enter a domain"
-              required="required"
-              type="text"
-              value="<?= $domain; ?>" />
-            <button class="search-clear" id="domain-clear" type="button" aria-label="Clear">
-              <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-              </svg>
-            </button>
-          </div>
-          <button class="search-button">
-            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" id="search-icon">
-              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+  <header>
+    <div>
+      <h1><a href="<?= BASE; ?>"><?= SITE_TITLE ?></a></h1>
+      <form action="" id="form" method="get">
+        <div class="search-box">
+          <input
+            autocapitalize="off"
+            autocomplete="domain"
+            autocorrect="off"
+            <?= $domain ? "" : "autofocus"; ?>
+            class="input search-input"
+            id="domain"
+            inputmode="url"
+            name="domain"
+            placeholder="Enter a domain"
+            required
+            type="text"
+            value="<?= $domain; ?>">
+          <button class="search-clear" id="domain-clear" type="button" aria-label="Clear">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
             </svg>
-            <span>Search</span>
           </button>
-          <div class="checkboxes">
-            <div class="checkbox">
-              <input <?= in_array("whois", $dataSource, true) ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-whois" name="whois" type="checkbox" value="1" />
-              <label class="checkbox-label" for="checkbox-whois">WHOIS</label>
-              <div class="checkbox-icon-wrapper">
-                <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
-                  <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="checkbox">
-              <input <?= in_array("rdap", $dataSource, true) ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-rdap" name="rdap" type="checkbox" value="1" />
-              <label class="checkbox-label" for="checkbox-rdap">RDAP</label>
-              <div class="checkbox-icon-wrapper">
-                <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
-                  <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="checkbox">
-              <input <?= $fetchPrices ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-prices" name="prices" type="checkbox" value="1" />
-              <label class="checkbox-label" for="checkbox-prices">PRICES</label>
-              <div class="checkbox-icon-wrapper">
-                <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
-                  <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z"></path>
-                </svg>
-              </div>
+        </div>
+        <button class="button search-button">
+          <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" id="search-icon">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+          </svg>
+          <span>Search</span>
+        </button>
+        <div class="checkboxes">
+          <div class="checkbox">
+            <input <?= in_array("whois", $dataSource, true) ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-whois" name="whois" type="checkbox" value="1">
+            <label class="checkbox-label" for="checkbox-whois">WHOIS</label>
+            <div class="checkbox-icon-wrapper">
+              <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
+                <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z" />
+              </svg>
             </div>
           </div>
-        </form>
-      </div>
-    </header>
+          <div class="checkbox">
+            <input <?= in_array("rdap", $dataSource, true) ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-rdap" name="rdap" type="checkbox" value="1">
+            <label class="checkbox-label" for="checkbox-rdap">RDAP</label>
+            <div class="checkbox-icon-wrapper">
+              <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
+                <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z" />
+              </svg>
+            </div>
+          </div>
+          <div class="checkbox">
+            <input <?= $fetchPrices ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-prices" name="prices" type="checkbox" value="1">
+            <label class="checkbox-label" for="checkbox-prices">PRICES</label>
+            <div class="checkbox-icon-wrapper">
+              <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
+                <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </header>
+  <main>
     <?php if ($domain): ?>
       <section class="messages">
         <div>
@@ -500,134 +537,124 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
         <?php endif; ?>
       </section>
     <?php endif; ?>
-    <footer>
-      <?php if (HOSTED_ON): ?>
-        <div>
-          Hosted on
-          <?php if (HOSTED_ON_URL): ?>
-            <a href="<?= HOSTED_ON_URL; ?>" rel="noopener" target="_blank"><?= HOSTED_ON; ?></a>
-          <?php else: ?>
-            <?= HOSTED_ON; ?>
-          <?php endif; ?>
-        </div>
-      <?php endif; ?>
-      <div>
-        <a href="https://github.com/reg233/whois-domain-lookup" rel="noopener" target="_blank"><?= VERSION ?></a>
-      </div>
-    </footer>
-    <button class="back-to-top" id="back-to-top">
-      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-        <path d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" fill-rule="evenodd" />
-      </svg>
-    </button>
   </main>
+  <?php require_once __DIR__ . "/footer.php"; ?>
+  <button class="back-to-top" id="back-to-top">
+    <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" fill-rule="evenodd" />
+    </svg>
+  </button>
   <script>
-    const domainElement = document.getElementById("domain");
-    const domainClearElement = document.getElementById("domain-clear");
+    window.addEventListener("DOMContentLoaded", function() {
+      const domainElement = document.getElementById("domain");
+      const domainClearElement = document.getElementById("domain-clear");
 
-    if (domainElement.value) {
-      domainClearElement.classList.add("visible");
-    }
-
-    domainElement.addEventListener("input", (e) => {
-      if (e.target.value) {
+      if (domainElement.value) {
         domainClearElement.classList.add("visible");
-      } else {
-        domainClearElement.classList.remove("visible");
       }
-    });
-    domainClearElement.addEventListener("click", () => {
-      domainElement.focus();
-      domainElement.select();
-      if (!document.execCommand("delete", false)) {
-        domainElement.setRangeText("");
-      }
-      domainClearElement.classList.remove("visible");
-    });
 
-    const checkboxNames = ["whois", "rdap", "prices"];
-    <?php if ($domain): ?>
-      checkboxNames.forEach((name) => {
-        const checkbox = document.getElementById(`checkbox-${name}`);
-        localStorage.setItem(`checkbox-${name}`, +checkbox.checked);
-      });
-    <?php else: ?>
-      const whoisValue = localStorage.getItem("checkbox-whois") || "0";
-      const rdapValue = localStorage.getItem("checkbox-rdap") || "0";
-
-      checkboxNames.forEach((name) => {
-        const checkbox = document.getElementById(`checkbox-${name}`);
-
-        if (!+whoisValue && !+rdapValue && name !== "prices") {
-          checkbox.checked = true;
+      domainElement.addEventListener("input", (e) => {
+        if (e.target.value) {
+          domainClearElement.classList.add("visible");
         } else {
-          checkbox.checked = localStorage.getItem(`checkbox-${name}`) === "1";
+          domainClearElement.classList.remove("visible");
         }
       });
-    <?php endif; ?>
-
-    function handleSubmit(event) {
-      document.getElementById("search-icon").classList.add("searching");
-    }
-
-    const backToTop = document.getElementById("back-to-top");
-    backToTop.addEventListener("click", () => {
-      window.scrollTo({
-        behavior: "smooth",
-        top: 0,
+      domainClearElement.addEventListener("click", () => {
+        domainElement.focus();
+        domainElement.select();
+        if (!document.execCommand("delete", false)) {
+          domainElement.setRangeText("");
+        }
+        domainClearElement.classList.remove("visible");
       });
-    });
 
-    window.addEventListener("scroll", () => {
-      if (document.documentElement.scrollTop > 360) {
-        if (!backToTop.classList.contains("visible")) {
-          backToTop.classList.add("visible");
+      const checkboxNames = ["whois", "rdap", "prices"];
+      <?php if ($domain): ?>
+        checkboxNames.forEach((name) => {
+          const checkbox = document.getElementById(`checkbox-${name}`);
+          localStorage.setItem(`checkbox-${name}`, +checkbox.checked);
+        });
+      <?php else: ?>
+        const whoisValue = localStorage.getItem("checkbox-whois") || "0";
+        const rdapValue = localStorage.getItem("checkbox-rdap") || "0";
+
+        checkboxNames.forEach((name) => {
+          const checkbox = document.getElementById(`checkbox-${name}`);
+
+          if (!+whoisValue && !+rdapValue && name !== "prices") {
+            checkbox.checked = true;
+          } else {
+            checkbox.checked = localStorage.getItem(`checkbox-${name}`) === "1";
+          }
+        });
+      <?php endif; ?>
+
+      document.getElementById("form").addEventListener("submit", () => {
+        document.getElementById("search-icon").classList.add("searching");
+      });
+
+      const backToTop = document.getElementById("back-to-top");
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({
+          behavior: "smooth",
+          top: 0,
+        });
+      });
+
+      window.addEventListener("scroll", () => {
+        if (document.documentElement.scrollTop > 360) {
+          if (!backToTop.classList.contains("visible")) {
+            backToTop.classList.add("visible");
+          }
+        } else {
+          if (backToTop.classList.contains("visible")) {
+            backToTop.classList.remove("visible");
+          }
         }
-      } else {
-        if (backToTop.classList.contains("visible")) {
-          backToTop.classList.remove("visible");
-        }
-      }
+      });
     });
   </script>
   <?php if ($whoisData || $rdapData): ?>
     <script>
-      function updateDateElementText(elementId) {
-        const element = document.getElementById(elementId);
-        if (element) {
-          const iso8601 = element.dataset.iso8601;
-          if (iso8601) {
-            if (iso8601.endsWith("Z")) {
-              const date = new Date(iso8601);
+      window.addEventListener("DOMContentLoaded", function() {
+        function updateDateElementText(elementId) {
+          const element = document.getElementById(elementId);
+          if (element) {
+            const iso8601 = element.dataset.iso8601;
+            if (iso8601) {
+              if (iso8601.endsWith("Z")) {
+                const date = new Date(iso8601);
 
-              const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, "0");
-              const day = String(date.getDate()).padStart(2, "0");
-              const hours = String(date.getHours()).padStart(2, "0");
-              const minutes = String(date.getMinutes()).padStart(2, "0");
-              const seconds = String(date.getSeconds()).padStart(2, "0");
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const day = String(date.getDate()).padStart(2, "0");
+                const hours = String(date.getHours()).padStart(2, "0");
+                const minutes = String(date.getMinutes()).padStart(2, "0");
+                const seconds = String(date.getSeconds()).padStart(2, "0");
 
-              element.innerText = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                element.innerText = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-              const offsetMinutes = date.getTimezoneOffset();
-              const offsetRemainingMinutes = Math.abs(offsetMinutes % 60);
-              const offsetHours = -Math.floor(offsetMinutes / 60);
-              const sign = offsetHours >= 0 ? "+" : "-";
+                const offsetMinutes = date.getTimezoneOffset();
+                const offsetRemainingMinutes = Math.abs(offsetMinutes % 60);
+                const offsetHours = -Math.floor(offsetMinutes / 60);
+                const sign = offsetHours >= 0 ? "+" : "-";
 
-              const minutesStr = offsetRemainingMinutes ? `:${offsetRemainingMinutes}` : "";
+                const minutesStr = offsetRemainingMinutes ? `:${offsetRemainingMinutes}` : "";
 
-              element.dataset.offset = `UTC${sign}${Math.abs(offsetHours)}${minutesStr}`;
-            } else {
-              element.innerText = iso8601;
+                element.dataset.offset = `UTC${sign}${Math.abs(offsetHours)}${minutesStr}`;
+              } else {
+                element.innerText = iso8601;
+              }
             }
           }
         }
-      }
 
-      updateDateElementText("creation-date");
-      updateDateElementText("expiration-date");
-      updateDateElementText("updated-date");
-      updateDateElementText("available-date");
+        updateDateElementText("creation-date");
+        updateDateElementText("expiration-date");
+        updateDateElementText("updated-date");
+        updateDateElementText("available-date");
+      });
     </script>
     <script src="public/js/popper.min.js" defer></script>
     <script src="public/js/tippy-bundle.umd.min.js" defer></script>

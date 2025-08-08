@@ -64,7 +64,7 @@ class ParserFactory
     "qa" => ["qa", "قطر"],
     "ro" => ["ro", "uz"],
     "rs" => ["rs", "срб"],
-    "ru" => ["ru", "su", "рф"],
+    "ru" => ["ru", "su", "рф", "net.ru", "org.ru", "pp.ru"],
     "sa" => ["sa", "السعودية"],
     "sk" => ["sk"],
     "sm" => ["sm"],
@@ -81,6 +81,7 @@ class ParserFactory
     "ua1" => ["укр"],
     "uk" => ["uk"],
     "ukac" => ["ac.uk"],
+    "uz" => ["uz", "co.uz", "com.uz", "net.uz", "org.uz"],
     "ve" => ["ve"],
   ];
 

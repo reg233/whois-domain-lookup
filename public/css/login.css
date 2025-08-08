@@ -1,0 +1,52 @@
+main {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 48px;
+  margin-top: 48px;
+  padding: 0 16px;
+}
+
+h1 {
+  font-family: "Fraunces", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  font-size: 24px;
+  line-height: 1.1667;
+  margin: 0;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.error {
+  align-items: center;
+  color: #ce4036;
+  display: flex;
+  gap: 8px;
+}
+
+.error svg {
+  font-size: 16px;
+}
+
+form {
+  width: 100%;
+}
+
+.input {
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.button {
+  width: 100%;
+}
+
+@media (min-width: 544px) {
+  main {
+    margin-left: auto;
+    margin-right: auto;
+    width: 384px;
+  }
+}

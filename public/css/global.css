@@ -1,0 +1,176 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: #ffffff;
+  color: #1f1f1f;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4286;
+  margin: 0;
+}
+
+body::selection,
+body ::selection {
+  background-color: #c2f5f5;
+  color: #1f1f1f;
+}
+
+body::-moz-selection,
+body ::-moz-selection {
+  background-color: #c2f5f5;
+  color: #1f1f1f;
+}
+
+a {
+  color: #1f1f1f;
+  outline: 3px solid transparent;
+  outline-offset: 4px;
+  transition: all 190ms ease;
+}
+
+a:hover {
+  color: #139a9a;
+}
+
+a:focus {
+  outline-color: #5ee8e8;
+}
+
+a:focus:not(:focus-visible) {
+  outline-color: transparent;
+}
+
+a:focus-visible {
+  outline-color: #5ee8e8;
+}
+
+button {
+  align-items: center;
+  appearance: button;
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: inherit;
+  justify-content: center;
+  line-height: inherit;
+  margin: 0;
+  outline: 3px solid transparent;
+  padding: 0;
+  transition: all 190ms ease;
+  -moz-appearance: button;
+  -webkit-appearance: button;
+}
+
+button:focus {
+  outline-color: #5ee8e8;
+}
+
+button:focus:not(:focus-visible) {
+  outline-color: transparent;
+}
+
+button:focus-visible {
+  outline-color: #5ee8e8;
+}
+
+.input {
+  background-color: #ffffff;
+  border: 1px solid #1f1f1f;
+  border-radius: 4px;
+  color: inherit;
+  font-family: inherit;
+  font-size: 16px;
+  height: 48px;
+  line-height: 1.5;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  padding: 8px 16px;
+  transition: all 190ms ease;
+  width: 100%;
+}
+
+.input::placeholder {
+  color: #757575;
+}
+
+.input:hover {
+  border-color: #19cccc;
+}
+
+.input:focus {
+  border-color: #19cccc;
+  outline-color: #5ee8e8;
+}
+
+.input:focus:not(:focus-visible) {
+  outline-color: transparent;
+}
+
+.input:focus-visible {
+  outline-color: #5ee8e8;
+}
+
+.button {
+  background-color: #1f1f1f;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  height: 48px;
+  line-height: 1.5;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.button:hover {
+  background-color: #2e2e2e;
+}
+
+.button:active {
+  background-color: #454545;
+}
+
+.button:disabled {
+  background-color: #757575;
+  cursor: not-allowed;
+}
+
+footer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 48px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 48px;
+  max-width: 1200px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (max-width: 768px) {
+  footer {
+    margin-bottom: 32px;
+    margin-top: 32px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

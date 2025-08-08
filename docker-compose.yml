@@ -3,8 +3,8 @@ services:
     container_name: whois-domain-lookup
     image: reg233/whois-domain-lookup:latest
     environment:
-      DATA_SOURCE: "all"
       DEFAULT_EXTENSION: ""
+      SITE_PASSWORD: ""
       BASE: "/"
       HOSTED_ON: ""
       HOSTED_ON_URL: ""

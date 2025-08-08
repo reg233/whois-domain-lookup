@@ -24,9 +24,10 @@
 - 简约、清晰的用户界面
 - 强大的 TLD 兼容性，包括大多数 ccTLD 和少数私有域名
 - 支持 WHOIS 和 RDAP
-- 显示域名年龄、剩余天数以及其他信息
+- 显示域名价格、年龄、剩余天数以及其他信息
 - 高亮显示原始数据中的网址和电子邮件
-- 支持 API 接口
+- 支持 API
+- 访问控制
 
 ## 部署
 
@@ -70,9 +71,12 @@ docker compose up -d
 | `SITE_SHORT_TITLE` | 网站的短标题，用于移动端的主屏幕 | `RDAP` | `WHOIS` |
 | `SITE_DESCRIPTION` | 网站的描述，用于搜索引擎优化 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | 网站的关键词，用于搜索引擎优化 | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
+| `SITE_PASSWORD` | 网站的密码，用于访问控制 | `233` |  |
 | `BASE` | HTML 中 `base` 标签的 `href` 属性 | `/whois/` | `/` |
-| `CUSTOM_HEAD` | 插入到 HTML 中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
-| `CUSTOM_SCRIPT` | 插入到 HTML 中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
+| `CUSTOM_HEAD` | 插入到首页中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT` | 插入到首页中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
+| `CUSTOM_HEAD_LOGIN` | 插入到登录页中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT_LOGIN` | 插入到登录页中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
 | `HOSTED_ON` | 托管平台的名称，显示在页面底部 | `Serv00` |  |
 | `HOSTED_ON_URL` | 托管平台的网址，与 `HOSTED_ON` 一起使用 | `https://serv00.com` |  |
 
@@ -89,7 +93,7 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "com");
 
 地址：`https://whois.233333.best/api/`
 
-参数：`domain` , `whois`, `rdap`, `whois-server`, `rdap-server`
+参数：`domain` ，`whois` ，`rdap` ，`whois-server` ，`rdap-server`
 
 方法：`GET`
 
@@ -103,15 +107,23 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "com");
 
 示例 5：https://whois.233333.best/api/?domain=233333.best&rdap-server=https://rdap.spaceship.com/
 
+如果您设置了 `SITE_PASSWORD` ，您需要在请求头中加上 `Authorization` ，如下所示：
+
+```
+Authorization: Bearer <SHA256(SITE_PASSWORD)>
+```
+
+示例：`Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381f57160b5c5b86426`
+
+[SHA256 在线工具](https://emn178.github.io/online-tools/sha256.html)
+
 ## TODO
 
 - [ ] 完善保留域名检测
 
 ## 感谢
 
-- [WhoisQuery](https://github.com/GitHubPangHu/whoisQuery)
 - [Gandi](https://whois.gandi.net)
-- [WHO.CX](https://who.cx)
 - [tian.hu](https://tian.hu)
 
 ## 合作

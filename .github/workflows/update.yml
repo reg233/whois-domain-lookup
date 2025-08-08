@@ -40,9 +40,9 @@ jobs:
               ((i++))
             done
 
-            sed -i "2s/.*/define(\"VERSION\", \"${tag}\");/" src/index.php
+            sed -i "2s/.*/define(\"VERSION\", \"${tag}\");/" src/footer.php
 
-            git add src/index.php src/data/public-suffix-list.dat src/data/rdap-servers-iana.json
+            git add src/footer.php src/data/public-suffix-list.dat src/data/rdap-servers-iana.json
             git commit -m "Update version and public-suffix-list.dat and rdap-servers-iana.json"
             git push
 

@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 
 $shortName = SITE_SHORT_TITLE;
 $name = SITE_TITLE;
-$id = ($_SERVER["QUERY_STRING"] ?? "") ? ("/?" . $_SERVER["QUERY_STRING"]) : "/";
+$id = ($_SERVER["QUERY_STRING"] ?? "") ? (BASE . "?" . $_SERVER["QUERY_STRING"]) : BASE;
 
 $domain = $_GET["domain"] ?? "";
 if ($domain) {
@@ -46,7 +46,7 @@ $manifest = [
   "start_url" => $id,
   "background_color" => "#ffffff",
   "display" => "standalone",
-  "scope" => "/",
+  "scope" => BASE,
   "theme_color" => "#e1f9f9",
   "description" => SITE_DESCRIPTION,
   "screenshots" => [

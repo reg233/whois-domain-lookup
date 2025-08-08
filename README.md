@@ -24,9 +24,10 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 - Simple, Clear UI
 - Strong TLD compatibility, including most ccTLDs and a few private domains
 - WHOIS and RDAP support
-- Display age, remaining days, and other information
+- Display prices, age, remaining days, and other information
 - Highlight url and email in raw data
 - API support
+- Access control
 
 ## Deployment
 
@@ -70,9 +71,12 @@ Download the [release](https://github.com/reg233/whois-domain-lookup/releases/la
 | `SITE_SHORT_TITLE` | Short title of the website, used for the mobile home screen. | `RDAP` | `WHOIS` |
 | `SITE_DESCRIPTION` | Description of the website, used for SEO | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | Keywords of the website, used for SEO | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
+| `SITE_PASSWORD` | Password of the website, used for access control | `233` |  |
 | `BASE` | The `href` attribute of the `base` tag in the HTML. | `/whois/` | `/` |
-| `CUSTOM_HEAD` | Custom content to insert before `</head>` in the HTML (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
-| `CUSTOM_SCRIPT` | Custom content to insert before `</body>` in the HTML (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
+| `CUSTOM_HEAD` | Custom content to insert before `</head>` on the home page (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT` | Custom content to insert before `</body>` on the home page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
+| `CUSTOM_HEAD_LOGIN` | Custom content to insert before `</head>` on the login page (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT_LOGIN` | Custom content to insert before `</body>` on the login page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
 | `HOSTED_ON` | Name of the hosting platform, displayed at the bottom of the page. | `Serv00` |  |
 | `HOSTED_ON_URL` | URL of the hosting platform, used together with `HOSTED_ON` . | `https://serv00.com` |  |
 
@@ -89,19 +93,29 @@ define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "com");
 
 URL: `https://whois.233333.best/api/`
 
-Params: `domain` , `whois`, `rdap`, `whois-server`, `rdap-server`
+Params: `domain` , `whois` , `rdap` , `whois-server` , `rdap-server`
 
 Method: `GET`
 
-Example 1：https://whois.233333.best/api/?domain=233333.best
+Example 1: https://whois.233333.best/api/?domain=233333.best
 
-Example 2：https://whois.233333.best/api/?domain=233333.best&whois=1
+Example 2: https://whois.233333.best/api/?domain=233333.best&whois=1
 
-Example 3：https://whois.233333.best/api/?domain=233333.best&rdap=1
+Example 3: https://whois.233333.best/api/?domain=233333.best&rdap=1
 
-Example 4：https://whois.233333.best/api/?domain=233333.best&whois-server=whois.spaceship.com
+Example 4: https://whois.233333.best/api/?domain=233333.best&whois-server=whois.spaceship.com
 
-Example 5：https://whois.233333.best/api/?domain=233333.best&rdap-server=https://rdap.spaceship.com/
+Example 5: https://whois.233333.best/api/?domain=233333.best&rdap-server=https://rdap.spaceship.com/
+
+If you have set a `SITE_PASSWORD` , you need to add `Authorization` in the request headers, like this:
+
+```
+Authorization: Bearer <SHA256(SITE_PASSWORD)>
+```
+
+Example: `Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381f57160b5c5b86426`
+
+[SHA256 online tool](https://emn178.github.io/online-tools/sha256.html)
 
 ## TODO
 
@@ -109,9 +123,7 @@ Example 5：https://whois.233333.best/api/?domain=233333.best&rdap-server=https:
 
 ## Thanks
 
-- [WhoisQuery](https://github.com/GitHubPangHu/whoisQuery)
 - [Gandi](https://whois.gandi.net)
-- [WHO.CX](https://who.cx)
 - [tian.hu](https://tian.hu)
 
 ## Collaboration

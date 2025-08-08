@@ -10,4 +10,5 @@ RewriteEngine On
 
 RewriteRule ^$ src/index.php [B,L,QSA]
 RewriteRule ^api/$ src/index.php?json=1 [B,L,QSA]
+RewriteRule ^login$ src/login.php [B,L,QSA]
 RewriteRule ^manifest$ src/manifest.php [B,L,QSA]
