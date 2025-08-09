@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "v2025.8.8");
+define("VERSION", "v2025.8.9");
 
 require_once __DIR__ . "/../config/config.php";
 ?>
