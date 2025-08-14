@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-08-01T17:00:01Z",
+  "publication": "2025-08-13T19:00:02Z",
   "services": [
     [
       [
@@ -2037,6 +2037,14 @@
       ],
       [
         "https://rdap.nic.capetown/rdap/"
+      ]
+    ],
+    [
+      [
+        "capitalone"
+      ],
+      [
+        "https://rdap.nic.capitalone/"
       ]
     ],
     [
@@ -5189,14 +5197,6 @@
       ],
       [
         "https://tld-rdap.verisign.com/bharti/v1/"
-      ]
-    ],
-    [
-      [
-        "capitalone"
-      ],
-      [
-        "https://tld-rdap.verisign.com/capitalone/v1/"
       ]
     ],
     [
