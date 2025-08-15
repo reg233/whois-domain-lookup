@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-08-13T19:00:02Z",
+  "publication": "2025-08-14T17:00:02Z",
   "services": [
     [
       [
@@ -3121,6 +3121,14 @@
     ],
     [
       [
+        "norton"
+      ],
+      [
+        "https://rdap.nic.norton/"
+      ]
+    ],
+    [
+      [
         "nrw"
       ],
       [
@@ -5229,14 +5237,6 @@
       ],
       [
         "https://tld-rdap.verisign.com/nissay/v1/"
-      ]
-    ],
-    [
-      [
-        "norton"
-      ],
-      [
-        "https://tld-rdap.verisign.com/norton/v1/"
       ]
     ],
     [
