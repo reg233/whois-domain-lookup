@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2025-08-18_05-46-20_UTC
-// COMMIT: f6d9f996b248aa92a6fcf7dd739730220f1cbabd
+// VERSION: 2025-08-19_06-24-28_UTC
+// COMMIT: 8eb248f2286592aa1d41cb38414dbd4fe1d58be5
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -15859,6 +15859,8 @@ wmflabs.org
 // William Harrison : https://wharrison.com.au
 // Submitted by William Harrison <security@wharrison.com.au>
 wdh.app
+hrsn.au
+vps.hrsn.au
 hrsn.dev
 
 // Windsurf : https://windsurf.com
