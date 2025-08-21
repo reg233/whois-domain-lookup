@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2025-08-19_06-24-28_UTC
-// COMMIT: 8eb248f2286592aa1d41cb38414dbd4fe1d58be5
+// VERSION: 2025-08-19_20-26-24_UTC
+// COMMIT: db0dbe5d4852712c1e6b3bf06a053850c3e114c2
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -6794,7 +6794,7 @@ org.zw
 
 // newGTLDs
 
-// List of new gTLDs imported from https://www.icann.org/resources/registries/gtlds/v2/gtlds.json on 2025-07-16T15:22:08Z
+// List of new gTLDs imported from https://www.icann.org/resources/registries/gtlds/v2/gtlds.json on 2025-08-19T15:20:18Z
 // This list is auto-generated, don't edit it manually.
 // aaa : American Automobile Association, Inc.
 // https://www.iana.org/domains/root/db/aaa.html
@@ -9404,7 +9404,7 @@ nowruz
 // https://www.iana.org/domains/root/db/nowtv.html
 nowtv
 
-// nra : NRA Holdings Company, INC.
+// nra : National Rifle Association of America
 // https://www.iana.org/domains/root/db/nra.html
 nra
 
@@ -15927,6 +15927,7 @@ xs4all.space
 yandexcloud.net
 storage.yandexcloud.net
 website.yandexcloud.net
+sourcecraft.site
 
 // YesCourse Pty Ltd : https://yescourse.com
 // Submitted by Atul Bhouraskar <atul@yescourse.com>
