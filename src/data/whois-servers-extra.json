@@ -27,7 +27,7 @@
   "com.de": "whois.centralnic.com",
   "dk": {
     "host": "whois.punktum.dk",
-    "query": "--charset=utf-8 --show-handles {domain}\r\n"
+    "query": "--show-handles {domain}\r\n"
   },
   "et": "whois.ethiotelecom.et",
   "radio.fm": "whois.centralnic.com",
