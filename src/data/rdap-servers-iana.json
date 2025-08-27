@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-08-14T17:00:02Z",
+  "publication": "2025-08-26T22:00:01Z",
   "services": [
     [
       [
@@ -5034,14 +5034,6 @@
       ],
       [
         "https://rdap.zdnsgtld.com/icbc/"
-      ]
-    ],
-    [
-      [
-        "redstone"
-      ],
-      [
-        "https://rdap.zdnsgtld.com/redstone/"
       ]
     ],
     [
