@@ -11,6 +11,7 @@ class WHOISWeb
     "cy",
     "dz",
     "gm",
+    "gt",
     "gw",
     "hm",
     "lk",
@@ -196,22 +197,13 @@ class WHOISWeb
     $whois = "";
     if (isset($json["domainWhoIs"])) {
       $domain = $json["domainWhoIs"];
-      if (array_key_exists("domainFullname", $domain)) {
-        $whois .= "Domain Name: " . $domain["domainFullname"] . "\n";
-      }
-      if (array_key_exists("domainCreationDate", $domain)) {
-        $whois .= "Creation Date: " . implode("-", $domain["domainCreationDate"] ?: []) . "\n";
-      }
-      if (array_key_exists("domainExpirationDate", $domain)) {
-        $whois .= "Registry Expiry Date: " . implode("-", $domain["domainExpirationDate"] ?: []) . "\n";
-      }
-      if (array_key_exists("domainServers", $domain)) {
-        $servers = $domain["domainServers"] ?: [];
-        foreach ($servers as $server) {
-          if (array_key_exists("name", $server)) {
-            $whois .= "Name Server: " . $server["name"] . "\n";
-          }
-        }
+
+      $whois .= "Domain Name: " . ($domain["domainFullname"] ?? "") . "\n";
+      $whois .= "Creation Date: " . implode("-", $domain["domainCreationDate"] ?? []) . "\n";
+      $whois .= "Registry Expiry Date: " . implode("-", $domain["domainExpirationDate"] ?? []) . "\n";
+
+      foreach ($domain["domainServers"] ?? [] as $server) {
+        $whois .= "Name Server: " . ($server["name"] ?? "") . "\n";
       }
     }
     if (isset($json["registrantWhoIs"]["personWhoIs"])) {
@@ -251,58 +243,23 @@ class WHOISWeb
       return $json["title"];
     }
 
-    $whois = "";
-    if (array_key_exists("domainName", $json)) {
-      $whois .= "Domain Name: " . $json["domainName"] . "\n";
-    }
-    if (array_key_exists("registrar", $json)) {
-      $whois .= "Registrar: " . $json["registrar"] . "\n";
-    }
-    if (array_key_exists("creationDate", $json)) {
-      $whois .= "Creation Date: " . $json["creationDate"] . "\n";
-    }
-    if (array_key_exists("orgName", $json)) {
-      $whois .= "Registrant Organization: " . $json["orgName"] . "\n";
-    }
-    if (array_key_exists("addressOrg", $json)) {
-      $whois .= "Registrant Address: " . $json["addressOrg"] . "\n";
-    }
-    if (array_key_exists("contactAdm", $json)) {
-      $whois .= "Admin Name: " . $json["contactAdm"] . "\n";
-    }
-    if (array_key_exists("orgNameAdm", $json)) {
-      $whois .= "Admin Organization: " . $json["orgNameAdm"] . "\n";
-    }
-    if (array_key_exists("addressAdm", $json)) {
-      $whois .= "Admin Address: " . $json["addressAdm"] . "\n";
-    }
-    if (array_key_exists("phoneAdm", $json)) {
-      $whois .= "Admin Phone: " . $json["phoneAdm"] . "\n";
-    }
-    if (array_key_exists("faxAdm", $json)) {
-      $whois .= "Admin Fax: " . $json["faxAdm"] . "\n";
-    }
-    if (array_key_exists("emailAdm", $json)) {
-      $whois .= "Admin Email: " . $json["emailAdm"] . "\n";
-    }
-    if (array_key_exists("contactTech", $json)) {
-      $whois .= "Tech Name: " . $json["contactTech"] . "\n";
-    }
-    if (array_key_exists("orgNameTech", $json)) {
-      $whois .= "Tech Organization: " . $json["orgNameTech"] . "\n";
-    }
-    if (array_key_exists("addressTech", $json)) {
-      $whois .= "Tech Address: " . $json["addressTech"] . "\n";
-    }
-    if (array_key_exists("phoneTech", $json)) {
-      $whois .= "Tech Phone: " . $json["phoneTech"] . "\n";
-    }
-    if (array_key_exists("faxTech", $json)) {
-      $whois .= "Tech Fax: " . $json["faxTech"] . "\n";
-    }
-    if (array_key_exists("emailTech", $json)) {
-      $whois .= "Tech Email: " . $json["emailTech"] . "\n";
-    }
+    $whois = "Domain Name: " . ($json["domainName"] ?? "") . "\n";
+    $whois .= "Registrar: " . ($json["registrar"] ?? "") . "\n";
+    $whois .= "Creation Date: " . ($json["creationDate"] ?? "") . "\n";
+    $whois .= "Registrant Organization: " . ($json["orgName"] ?? "") . "\n";
+    $whois .= "Registrant Address: " . ($json["addressOrg"] ?? "") . "\n";
+    $whois .= "Admin Name: " . ($json["contactAdm"] ?? "") . "\n";
+    $whois .= "Admin Organization: " . ($json["orgNameAdm"] ?? "") . "\n";
+    $whois .= "Admin Address: " . ($json["addressAdm"] ?? "") . "\n";
+    $whois .= "Admin Phone: " . ($json["phoneAdm"] ?? "") . "\n";
+    $whois .= "Admin Fax: " . ($json["faxAdm"] ?? "") . "\n";
+    $whois .= "Admin Email: " . ($json["emailAdm"] ?? "") . "\n";
+    $whois .= "Tech Name: " . ($json["contactTech"] ?? "") . "\n";
+    $whois .= "Tech Organization: " . ($json["orgNameTech"] ?? "") . "\n";
+    $whois .= "Tech Address: " . ($json["addressTech"] ?? "") . "\n";
+    $whois .= "Tech Phone: " . ($json["phoneTech"] ?? "") . "\n";
+    $whois .= "Tech Fax: " . ($json["faxTech"] ?? "") . "\n";
+    $whois .= "Tech Email: " . ($json["emailTech"] ?? "") . "\n";
 
     return $whois;
   }
@@ -352,6 +309,80 @@ class WHOISWeb
 
       if ($text) {
         $whois .= "$text\n";
+      }
+    }
+
+    return $whois;
+  }
+
+  private function getGT()
+  {
+    $url = "https://www.gt/sitio/whois.php?dn=" . $this->domain . "&lang=en";
+
+    $response = $this->request($url);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML(str_replace("&nbsp;", " ", $response));
+
+    $whois = "";
+
+    $xPath = new DOMXPath($document);
+    $message = $xPath->query('//div[@class="caja caja-message"]')->item(0);
+
+    if ($message) {
+      return trim(preg_replace("/ {2,}/", "", $message->textContent));
+    }
+
+    $whoisNodeList = $xPath->query('//div[@class="caja caja-whois"]');
+    if ($whoisNodeList->length === 2) {
+      foreach ($whoisNodeList->item(0)->childNodes as $child) {
+        if ($child->nodeName === "div") {
+          $class = $child->attributes->getNamedItem("class")->value;
+          if ($class === "alert alert-success") {
+            $h3 = $xPath->query(".//h3", $child)->item(0);
+            if ($h3) {
+              $domainName = $h3->childNodes->item(0);
+              if ($domainName) {
+                $whois .= "Domain Name: " . trim($domainName->textContent, " \n.") . "\n";
+              }
+
+              $domainStatus = $h3->childNodes->item(1);
+              if ($domainStatus) {
+                $whois .= "Domain Status: " . trim($domainStatus->textContent) . "\n";
+              }
+            }
+          } else if ($class === "alert alert-info") {
+            $whois .= "\n" . trim($child->textContent) . ":\n";
+          } else if ($class === "form-stack") {
+            $expiration = $xPath->query(".//strong", $child)->item(0);
+            if ($expiration) {
+              $whois .= trim(preg_replace(["/\n/", "/ +/"], ["", " "], $expiration->textContent)) . "\n";
+            } else {
+              foreach ($xPath->query('.//div[@class="form-field"]', $child) as $field) {
+                $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
+              }
+            }
+          } else if ($class === "form-field") {
+            foreach ($xPath->query(".//li", $child) as $nameServer) {
+              $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $nameServer->textContent)) . "\n";
+            }
+          }
+        }
+      }
+
+      foreach ($whoisNodeList->item(1)->childNodes as $child) {
+        if ($child->nodeName === "div") {
+          $h4 = $xPath->query(".//h4", $child)->item(0);
+          if ($h4) {
+            $whois .= "\n" . trim($h4->textContent) . ":\n";
+          }
+
+          $fields = $xPath->query('.//div[@class="form-field"]', $child);
+          foreach ($fields as $field) {
+            $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
+          }
+        }
       }
     }
 
@@ -542,34 +573,19 @@ class WHOISWeb
     $whois = "Domain Name: " . $this->domain . "\n";
     if (isset($json["datos"])) {
       $data = $json["datos"];
-      if (array_key_exists("fechaExpiracion", $data)) {
-        $whois .= "Registry Expiry Date: " . $data["fechaExpiracion"] . "\n";
-      }
-      if (array_key_exists("cliente", $data)) {
-        $whois .= "Registrant Name: " . $data["cliente"] . "\n";
-      }
-      if (array_key_exists("direccion", $data)) {
-        $whois .= "Registrant Address: " . $data["direccion"] . "\n";
-      }
+
+      $whois .= "Registry Expiry Date: " . ($data["fechaExpiracion"] ?? "") . "\n";
+      $whois .= "Registrant Name: " . ($data["cliente"] ?? "") . "\n";
+      $whois .= "Registrant Address: " . ($data["direccion"] ?? "") . "\n";
     }
     if (isset($json["contactos"])) {
       $contacts = $json["contactos"];
-      if (array_key_exists("tipoContacto", $contacts)) {
-        $whois .= "Contact Type: " . $contacts["tipoContacto"] . "\n";
-      }
-      if (array_key_exists("nombre", $contacts)) {
-        $whois .= "Contact Name: " . $contacts["nombre"] . "\n";
-      }
-      if (array_key_exists("correoElectronico", $contacts)) {
-        $emails = implode(",", array_column($contacts["correoElectronico"] ?? [], "value"));
-        $whois .= "Contact Email: $emails\n";
-      }
-      if (array_key_exists("telefono", $contacts)) {
-        $whois .= "Contact Phone: " . $contacts["telefono"] . "\n";
-      }
-      if (array_key_exists("celular", $contacts)) {
-        $whois .= "Contact Cellphone: " . $contacts["celular"] . "\n";
-      }
+
+      $whois .= "Contact Type: " . ($contacts["tipoContacto"] ?? "") . "\n";
+      $whois .= "Contact Name: " . ($contacts["nombre"] ?? "") . "\n";
+      $whois .= "Contact Email: " . implode(",", array_column($contacts["correoElectronico"] ?? [], "value")) . "\n";
+      $whois .= "Contact Phone: " . ($contacts["telefono"] ?? "") . "\n";
+      $whois .= "Contact Cellphone: " . ($contacts["celular"] ?? "") . "\n";
     }
 
     return $whois;
@@ -750,51 +766,27 @@ class WHOISWeb
     $whois = "";
     if (isset($json["payload"])) {
       $payload = $json["payload"];
-      if (array_key_exists("Dominio", $payload)) {
-        $whois .= "Domain Name: " . $payload["Dominio"] . "\n";
+
+      $whois .= "Domain Name: " . ($payload["Dominio"] ?? "") . "\n";
+      $whois .= "Updated Date: " . ($payload["fecha_actualizacion"] ?? "") . "\n";
+      $whois .= "Creation Date: " . ($payload["fecha_creacion"] ?? "") . "\n";
+      $whois .= "Registry Expiry Date: " . ($payload["fecha_expiracion"] ?? "") . "\n";
+      $whois .= "Domain Status: " . ($payload["Estatus"] ?? "") . "\n";
+
+      foreach ($payload["NS"] ?? [] as $nameServer) {
+        $whois .= "Name Server: " . $nameServer . "\n";
       }
-      if (array_key_exists("fecha_actualizacion", $payload)) {
-        $whois .= "Updated Date: " . $payload["fecha_actualizacion"] . "\n";
-      }
-      if (array_key_exists("fecha_creacion", $payload)) {
-        $whois .= "Creation Date: " . $payload["fecha_creacion"] . "\n";
-      }
-      if (array_key_exists("fecha_expiracion", $payload)) {
-        $whois .= "Registry Expiry Date: " . $payload["fecha_expiracion"] . "\n";
-      }
-      if (array_key_exists("Estatus", $payload)) {
-        $whois .= "Domain Status: " . $payload["Estatus"] . "\n";
-      }
-      if (isset($payload["NS"])) {
-        foreach ($payload["NS"] as $nameServer) {
-          $whois .= "Name Server: " . $nameServer . "\n";
-        }
-      }
+
       if (isset($payload["titular"]["contacto"])) {
         $contact = $payload["titular"]["contacto"];
-        if (array_key_exists("nombre", $contact)) {
-          $whois .= "Registrant Name: " . $contact["nombre"] . "\n";
-        }
-        if (array_key_exists("direccion1", $contact) && array_key_exists("direccion2", $contact)) {
-          $street = implode(", ", array_filter([$contact["direccion1"], $contact["direccion2"]]));
-          $whois .= "Registrant Street: " . $street . "\n";
-        }
-        if (array_key_exists("ciudad", $contact)) {
-          $whois .= "Registrant City: " . $contact["ciudad"] . "\n";
-        }
-        if (array_key_exists("estado", $contact)) {
-          $whois .= "Registrant State/Province: " . $contact["estado"] . "\n";
-        }
-        if (array_key_exists("ubicacion", $contact)) {
-          $whois .= "Registrant Country: " . $contact["ubicacion"] . "\n";
-        }
-        if (array_key_exists("telefono", $contact) && array_key_exists("telefono_oficina", $contact)) {
-          $phone = implode(", ", array_filter([$contact["telefono"], $contact["telefono_oficina"]]));
-          $whois .= "Registrant Phone: " . $phone . "\n";
-        }
-        if (array_key_exists("email", $contact)) {
-          $whois .= "Registrant Email: " . $contact["email"] . "\n";
-        }
+
+        $whois .= "Registrant Name: " . ($contact["nombre"] ?? "") . "\n";
+        $whois .= "Registrant Street: " . implode(", ", array_filter([$contact["direccion1"] ?? "", $contact["direccion2"] ?? ""])) . "\n";
+        $whois .= "Registrant City: " . ($contact["ciudad"] ?? "") . "\n";
+        $whois .= "Registrant State/Province: " . ($contact["estado"] ?? "") . "\n";
+        $whois .= "Registrant Country: " . ($contact["ubicacion"] ?? "") . "\n";
+        $whois .= "Registrant Phone: " . implode(", ", array_filter([$contact["telefono"] ?? "", $contact["telefono_oficina"] ?? ""])) . "\n";
+        $whois .= "Registrant Email: " . ($contact["email"] ?? "") . "\n";
       }
     } else if (isset($json["mensaje"])) {
       $whois .= $json["mensaje"];

@@ -29,6 +29,7 @@ class ParserFactory
     "gf" => ["gf"],
     "gg" => ["gg"],
     "gm" => ["gm"],
+    "gt" => ["gt"],
     "gw" => ["gw"],
     "hk" => ["hk", "香港"],
     "hm" => ["hm"],
