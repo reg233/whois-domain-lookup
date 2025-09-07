@@ -8,6 +8,7 @@ class WHOISWeb
   public const EXTENSIONS = [
     "bb",
     "bt",
+    "cu",
     "cy",
     "dz",
     "gm",
@@ -150,6 +151,56 @@ class WHOISWeb
 
         $whois .= "\n";
       }
+    }
+
+    return $whois;
+  }
+
+  private function getCU()
+  {
+    $url = "https://www.nic.cu/dom_search.php";
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => ["domsrch" => $this->domain],
+      CURLOPT_HTTPHEADER => ["User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"],
+    ];
+
+    $response = $this->request($url, $options);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML('<?xml encoding="UTF-8"?>' . $response);
+
+    $whois = "";
+
+    $xPath = new DOMXPath($document);
+    $message = $xPath->query('//td[@class="commontextgray" and @height="5"]')->item(0);
+
+    if ($message) {
+      return trim($message->textContent);
+    }
+
+    foreach ($xPath->query('//table[@id="whitetbl"]') as $table) {
+      foreach ($xPath->query("./tr", $table) as $tr) {
+        $tds = $xPath->query("./td", $tr);
+        if ($tds->length === 3) {
+          $childTable = $xPath->query("./table", $tds->item(1))->item(0);
+          if ($childTable) {
+            $childTds = $xPath->query(".//td", $childTable);
+            if ($childTds->length === 2) {
+              $key = trim($childTds->item(0)->textContent);
+              $value = trim($childTds->item(1)->textContent);
+
+              $whois .= "$key $value\n";
+            }
+          } else {
+            $whois .= trim($tds->item(1)->textContent) . "\n";
+          }
+        }
+      }
+
+      $whois .= "\n";
     }
 
     return $whois;

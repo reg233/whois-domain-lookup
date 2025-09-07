@@ -13,7 +13,7 @@ class ParserBE extends Parser
 
   protected function getStatusRegExp()
   {
-    return "/flags:(.+?)(?=\r\n\r\n)/is";
+    return "/Flags:(.+?)(?=\r\n\r\n)/s";
   }
 
   protected function getNameServersRegExp()

@@ -19,6 +19,7 @@ class ParserFactory
     "cl" => ["cl"],
     "cn" => ["cn", "中国", "中國"],
     "cr" => ["cr"],
+    "cu" => ["cu"],
     "cz" => ["cz"],
     "dk" => ["dk", "tj"],
     "ee" => ["ee"],
