@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-08-26T22:00:01Z",
+  "publication": "2025-09-08T20:00:01Z",
   "services": [
     [
       [
@@ -2281,14 +2281,6 @@
     ],
     [
       [
-        "diy"
-      ],
-      [
-        "https://rdap.nic.diy/rdap/"
-      ]
-    ],
-    [
-      [
         "download"
       ],
       [
@@ -2441,26 +2433,10 @@
     ],
     [
       [
-        "food"
-      ],
-      [
-        "https://rdap.nic.food/rdap/"
-      ]
-    ],
-    [
-      [
         "ford"
       ],
       [
         "https://rdap.nic.ford/"
-      ]
-    ],
-    [
-      [
-        "forum"
-      ],
-      [
-        "https://rdap.nic.forum/rdap/"
       ]
     ],
     [
@@ -2841,14 +2817,6 @@
     ],
     [
       [
-        "lifestyle"
-      ],
-      [
-        "https://rdap.nic.lifestyle/rdap/"
-      ]
-    ],
-    [
-      [
         "lilly"
       ],
       [
@@ -2861,14 +2829,6 @@
       ],
       [
         "https://rdap.nic.lincoln/"
-      ]
-    ],
-    [
-      [
-        "living"
-      ],
-      [
-        "https://rdap.nic.living/rdap/"
       ]
     ],
     [
@@ -3725,14 +3685,6 @@
       ],
       [
         "https://rdap.nic.tv/"
-      ]
-    ],
-    [
-      [
-        "vana"
-      ],
-      [
-        "https://rdap.nic.vana/rdap/"
       ]
     ],
     [
@@ -4804,6 +4756,7 @@
     ],
     [
       [
+        "forum",
         "observer",
         "realty"
       ],
@@ -4962,6 +4915,26 @@
       ],
       [
         "https://rdap.tonicregistry.to/rdap/"
+      ]
+    ],
+    [
+      [
+        "click",
+        "country",
+        "diy",
+        "food",
+        "gift",
+        "hiv",
+        "lifestyle",
+        "link",
+        "living",
+        "property",
+        "sexy",
+        "trust",
+        "vana"
+      ],
+      [
+        "https://rdap.tucowsregistry.net/rdap/"
       ]
     ],
     [
@@ -5401,15 +5374,7 @@
     ],
     [
       [
-        "click",
-        "country",
-        "gift",
-        "hiv",
-        "juegos",
-        "link",
-        "property",
-        "sexy",
-        "trust"
+        "juegos"
       ],
       [
         "https://whois.uniregistry.net/rdap/"
