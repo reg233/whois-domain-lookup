@@ -39,6 +39,7 @@ class ParserFactory
     "im" => ["im"],
     "it" => ["it"],
     "je" => ["je"],
+    "jo" => ["jo"],
     "jp" => ["jp"],
     "kg" => ["kg"],
     "kr" => ["kr", "한국"],

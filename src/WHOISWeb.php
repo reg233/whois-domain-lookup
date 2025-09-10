@@ -15,6 +15,7 @@ class WHOISWeb
     "gt",
     "gw",
     "hm",
+    "jo",
     "lk",
     "mt",
     "ni",
@@ -43,6 +44,13 @@ class WHOISWeb
   private function request($url, $options = [], $returnArray = false)
   {
     $curl = curl_init($url);
+
+    $headers = array_filter(
+      $options[CURLOPT_HTTPHEADER] ?? [],
+      fn($header) => !str_starts_with($header, "User-Agent:"),
+    );
+    $headers[] = "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36";
+    $options[CURLOPT_HTTPHEADER] = $headers;
 
     $defaultOptions = [
       CURLOPT_RETURNTRANSFER => true,
@@ -163,7 +171,6 @@ class WHOISWeb
     $options = [
       CURLOPT_POST => true,
       CURLOPT_POSTFIELDS => ["domsrch" => $this->domain],
-      CURLOPT_HTTPHEADER => ["User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"],
     ];
 
     $response = $this->request($url, $options);
@@ -541,6 +548,125 @@ class WHOISWeb
         } else {
           $whois .= $child->textContent;
         }
+      }
+    }
+
+    return $whois;
+  }
+
+  private function getJO()
+  {
+    $domainParts = explode(".", $this->domain, 2);
+
+    $url = "https://dns.jo/FirstPageen.aspx";
+
+    $options = [CURLOPT_HEADER => true];
+
+    ["response" => $response, "code" => $code, "headerSize" => $headerSize] = $this->request($url, $options, true);
+
+    if ($code !== 200) {
+      return "";
+    }
+
+    $headers = substr($response, 0, $headerSize);
+    $body = substr($response, $headerSize);
+
+    preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
+    $cookies = implode("; ", $matches[1]);
+
+    libxml_use_internal_errors(true);
+    $document = new DOMDocument();
+    $document->loadHTML($body);
+
+    $xPath = new DOMXPath($document);
+    $expression = "//select[@id='ddl']/option[normalize-space(text())='." . $domainParts[1] .  "']";
+    $ddl = $xPath->query($expression)->item(0)?->attributes->getNamedItem("value")?->value;
+
+    $viewState = $document->getElementById("__VIEWSTATE")?->attributes->getNamedItem("value")?->value;
+    $viewStateGenerator = $document->getElementById("__VIEWSTATEGENERATOR")?->attributes->getNamedItem("value")?->value;
+    $viewStateEncrypted = $document->getElementById("__VIEWSTATEENCRYPTED")?->attributes->getNamedItem("value")?->value;
+    $eventValidation = $document->getElementById("__EVENTVALIDATION")?->attributes->getNamedItem("value")?->value;
+
+    $data = [
+      "ctl00" => "ResultsUpdatePanel|b1",
+      "TextBox1" => $domainParts[0],
+      "ddl" => $ddl,
+      "b1" => "WhoIs",
+      "__ASYNCPOST" => "true",
+      "__EVENTTARGET" => "",
+      "__EVENTARGUMENT" => "",
+      "__VIEWSTATE" => $viewState,
+      "__VIEWSTATEGENERATOR" => $viewStateGenerator,
+      "__VIEWSTATEENCRYPTED" => $viewStateEncrypted,
+      "__EVENTVALIDATION" => $eventValidation,
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+      CURLOPT_COOKIE => $cookies,
+    ];
+
+    ["response" => $response, "code" => $code] = $this->request($url, $options, true);
+
+    if ($code !== 200) {
+      return "";
+    }
+
+    $document->loadHTML($response);
+
+    $result = trim($document->getElementById("Result")?->textContent ?? "");
+    if ($result) {
+      return $result;
+    }
+
+    $data = [
+      "ctl00" => "ResultsUpdatePanel|WhoIs\$ctl02\$link",
+      "TextBox1" => $domainParts[0],
+      "ddl" => $ddl,
+      "__ASYNCPOST" => "true",
+      "__EVENTTARGET" => "WhoIs\$ctl02\$link",
+    ];
+
+    preg_match_all("/\|hiddenField\|([^|]+)\|([^|]*)\|/", $response, $matches, PREG_SET_ORDER);
+
+    foreach ($matches as $match) {
+      if ($match[1] !== "__EVENTTARGET") {
+        $data[$match[1]] = $match[2];
+      }
+    }
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+      CURLOPT_COOKIE => $cookies,
+    ];
+
+    ["response" => $response, "code" => $code] = $this->request($url, $options, true);
+
+    if ($code !== 200) {
+      return "";
+    }
+
+    $url = "https://dns.jo/WhoisDetails.aspx";
+
+    $options = [CURLOPT_COOKIE => $cookies];
+
+    $response = $this->request($url, $options);
+
+    $document->loadHTML($response);
+
+    $whois = "";
+
+    $xPath = new DOMXPath($document);
+    $spans = $xPath->query("//span[starts-with(@id, 'ContentPlaceHolder1_')]");
+
+    for ($i = 0; $i < $spans->length; $i += 2) {
+      $key = trim($spans->item($i)->textContent ?? "");
+      $value = trim($spans->item($i + 1)?->textContent ?? "");
+
+      if ($key) {
+        $whois .= "$key: $value\n";
       }
     }
 

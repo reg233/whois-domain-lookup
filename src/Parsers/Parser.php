@@ -181,6 +181,7 @@ class Parser
   private const DOMAIN_KEYWORDS = [
     "domain name", // com
     "domain", // ar
+    "dominio", // cu
     "domainname", // lu
     "domain name \(utf8\)", // укр
   ];
