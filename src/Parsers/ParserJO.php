@@ -3,6 +3,6 @@ class ParserJO extends Parser
 {
   protected function getNameServersRegExp()
   {
-    return $this->getBaseRegExp("(?:primary|secondary) server\d{,2}");
+    return $this->getBaseRegExp("(?:primary|secondary) server\d{0,2}");
   }
 }
