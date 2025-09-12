@@ -221,7 +221,13 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
 <body>
   <header>
     <div>
-      <h1><a href="<?= BASE; ?>"><?= SITE_TITLE ?></a></h1>
+      <h1>
+        <?php if ($domain): ?>
+          <a href="<?= BASE; ?>"><?= SITE_TITLE ?></a>
+        <?php else: ?>
+          <?= SITE_TITLE ?>
+        <?php endif; ?>
+      </h1>
       <form action="" id="form" method="get">
         <div class="search-box">
           <input
