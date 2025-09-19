@@ -1,3 +1,17 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   background-color: #ffffff;
   color: #1f1f1f;
@@ -11,6 +25,7 @@ body {
   z-index: 0;
 }
 
+/* 网格背景 */
 body::before {
   content: "";
   position: fixed;
@@ -26,56 +41,6 @@ body::before {
   background-size: 40px 40px;
   background-color: #ffffff;
   opacity: 1;
-}
-
-/* 输入框采用一致的网格风格 */
-.search-input {
-  background-color: #ffffff;
-  border: 1px solid #1f1f1f;
-  border-radius: 4px;
-  color: inherit;
-  font-family: inherit;
-  font-size: 16px;
-  height: 48px;
-  line-height: 1.5;
-  outline: 3px solid transparent;
-  outline-offset: 0;
-  padding: 8px 36px 8px 16px;
-  transition: border-color 190ms ease, outline-color 190ms ease;
-  width: 100%;
-  /* 网格背景并略淡化 */
-  background-image: 
-    linear-gradient(to right, #ededed 1px, transparent 1px),
-    linear-gradient(to bottom, #ededed 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-blend-mode: lighten;
-}
-
-.search-input::placeholder {
-  color: #757575;
-}
-
-.search-input:focus {
-  border: 1px solid #19cccc;
-}
-
-.search-input:hover {
-  border: 1px solid #19cccc;
-}
-
-/* 其余内容保持不变 */
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -moz-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-text-size-adjust: 100%;
 }
 
 body::selection,
@@ -176,6 +141,35 @@ form {
 
 .search-box {
   position: relative;
+}
+
+/* 输入框：无背景，仅边框和内容，网格背景穿透 */
+.search-input {
+  background: none;
+  border: 2px solid #19cccc;
+  border-radius: 8px;
+  color: inherit;
+  font-family: inherit;
+  font-size: 16px;
+  height: 48px;
+  line-height: 1.5;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  padding: 8px 36px 8px 16px;
+  transition: border-color 190ms ease, outline-color 190ms ease;
+  width: 100%;
+}
+
+.search-input::placeholder {
+  color: #757575;
+}
+
+.search-input:focus {
+  border: 2px solid #19cccc;
+}
+
+.search-input:hover {
+  border: 2px solid #19cccc;
 }
 
 .search-clear {
