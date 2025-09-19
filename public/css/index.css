@@ -43,35 +43,15 @@ body::before {
   opacity: 1;
 }
 
-/* header也增加网格背景，取消纯色填充 */
+/* header区域无任何背景，直接显示body网格 */
 header {
-  /* 之前是 background-color: #e1f9f9; */
-  /* 现在用和body一致的网格背景，并加蓝色半透明叠加 */
-  position: relative;
+  /* background-color: #e1f9f9;  <-- 删除 */
   height: 364px;
   padding-bottom: 32px;
   padding-top: 32px;
-  background: none; /* 取消原始纯色背景 */
-
-  /* 新增伪元素实现网格和浅蓝色叠加 */
-}
-header::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 0; right: 0; bottom: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to right, #eaeaea 1px, transparent 1px),
-    linear-gradient(to bottom, #eaeaea 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-color: #e1f9f9;
-  opacity: 1;
-  border-radius: inherit;
+  /* 不加任何背景，直接用body的网格 */
 }
 header > div {
-  position: relative;
-  z-index: 1;
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -98,6 +78,18 @@ h1 a {
   text-decoration: none;
 }
 
+/* 原始字体和链接颜色保持不变 */
+a {
+  color: #1f1f1f;
+  outline: 3px solid transparent;
+  outline-offset: 4px;
+  transition: color 190ms ease, outline-color 190ms ease;
+}
+
+a:hover {
+  color: #139a9a;
+}
+
 form {
   display: grid;
   gap: 8px;
@@ -109,7 +101,7 @@ form {
   position: relative;
 }
 
-/* 输入框：无背景，仅边框和内容，网格背景穿透 */
+/* 搜索框无任何背景色，只保留边框和内容 */
 .search-input {
   background: none;
   border: 2px solid #19cccc;
