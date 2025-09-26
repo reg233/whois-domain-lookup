@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-09-15T17:00:02Z",
+  "publication": "2025-09-25T22:00:01Z",
   "services": [
     [
       [
@@ -1319,6 +1319,7 @@
         "jewelry",
         "jio",
         "jll",
+        "juegos",
         "juniper",
         "kaufen",
         "kerryhotels",
@@ -5356,14 +5357,6 @@
       ],
       [
         "https://whois.tznic.or.tz/rdap/"
-      ]
-    ],
-    [
-      [
-        "juegos"
-      ],
-      [
-        "https://whois.uniregistry.net/rdap/"
       ]
     ],
     [
