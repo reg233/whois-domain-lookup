@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-09-25T22:00:01Z",
+  "publication": "2025-10-21T22:00:02Z",
   "services": [
     [
       [
@@ -1223,7 +1223,6 @@
         "doctor",
         "dog",
         "domains",
-        "dunlop",
         "edeka",
         "education",
         "email",
