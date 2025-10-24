@@ -778,7 +778,7 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
 
           const data = await response.json();
 
-          if (data.code !== "200") {
+          if (data.code !== 200) {
             throw new Error();
           }
 

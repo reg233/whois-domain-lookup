@@ -59,8 +59,55 @@ docker compose up -d
 Requirements:
 
 - PHP >= 8.1
+- PHP curl extension
+- PHP mbstring extension
 
 Download the [release](https://github.com/reg233/whois-domain-lookup/releases/latest/download/whois-domain-lookup.zip), unzip it, and then upload it to the root directory of your website.
+
+### Nginx
+
+The basic configuration:
+
+```
+server {
+  listen 80;
+  server_name localhost;
+
+  root /var/www/whois-domain-lookup;
+
+  merge_slashes off;
+
+  location / {
+    try_files $uri @rewrite_index;
+  }
+
+  location @rewrite_index {
+    rewrite ^/(.*)$ /src/index.php?domain=$1&$args last;
+  }
+
+  location ^~ /api/ {
+    rewrite ^/api/(.*)$ /src/index.php?domain=$1&json=1&$args last;
+  }
+
+  location = /login {
+    rewrite ^ /src/login.php?$args last;
+  }
+
+  location = /manifest {
+    rewrite ^ /src/manifest.php?$args last;
+  }
+
+  location ~ \.php$ {
+    fastcgi_pass localhost:9000;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    include fastcgi_params;
+  }
+
+  location ~ /\.ht {
+    deny all;
+  }
+}
+```
 
 ## Env Variables
 
