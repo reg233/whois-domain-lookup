@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2025-10-26_13-56-05_UTC
-// COMMIT: 30f4f4244cfef423c0150cfab53a5d89bc734f65
+// VERSION: 2025-10-27_12-21-54_UTC
+// COMMIT: b8816d09172f8f9ae8a51b4f8b22b20958291fb1
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -15627,8 +15627,9 @@ p.tawkto.email
 tche.br
 
 // team.blue : https://team.blue
-// Submitted by Cedric Dubois <cedric.dubois@team.blue>
+// Submitted by Cedric Dubois <psl-sh@team.blue>
 site.tb-hosting.com
+directwp.eu
 
 // Teckids e.V. : https://www.teckids.org
 // Submitted by Dominik George <dominik.george@teckids.org>
