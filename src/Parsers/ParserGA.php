@@ -11,14 +11,14 @@ class ParserGA extends Parser
     return $this->getBaseRegExp("date de création");
   }
 
-  protected function getUpdatedDateRegExp()
-  {
-    return $this->getBaseRegExp("dernière modification");
-  }
-
   protected function getExpirationDateRegExp()
   {
     return $this->getBaseRegExp("date d'expiration");
+  }
+
+  protected function getUpdatedDateRegExp()
+  {
+    return $this->getBaseRegExp("dernière modification");
   }
 
   protected function getStatusRegExp()
