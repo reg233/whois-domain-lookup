@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-10-21T22:00:02Z",
+  "publication": "2025-11-06T23:00:01Z",
   "services": [
     [
       [
@@ -1122,7 +1122,6 @@
         "allstate",
         "aol",
         "apartments",
-        "apple",
         "archi",
         "army",
         "arte",
@@ -1805,6 +1804,14 @@
       ],
       [
         "https://rdap.nic.anz/"
+      ]
+    ],
+    [
+      [
+        "apple"
+      ],
+      [
+        "https://rdap.nic.apple/"
       ]
     ],
     [
