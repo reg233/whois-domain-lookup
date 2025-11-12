@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2025-11-10_14-16-58_UTC
-// COMMIT: c95fd3ae4c0f4ca1e454cbc6a374136f3f5c649a
+// VERSION: 2025-11-11_07-07-54_UTC
+// COMMIT: 4eb9fbbdea1ba430c5040e7bd6b5ac2748b210be
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -15806,6 +15806,10 @@ lima.zone
 *.transurl.eu
 site.transip.me
 *.transurl.nl
+
+// Tunnelmole: https://tunnelmole.com
+// Submitted by Robbie Cahill <support@tunnelmole.com>
+tunnelmole.net
 
 // TuxFamily : http://tuxfamily.org
 // Submitted by TuxFamily administrators <adm@staff.tuxfamily.org>
