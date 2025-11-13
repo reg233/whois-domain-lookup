@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2025-11-11_07-07-54_UTC
-// COMMIT: 4eb9fbbdea1ba430c5040e7bd6b5ac2748b210be
+// VERSION: 2025-11-12_09-08-53_UTC
+// COMMIT: 7fbd910208bc53709cbdb678e136dc40af036190
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -12907,6 +12907,10 @@ discordsez.com
 // Submitted by Calvin Browne <calvin@dns.business>
 jozi.biz
 
+// DNSHE : https://de5.net
+// Submitted by DNSHE Team <support@dnshe.com>
+de5.net
+
 // DNShome : https://www.dnshome.de/
 // Submitted by Norbert Auler <mail@dnshome.de>
 dnshome.de
@@ -14593,6 +14597,10 @@ ui.nabu.casa
 // Needle Tools GmbH : https://needle.tools
 // Submitted by Felix Herbst <security@needle.tools>
 needle.run
+
+// Neo : https://www.neo.space
+// Submitted by Ankit Kulkarni <devops@co.site>
+co.site
 
 // Net at Work Gmbh : https://www.netatwork.de
 // Submitted by Jan Jaeschke <jan.jaeschke@netatwork.de>
