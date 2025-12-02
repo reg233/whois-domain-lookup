@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2025-11-06T23:00:01Z",
+  "publication": "2025-12-01T19:00:01Z",
   "services": [
     [
       [
@@ -1720,6 +1720,14 @@
     ],
     [
       [
+        "airtel"
+      ],
+      [
+        "https://rdap.nic.airtel/"
+      ]
+    ],
+    [
+      [
         "ally"
       ],
       [
@@ -1948,6 +1956,14 @@
       ],
       [
         "https://rdap.nic.berlin/v1/"
+      ]
+    ],
+    [
+      [
+        "bharti"
+      ],
+      [
+        "https://rdap.nic.bharti/"
       ]
     ],
     [
@@ -5147,22 +5163,6 @@
       ],
       [
         "https://restwhois.ngtld.cn/"
-      ]
-    ],
-    [
-      [
-        "airtel"
-      ],
-      [
-        "https://tld-rdap.verisign.com/airtel/v1/"
-      ]
-    ],
-    [
-      [
-        "bharti"
-      ],
-      [
-        "https://tld-rdap.verisign.com/bharti/v1/"
       ]
     ],
     [
