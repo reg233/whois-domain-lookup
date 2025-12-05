@@ -324,50 +324,53 @@ class WHOISWeb
 
   private function getGM()
   {
-    $url = "https://www.nic.gm/nic-scripts/checkdom.aspx?dname=" . $this->domain;
+    $domainParts = explode(".", $this->domain, 2);
 
-    $response = $this->request($url);
+    $url = "https://www.nic.gm/NIC2/scripts/checkdom.aspx?dname=" . $domainParts[0];
 
-    libxml_use_internal_errors(true);
-    $document = new DOMDocument();
-    $document->loadHTML($response);
+    $options = [
+      CURLOPT_FOLLOWLOCATION => false,
+      CURLOPT_HEADER => true,
+      CURLOPT_NOBODY => true,
+    ];
+
+    ["response" => $response, "headerSize" => $headerSize] = $this->request($url, $options, true);
+
+    $headers = substr($response, 0, $headerSize);
 
     $whois = "";
 
-    $tds = $document->getElementsByTagName("td");
-    foreach ($tds as $td) {
-      $text = "";
+    if (str_contains($headers, "/NIC2/whois-available.html")) {
+      $whois .= "No match for \"{$this->domain}\".\n";
+    } else {
+      $url = "https://www.nic.gm/NIC2/REG/login.aspx?whois=" . $domainParts[0];
 
-      foreach ($td->childNodes as $child) {
-        switch ($child->nodeName) {
-          case "b":
-          case "h":
-          case "#text":
-            $textContent = trim($child->textContent);
-            if ($textContent) {
-              $text .= $text ? " $textContent" : $textContent;
-            }
-            break;
-          case "p":
-            $text = "";
-            foreach ($child->childNodes as $c) {
-              if ($c->nodeName !== "a") {
-                $text .= $c->textContent;
-              }
-            }
-            $text = trim($text);
-            if (str_starts_with($text, "Domain name:")) {
-              $text = "$text.gm";
-            }
-            $whois .= str_replace("\n", " ", $text) . "\n";
-            $text = "";
-            break;
-        }
-      }
+      $response = $this->request($url);
 
-      if ($text) {
-        $whois .= "$text\n";
+      if ($response) {
+        $array = explode(";", $response);
+
+        $whois .= "Domain Name: {$this->domain}\n";
+        $whois .= "Registrar: {$array[2]}\n";
+        $whois .= "Creation Date: {$array[11]}\n";
+        $whois .= "Registrant Name: {$array[1]}\n";
+        $whois .= "Admin Name: {$array[3]}\n";
+        $whois .= "Admin Organization: {$array[4]}\n";
+        $whois .= "Tech Name: {$array[5]}\n";
+        $whois .= "Tech Organization: {$array[6]}\n";
+        $whois .= "Name Server: {$array[7]}\n";
+        $whois .= "Name Server: {$array[8]}\n";
+        $whois .= "Name Server: {$array[9]}\n";
+        $whois .= "Name Server: {$array[10]}\n";
       }
+    }
+
+    $url = "https://www.nic.gm/NIC2/motd.txt";
+
+    $response = $this->request($url);
+
+    if ($response) {
+      $whois .= ">>> Last update of whois database: " . trim($response) . " <<<";
     }
 
     return $whois;
@@ -675,7 +678,7 @@ class WHOISWeb
 
   private function getLK()
   {
-    $url = "https://www.domains.lk/wp-content/themes/bridge-child/getDomainData.php?domainname=" . $this->domain;
+    $url = "https://register.domains.lk/proxy/domains/single-search?keyword=" . $this->domain;
 
     $response = $this->request($url);
 
@@ -683,31 +686,21 @@ class WHOISWeb
 
     $whois = "";
 
-    $available = $json["Required"]["Available"] ?? -1;
-    $message = $json["Message"] ?? "";
+    $availability = $json["result"]["domainAvailability"] ?? null;
 
-    if ($available === 0) {
-      $messageCode = $json["MessageCode"] ?? -1;
-      if ($messageCode === 105 || $messageCode === 106) {
-        $domain = $json["DomainName"] ?? "";
+    if ($availability) {
+      $whois .= "Message: " . ($availability["message"] ?? "") . "\n";
+      $whois .= "Domain Name: " . ($availability["domainName"] ?? "") . "\n";
 
-        $expiryDate = trim(explode("-", $json["ExpireDate"] ?? "")[1] ?? "");
-        $expiryDate = DateTime::createFromFormat("l, jS F, Y", $expiryDate);
-        $expiryDate = $expiryDate ? $expiryDate->format("Y-m-d") : "";
+      $domainInfo = $availability["domainInfo"] ?? null;
+      if ($domainInfo) {
+        $expireDate = $domainInfo["expireDate"] ?? "";
+        $expireDate = DateTime::createFromFormat("l, jS F, Y", $expireDate);
+        $expireDate = $expireDate ? $expireDate->format("Y-m-d") : "";
+        $whois .= "Registry Expiry Date: " . $expireDate . "\n";
 
-        if ($messageCode === 105) {
-          $whois .= "$domain is registered\n\n";
-        } else {
-          $whois .= "$domain is suspended\n\n";
-        }
-        $whois .= "Domain Name: $domain\n";
-        $whois .= "Registry Expiry Date: " . $expiryDate . "\n";
-        $whois .= "Registrant Name: " . trim(explode("-", $message)[1] ?? "") . "\n";
-      } else {
-        $whois = $message;
+        $whois .= "Registrant Name: " . ($domainInfo["registeredTo"] ?? "") . "\n";
       }
-    } else if ($available === 1) {
-      $whois = $message;
     }
 
     return $whois;
