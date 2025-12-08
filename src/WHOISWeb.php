@@ -45,17 +45,11 @@ class WHOISWeb
   {
     $curl = curl_init($url);
 
-    $headers = array_filter(
-      $options[CURLOPT_HTTPHEADER] ?? [],
-      fn($header) => !str_starts_with($header, "User-Agent:"),
-    );
-    $headers[] = "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36";
-    $options[CURLOPT_HTTPHEADER] = $headers;
-
     $defaultOptions = [
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_FOLLOWLOCATION => true,
       CURLOPT_TIMEOUT => 10,
+      CURLOPT_USERAGENT => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
     ];
 
     curl_setopt_array($curl, array_replace($defaultOptions, $options));

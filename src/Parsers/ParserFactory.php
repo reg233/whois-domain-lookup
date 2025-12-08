@@ -4,7 +4,6 @@ class ParserFactory
   private static $extensionToClassSuffix = [
     "am" => ["am", "հայ"],
     "ar" => ["ar"],
-    "as" => ["as"],
     "at" => ["at"],
     "aw" => ["aw", "nl"],
     "ax" => ["ax"],
