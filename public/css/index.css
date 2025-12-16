@@ -420,7 +420,6 @@ button.message-tag > span {
   line-height: 1.5;
   outline: 3px solid transparent;
   overflow: auto;
-  padding: 16px;
   transition: all 190ms ease;
 }
 
@@ -447,7 +446,9 @@ button.message-tag > span {
 }
 
 code {
+  display: inline-block;
   font-family: inherit;
+  margin: 16px;
 }
 
 code a {

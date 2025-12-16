@@ -211,7 +211,9 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
   <title><?= ($domain ? "$domain | " : "") . SITE_TITLE ?></title>
   <link rel="stylesheet" href="public/css/global.css">
   <link rel="stylesheet" href="public/css/index.css">
-  <link rel="stylesheet" href="public/css/json.css">
+  <?php if ($rdapData): ?>
+    <link rel="stylesheet" href="public/css/json-viewer.css">
+  <?php endif; ?>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap">
@@ -536,10 +538,10 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
     <?php if ($whoisData || $rdapData): ?>
       <section class="raw-data">
         <?php if ($whoisData): ?>
-          <pre class="raw-data-whois" id="raw-data-whois" tabindex="0"><?= $whoisData; ?></pre>
+          <pre class="raw-data-whois" id="raw-data-whois" tabindex="0"><code><?= $whoisData; ?></code></pre>
         <?php endif; ?>
         <?php if ($rdapData): ?>
-          <pre class="raw-data-rdap" id="raw-data-rdap"><code class="language-json"><?= $rdapData; ?></code></pre>
+          <pre class="raw-data-rdap" id="raw-data-rdap" tabindex="0"><code><?= $rdapData; ?></code></pre>
         <?php endif; ?>
       </section>
     <?php endif; ?>
@@ -664,9 +666,11 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
     </script>
     <script src="public/js/popper.min.js" defer></script>
     <script src="public/js/tippy-bundle.umd.min.js" defer></script>
+    <?php if ($rdapData): ?>
+      <script src="public/js/json-viewer.js" defer></script>
+    <?php endif; ?>
     <script src="public/js/linkify.min.js" defer></script>
     <script src="public/js/linkify-html.min.js" defer></script>
-    <script src="public/js/prism.js" defer></script>
     <script>
       window.addEventListener("DOMContentLoaded", function() {
         tippy.setDefaultProps({
@@ -739,6 +743,10 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
             dataSourceRDAP.classList.add("segmented-item-selected");
             rawDataRDAP.style.display = "block";
           });
+        }
+
+        if (rawDataRDAP) {
+          setupJSONViewer(rawDataRDAP);
         }
 
         function linkifyRawData(element) {
