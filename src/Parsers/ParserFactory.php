@@ -46,6 +46,7 @@ class ParserFactory
     "lt" => ["lt"],
     "lu" => ["lu"],
     "lv" => ["lv"],
+    "mc" => ["mc"],
     "md" => ["md"],
     "mk" => ["mk", "мкд"],
     "mo" => ["mo", "澳門"],
