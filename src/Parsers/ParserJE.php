@@ -1,5 +1,5 @@
 <?php
-class ParserJE extends ParserAS
+class ParserJE extends ParserGG
 {
   protected $timezone = "Europe/Jersey";
 }
