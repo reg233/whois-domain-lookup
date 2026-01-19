@@ -34,6 +34,17 @@
   "ga": "whois.nic.ga",
   "web.in": "whois.centralnic.com",
   "qzz.io": "whois.digitalplat.org",
+  "int.al": "whois43.publiczone.org",
+  "nyc.mn": "whois43.publiczone.org",
+  "cn.st": "whois43.publiczone.org",
+  "ac.hm": "whois43.publiczone.org",
+  "com.cn.st": "whois43.publiczone.org",
+  "dev.cn.st": "whois43.publiczone.org",
+  "me.cn.st": "whois43.publiczone.org",
+  "edu.cn.st": "whois43.publiczone.org",
+  "net.cn.st": "whois43.publiczone.org",
+  "ngo.cn.st": "whois43.publiczone.org",
+  "org.cn.st": "whois43.publiczone.org",
   "jp": {
     "host": "whois.jprs.jp",
     "query": "{domain}/e\r\n"
