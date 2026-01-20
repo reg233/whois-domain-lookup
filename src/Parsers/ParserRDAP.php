@@ -239,9 +239,9 @@ class ParserRDAP extends Parser
       return;
     }
 
-    $this->nameServers = array_map(
+    $this->nameServers = array_values(array_unique(array_map(
       fn($item) => idn_to_utf8(strtolower(explode(" ", $item["ldhName"])[0])),
-      array_values(array_unique($this->json["nameservers"])),
-    );
+      $this->json["nameservers"],
+    )));
   }
 }
