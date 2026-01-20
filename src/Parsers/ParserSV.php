@@ -1,6 +1,11 @@
 <?php
 class ParserSV extends ParserBO
 {
+  protected function getReservedRegExp()
+  {
+    return "/no se puede registrar/i";
+  }
+
   protected function getCreationDateRegExp()
   {
     return $this->getBaseRegExp("fecha registro");

@@ -12,7 +12,7 @@ class ParserUA1 extends Parser
     return "/domain servers in listed order:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

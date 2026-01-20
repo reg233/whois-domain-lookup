@@ -3,18 +3,15 @@ class ParserCR extends Parser
 {
   protected $timezone = "America/Costa_Rica";
 
-  protected function getUpdatedDate()
+  protected function getUpdatedDate($subject = null)
   {
-    $originalData = $this->data;
-
-    $updatedDate = "";
-
+    // Some domain names do not have an updated date, such as decathlon.cr.
+    // In such cases, the retrieved update date is incorrect,
+    // so it needs to be extracted from the specified string.
     if (preg_match("/^(.+?)contact:/is", $this->data, $matches)) {
-      $this->data = $matches[1];
-      $updatedDate = parent::getUpdatedDate();
-      $this->data = $originalData;
+      return parent::getUpdatedDate($matches[1]);
     }
 
-    return $updatedDate;
+    return "";
   }
 }

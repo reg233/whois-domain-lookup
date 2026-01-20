@@ -6,7 +6,7 @@ class ParserRU extends Parser
     return $this->getBaseRegExp("state");
   }
 
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
     return $this->getStatusFromExplode(",");
   }

@@ -5,6 +5,6 @@ class ParserNP extends Parser
 
   protected function getNameServersRegExp()
   {
-    return $this->getBaseRegExp("primary name server|secondary name server");
+    return $this->getBaseRegExp("(?:primary|secondary) name server");
   }
 }

@@ -17,7 +17,7 @@ class ParserNETZA extends Parser
     return "/domain name servers listed in order:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

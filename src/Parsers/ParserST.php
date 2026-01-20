@@ -22,4 +22,9 @@ class ParserST extends Parser
   {
     return $this->getBaseRegExp("updated-date");
   }
+
+  protected function getStatus($subject = null)
+  {
+    return $this->getStatusFromExplode(",");
+  }
 }

@@ -16,7 +16,7 @@ class ParserTT extends Parser
     return $this->getBaseRegExp("dns hostnames");
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode(",");
   }

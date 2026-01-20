@@ -8,7 +8,7 @@ class ParserUK extends Parser
 
   protected function getRegistrarRegExp()
   {
-    return "/registrar:(.+)(?=url)/is";
+    return "/registrar:\r\n(.+) \[/i";
   }
 
   protected function getRegistrarURLRegExp()
@@ -21,18 +21,18 @@ class ParserUK extends Parser
     return "/registration status:(.+?)(?=\r\n\r\n)/is";
   }
 
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
-    return $this->getStatusFromExplode("\n");
+    return $this->getStatusFromExplode("\r\n");
   }
 
   protected function getNameServersRegExp()
   {
-    return "/name servers:(.+?)(?=\r\n\r\n)/is";
+    return "/name servers:\r\n {8}(?!no name servers listed\.)(.+?)(?=\r\n\r\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
-    return $this->getNameServersFromExplode("\n");
+    return $this->getNameServersFromExplode("\r\n");
   }
 }

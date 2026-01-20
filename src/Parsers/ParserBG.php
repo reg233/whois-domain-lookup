@@ -1,7 +1,7 @@
 <?php
 class ParserBG extends Parser
 {
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
     return $this->getStatusFromExplode(",");
   }
@@ -11,7 +11,7 @@ class ParserBG extends Parser
     return "/name server information:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

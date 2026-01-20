@@ -13,6 +13,6 @@ class ParserEE extends Parser
 
   protected function getRegistrarURLRegExp()
   {
-    return $this->getBaseRegExp("registrar:\n.+\nurl");
+    return $this->getBaseRegExp("url");
   }
 }

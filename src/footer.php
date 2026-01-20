@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "v2026.1.19");
+define("VERSION", "v2026.1.20");
 
 require_once __DIR__ . "/../config/config.php";
 ?>

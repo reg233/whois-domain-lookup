@@ -1,4 +1,4 @@
-function setupJSONViewer(element) {
+function setupJSONViewer(element, data) {
   function valueToHtml(value, firstLevel) {
     const valueType = typeof value;
 
@@ -106,7 +106,7 @@ function setupJSONViewer(element) {
   let caretRight =
     '<svg width="1em" height="1em" viewBox="0 0 640 640"><path d="M441.3 299.8C451.5 312.4 450.8 330.9 439.1 342.6L311.1 470.6C301.9 479.8 288.2 482.5 276.2 477.5C264.2 472.5 256.5 460.9 256.5 448L256.5 192C256.5 179.1 264.3 167.4 276.3 162.4C288.3 157.4 302 160.2 311.2 169.3L439.2 297.3L441.4 299.7z" fill="currentColor"/></svg>';
 
-  const json = JSON.parse(element.textContent);
+  const json = JSON.parse(data);
 
   element.classList.add("json-viewer");
   element.innerHTML = `<code>${valueToHtml(json, true)}</code>`;

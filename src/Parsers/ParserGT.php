@@ -5,10 +5,10 @@ class ParserGT extends Parser
 
   protected function getNameServersRegExp()
   {
-    return "/servers:(.+?)(?=\n\n)/is";
+    return "/servers:(.*?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

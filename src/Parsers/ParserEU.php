@@ -8,7 +8,7 @@ class ParserEU extends Parser
 
   protected function getRegistrarURLRegExp()
   {
-    return $this->getBaseRegExp("registrar:\n.+\n {8}website");
+    return $this->getBaseRegExp("website");
   }
 
   protected function getNameServersRegExp()
@@ -16,7 +16,7 @@ class ParserEU extends Parser
     return "/name servers:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

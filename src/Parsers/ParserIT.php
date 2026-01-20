@@ -3,6 +3,11 @@ class ParserIT extends Parser
 {
   protected $timezone = "Europe/Rome";
 
+  protected function getReservedRegExp()
+  {
+    return "/status: {13}unassignable/i";
+  }
+
   protected function getUnregisteredRegExp()
   {
     return "/status: {13}available/i";
@@ -10,15 +15,15 @@ class ParserIT extends Parser
 
   protected function getRegistrarRegExp()
   {
-    return $this->getBaseRegExp("registrar\n.+\n {2}name");
+    return $this->getBaseRegExp("registrar\n.+\n  name");
   }
 
   protected function getRegistrarURLRegExp()
   {
-    return $this->getBaseRegExp("registrar\n.+\n.+\n {2}web");
+    return $this->getBaseRegExp("web");
   }
 
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
     return $this->getStatusFromExplode("/");
   }
@@ -28,7 +33,7 @@ class ParserIT extends Parser
     return "/nameservers(.+)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

@@ -9,16 +9,14 @@ class ParserPLCO extends Parser
 {
   protected $dateFormat = "Y.m.d H:i:s";
 
-  protected $timezone = "Europe/Warsaw";
-
-  protected function getBaseRegExp($pattern)
-  {
-    return "/(?:$pattern)\.*:(.+)/i";
-  }
-
   protected function getDomainRegExp()
   {
     return $this->getBaseRegExp("name");
+  }
+
+  protected function getUpdatedDateRegExp()
+  {
+    return $this->getBaseRegExp("lastmod");
   }
 
   protected function getNameServersRegExp()

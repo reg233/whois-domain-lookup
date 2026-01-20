@@ -1,19 +1,14 @@
 <?php
 class ParserTR extends Parser
 {
-  protected function getBaseRegExp($pattern)
-  {
-    return "/^(?:$pattern)\.*:(.+)/im";
-  }
-
   protected function getDomainRegExp()
   {
-    return $this->getBaseRegExp("\*\* Domain Name");
+    return $this->getBaseRegExp("\*\* domain name");
   }
 
   protected function getRegistrarRegExp()
   {
-    return "/(?:organization name\t):(.+)/i";
+    return $this->getBaseRegExp("organization name");
   }
 
   protected function getNameServersRegExp()
@@ -21,7 +16,7 @@ class ParserTR extends Parser
     return "/domain servers:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

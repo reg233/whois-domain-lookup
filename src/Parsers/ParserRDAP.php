@@ -3,10 +3,10 @@ class ParserRDAP extends Parser
 {
   private $json = [];
 
-  public function __construct($code, $data, $json)
+  public function __construct($code, $data)
   {
     $this->rdapData = $data;
-    $this->json = $json;
+    $this->json = json_decode($data, true);
 
     $this->registered = $code !== 404;
     if (!$this->registered) {
@@ -18,9 +18,16 @@ class ParserRDAP extends Parser
       return;
     }
 
+    $this->reserved = $this->getReserved();
+    if ($this->reserved) {
+      return;
+    }
+
     $this->getDomain();
 
     $this->getRegistrar();
+    $this->getRegistrarWHOISServer();
+    $this->getRegistrarRDAPServer();
 
     $this->getDate();
 
@@ -43,10 +50,29 @@ class ParserRDAP extends Parser
     }
   }
 
+  protected function getReserved()
+  {
+    // as, bw, cm, cv, cx, ec, gn, gy, hn, ht, ki, kn, lb, mg, mr, ms, nf, ng, rw, sb, so, ss
+    // fuck.tl
+    if (isset($this->json["variants"])) {
+      foreach ($this->json["variants"] as $variant) {
+        if (
+          isset($variant["relations"]) &&
+          in_array("RESTRICTED_REGISTRATION", $variant["relations"])
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   protected function getDomain()
   {
     if (!empty($this->json["ldhName"])) {
-      $this->domain = idn_to_utf8(strtolower($this->json["ldhName"]));
+      // The ldhName of et extension ends with a dot
+      $this->domain = idn_to_utf8(strtolower(rtrim($this->json["ldhName"], ".")));
     }
   }
 
@@ -57,49 +83,64 @@ class ParserRDAP extends Parser
     }
 
     foreach ($this->json["entities"] as $entity) {
-      $roles = $entity["roles"];
+      $roles = $entity["roles"] ?? [];
 
       if (
-        (is_string($roles) && $roles === "registrar") ||
-        (is_array($roles) && in_array("registrar", $roles))
+        (is_array($roles) && in_array("registrar", $roles)) ||
+        (is_string($roles) && $roles === "registrar") // kg
       ) {
-        if (empty($entity["vcardArray"])) {
-          // ar, cz
-          if (!empty($entity["handle"])) {
-            $this->registrar = $entity["handle"];
-          }
-        } else {
-          $vcardArray = isset($entity["vcardArray"]["elements"])
-            ? $entity["vcardArray"]["elements"]
-            : $entity["vcardArray"][1];
-          foreach ($vcardArray as $item) {
-            switch ($item[0]) {
+        if (isset($entity["vcardArray"][1])) {
+          foreach ($entity["vcardArray"][1] as $vcard) {
+            switch ($vcard[0]) {
               case "fn":
               case "org":
                 if (!$this->registrar) {
-                  $this->registrar = $item[3];
+                  $this->registrar = $vcard[3];
                 }
                 break;
               case "url":
-                $this->registrarURL = $this->formatURL($item[3]);
+                $this->registrarURL = $this->formatURL($vcard[3]);
                 break;
             }
           }
+        } else if (isset($entity["entities"])) {
+          // as, bw, kn, mg, ml, pg, sd, td, zm
+          foreach ($entity["entities"] as $subEntity) {
+            if (
+              isset($subEntity["roles"]) &&
+              in_array("abuse", $subEntity["roles"]) &&
+              isset($subEntity["vcardArray"][1])
+            ) {
+              foreach ($subEntity["vcardArray"][1] as $vcard) {
+                switch ($vcard[0]) {
+                  case "fn":
+                    $this->registrar = $vcard[3];
+                    break;
+                }
+              }
+
+              break;
+            }
+          }
+        } else if (!empty($entity["handle"])) {
+          // ar, cr, cz, tz, ve
+          $this->registrar = $entity["handle"];
         }
 
-        if (empty($this->registrarURL)) {
-          if (!empty($entity["links"])) {
+        if (!$this->registrarURL) {
+          if (isset($entity["links"])) {
             foreach ($entity["links"] as $link) {
               if (
-                !empty($link["title"]) &&
-                !empty($link["href"]) &&
-                $link["title"] === "Registrar's Website"
+                isset($link["title"]) &&
+                $link["title"] === "Registrar's Website" &&
+                !empty($link["href"])
               ) {
                 $this->registrarURL = $this->formatURL($link["href"]);
                 break;
               }
             }
           } else if (!empty($entity["url"])) {
+            // ch, li
             $this->registrarURL = $this->formatURL($entity["url"]);
           }
         }
@@ -109,19 +150,42 @@ class ParserRDAP extends Parser
     }
   }
 
-  private function formatURL($url)
+  protected function getRegistrarWHOISServer()
   {
-    if (empty($url)) {
-      return "";
+    if (!empty($this->json["port43"])) {
+      $this->registrarWHOISServer = $this->json["port43"];
+    }
+  }
+
+  protected function getRegistrarRDAPServer()
+  {
+    if (!isset($this->json["links"])) {
+      return;
     }
 
-    return preg_match("/^https?:\/\//i", $url) ? $url : "http://" . $url;
+    foreach ($this->json["links"] as $link) {
+      if (isset($link["rel"]) && $link["rel"] === "related" && !empty($link["href"])) {
+        $this->registrarRDAPServer = explode("/domain/", $link["href"])[0] . "/";
+        break;
+      }
+    }
+  }
+
+  private function formatURL($url)
+  {
+    if ($url) {
+      return preg_match("#^https?://#i", $url) ? $url : "http://" . $url;
+    }
+
+    return "";
   }
 
   protected const EXPIRATION_DATE_KEYWORDS = [
-    "expiration", // com
-    "soft expiration", // is
-    "record expires", // kg
+    "expiration",
+    // is
+    "soft expiration",
+    // kg
+    "record expires",
   ];
 
   protected function getDate()
@@ -131,7 +195,7 @@ class ParserRDAP extends Parser
     }
 
     foreach ($this->json["events"] as $event) {
-      if (!empty($event["eventDate"])) {
+      if (isset($event["eventAction"]) && !empty($event["eventDate"])) {
         $action = strtolower($event["eventAction"]);
         if ($action === "registration") {
           $this->creationDate = $event["eventDate"];
@@ -147,7 +211,7 @@ class ParserRDAP extends Parser
     }
   }
 
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
     if (empty($this->json["status"])) {
       return;
@@ -156,26 +220,28 @@ class ParserRDAP extends Parser
     $this->status = array_map(
       function ($item) {
         $key = str_replace(" ", "", strtolower($item));
+
         if (isset(self::STATUS_MAP[$key])) {
           $value = self::STATUS_MAP[$key];
+
           return ["text" => $value, "url" => "https://icann.org/epp#$value"];
         }
 
         return ["text" => $item, "url" => ""];
       },
-      $this->json["status"],
+      array_values(array_unique($this->json["status"])),
     );
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     if (empty($this->json["nameservers"])) {
       return;
     }
 
-    $this->nameServers = array_unique(array_map(
+    $this->nameServers = array_map(
       fn($item) => idn_to_utf8(strtolower(explode(" ", $item["ldhName"])[0])),
-      $this->json["nameservers"]
-    ));
+      array_values(array_unique($this->json["nameservers"])),
+    );
   }
 }

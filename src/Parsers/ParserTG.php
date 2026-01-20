@@ -5,4 +5,9 @@ class ParserTG extends Parser
   {
     return "/(?:$pattern):\.+(.+)/i";
   }
+
+  protected function getNameServersRegExp()
+  {
+    return $this->getBaseRegExp("name server \(db\)");
+  }
 }

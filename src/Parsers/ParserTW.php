@@ -3,27 +3,23 @@ class ParserTW extends Parser
 {
   protected $timezone = "Asia/Taipei";
 
-  protected function getCreationDateRegExp()
+  protected function getReservedRegExp()
   {
-    return "/record created on (.+)/i";
+    // tw.tw, xxx.tw
+    return "/網域名稱不合規定|reserved name/i";
   }
 
-  protected function getCreationDateISO8601()
+  protected function getCreationDateRegExp()
   {
-    return $this->getISO8601(substr($this->creationDate, 0, 19));
+    return "/record created on (.+) /i";
   }
 
   protected function getExpirationDateRegExp()
   {
-    return "/record expires on (.+)/i";
+    return "/record expires on (.+) /i";
   }
 
-  protected function getExpirationDateISO8601()
-  {
-    return $this->getISO8601(substr($this->expirationDate, 0, 19));
-  }
-
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
     return $this->getStatusFromExplode(",");
   }
@@ -33,7 +29,7 @@ class ParserTW extends Parser
     return "/domain servers in listed order:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

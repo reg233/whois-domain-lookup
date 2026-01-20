@@ -1,19 +1,19 @@
 <?php
 class ParserKZ extends Parser
 {
-  protected function getBaseRegExp($pattern)
+  protected function getRegistrarRegExp()
   {
-    return "/(?:$pattern) ?\.*:(.+)/i";
+    return $this->getBaseRegExp("current registar"); // Typo
   }
 
   protected function getCreationDateISO8601()
   {
-    return $this->getISO8601(preg_replace("/[()]/", "", $this->creationDate));
+    return $this->getISO8601(str_replace(["(", ")"], "", $this->creationDate));
   }
 
   protected function getUpdatedDateISO8601()
   {
-    return $this->getISO8601(preg_replace("/[()]/", "", $this->updatedDate));
+    return $this->getISO8601(str_replace(["(", ")"], "", $this->updatedDate));
   }
 
   protected function getStatusRegExp()
@@ -21,20 +21,13 @@ class ParserKZ extends Parser
     return "/domain status :(.+?)(?=\n\S)/is";
   }
 
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
-    if (preg_match($this->getStatusRegExp(), $this->data, $matches)) {
-      return array_map(
-        fn($item) => ["text" => explode(" ", $item)[0], "url" => ""],
-        array_filter(array_map("trim", explode("\n", $matches[1]))),
-      );
-    }
-
-    return [];
+    return $this->getStatusFromExplode("\n", " ");
   }
 
   protected function getNameServersRegExp()
   {
-    return $this->getBaseRegExp("server");
+    return $this->getBaseRegExp("(?:primary|secondary) server");
   }
 }

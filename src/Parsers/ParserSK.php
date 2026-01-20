@@ -5,4 +5,9 @@ class ParserSK extends Parser
   {
     return $this->getBaseRegExp("registrar:.+\nname:.+\norganization");
   }
+
+  protected function getStatus($subject = null)
+  {
+    return $this->getStatusFromExplode(",");
+  }
 }

@@ -6,7 +6,7 @@ class ParserLV extends Parser
     return "/\[registrar\]\n.+\nname:(.+)/i";
   }
 
-  protected function getUpdatedDate()
+  protected function getUpdatedDate($subject = null)
   {
     return "";
   }

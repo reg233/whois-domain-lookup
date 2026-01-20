@@ -11,18 +11,13 @@ class ParserUA extends Parser
     return $this->getBaseRegExp("url");
   }
 
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
-    $originalData = $this->data;
-
-    $status = [];
-
+    // Due to the redundancy of the status, it needs to be extracted from the specified string.
     if (preg_match("/^(.+)% registrar:/is", $this->data, $matches)) {
-      $this->data = $matches[1];
-      $status = parent::getStatus();
-      $this->data = $originalData;
+      return parent::getStatus($matches[1]);
     }
 
-    return $status;
+    return [];
   }
 }

@@ -116,16 +116,9 @@ class Lookup
       $rdap = new RDAP($this->domain, $this->extension, $this->extensionTop);
       [$code, $data] = $rdap->getData();
 
-      $json = json_decode($data, true);
-      if ($json) {
-        $prettyData = json_encode(
-          $json,
-          JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-        );
-        $this->rdapData = preg_replace("/^(  +?)\\1(?=[^ ])/m", "$1", $prettyData);
-      }
+      $this->rdapData = $data;
 
-      $parser = new ParserRDAP($code, $data, $json);
+      $parser = new ParserRDAP($code, $data);
       if ($this->dataSource === ["rdap"]) {
         $this->parser = $parser;
 
@@ -187,6 +180,8 @@ class Lookup
       "domain",
       "registrar",
       "registrarURL",
+      "registrarWHOISServer",
+      "registrarRDAPServer",
       "creationDate",
       "creationDateISO8601",
       "expirationDate",

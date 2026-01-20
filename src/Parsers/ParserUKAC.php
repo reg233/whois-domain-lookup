@@ -12,20 +12,23 @@ class ParserUKAC extends Parser
     return "/(?:$pattern):\n(.+)/i";
   }
 
+  protected function getRegistrarRegExp()
+  {
+    return $this->getBaseRegExp("registered by");
+  }
+
+  protected function getExpirationDateRegExp()
+  {
+    return $this->getBaseRegExp("renewal date");
+  }
+
   protected function getNameServersRegExp()
   {
     return "/servers:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
-    if (preg_match($this->getNameServersRegExp(), $this->data, $matches)) {
-      return array_map(
-        fn($item) => strtolower(explode("\t", $item)[0]),
-        array_unique(array_filter(array_map("trim", explode("\n", $matches[1])))),
-      );
-    }
-
-    return [];
+    return $this->getNameServersFromExplode("\n", "\t");
   }
 }

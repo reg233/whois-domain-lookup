@@ -11,7 +11,7 @@ class ParserIL extends Parser
     return "/^changed:.+(\d{8}) \(changed\)$/im";
   }
 
-  protected function getUpdatedDate()
+  protected function getUpdatedDate($subject = null)
   {
     if (preg_match_all($this->getUpdatedDateRegExp(), $this->data, $matches)) {
       return end($matches[1]);

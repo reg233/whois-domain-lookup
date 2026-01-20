@@ -3,10 +3,10 @@ class ParserHK extends Parser
 {
   protected function getNameServersRegExp()
   {
-    return "/name servers information: ?(.+?)(?=\n\n)/is";
+    return "/name servers information:(.+?)(?=\n\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

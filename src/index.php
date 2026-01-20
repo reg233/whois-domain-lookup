@@ -93,6 +93,17 @@ function getDataSource()
   return $dataSource;
 }
 
+function generatorRegistrarServerHref($dataSource, $server)
+{
+  $parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
+
+  parse_str($parsedUrl["query"] ?? "", $queryParams);
+  $queryParams[$dataSource] = 1;
+  $queryParams["$dataSource-server"] = $server;
+
+  return $parsedUrl["path"] . "?" . http_build_query($queryParams);
+}
+
 checkPassword();
 
 $domain = cleanDomain();
@@ -367,6 +378,26 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
                     <?php endif; ?>
                   </div>
                 <?php endif; ?>
+                <?php if ($parser->registrarWHOISServer): ?>
+                  <div class="message-label">
+                    WHOIS Server
+                  </div>
+                  <div>
+                    <?php if (preg_match("#^https?://#i", $parser->registrarWHOISServer)): ?>
+                      <a href="<?= $parser->registrarWHOISServer; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $parser->registrarWHOISServer; ?></a>
+                    <?php else: ?>
+                      <a href="<?= generatorRegistrarServerHref("whois", $parser->registrarWHOISServer); ?>"><?= $parser->registrarWHOISServer; ?></a>
+                    <?php endif; ?>
+                  </div>
+                <?php endif; ?>
+                <?php if ($parser->registrarRDAPServer): ?>
+                  <div class="message-label">
+                    RDAP Server
+                  </div>
+                  <div>
+                    <a href="<?= generatorRegistrarServerHref("rdap", $parser->registrarRDAPServer); ?>"><?= $parser->registrarRDAPServer; ?></a>
+                  </div>
+                <?php endif; ?>
                 <?php if ($parser->creationDate): ?>
                   <div class="message-label">
                     Creation Date
@@ -538,7 +569,7 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
     <?php if ($whoisData || $rdapData): ?>
       <section class="raw-data">
         <?php if ($whoisData): ?>
-          <pre class="raw-data-whois" id="raw-data-whois" tabindex="0"><code><?= $whoisData; ?></code></pre>
+          <pre class="raw-data-whois" id="raw-data-whois" tabindex="0"><code><?= htmlspecialchars($whoisData, ENT_QUOTES, "UTF-8"); ?></code></pre>
         <?php endif; ?>
         <?php if ($rdapData): ?>
           <pre class="raw-data-rdap" id="raw-data-rdap" tabindex="0"><code><?= $rdapData; ?></code></pre>
@@ -746,7 +777,8 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
         }
 
         if (rawDataRDAP) {
-          setupJSONViewer(rawDataRDAP);
+          const rdapData = <?= json_encode($rdapData); ?>;
+          setupJSONViewer(rawDataRDAP, rdapData);
         }
 
         function linkifyRawData(element) {

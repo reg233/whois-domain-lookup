@@ -1,7 +1,7 @@
 <?php
 class ParserAM extends Parser
 {
-  protected function getStatus()
+  protected function getStatus($subject = null)
   {
     return $this->getStatusFromExplode(",");
   }
@@ -12,7 +12,7 @@ class ParserAM extends Parser
     return "/dns servers(?: \(zone signed, \d DS records?\))?:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

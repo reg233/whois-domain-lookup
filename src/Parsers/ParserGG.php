@@ -25,7 +25,7 @@ class ParserGG extends Parser
     return $this->getBaseRegExp("name servers");
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }

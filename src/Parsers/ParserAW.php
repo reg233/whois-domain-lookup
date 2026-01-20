@@ -16,8 +16,8 @@ class ParserAW extends Parser
     return "/nameservers:(.+?)(?=\r\n\r\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
-    return $this->getNameServersFromExplode("\n");
+    return $this->getNameServersFromExplode("\r\n");
   }
 }

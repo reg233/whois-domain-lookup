@@ -8,7 +8,7 @@ class ParserBN extends Parser
     return "/name servers:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers()
+  protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\n");
   }
