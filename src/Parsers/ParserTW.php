@@ -5,8 +5,14 @@ class ParserTW extends Parser
 
   protected function getReservedRegExp()
   {
-    // tw.tw, xxx.tw
+    // tw.tw
+    // xxx.tw, xxx.台湾, xxx.台灣
     return "/網域名稱不合規定|reserved name/i";
+  }
+
+  protected function getDomainRegExp()
+  {
+    return $this->getBaseRegExp("domain name|註冊原型域名");
   }
 
   protected function getCreationDateRegExp()

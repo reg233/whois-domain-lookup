@@ -3,10 +3,16 @@ class ParserRDAP extends Parser
 {
   private $json = [];
 
-  public function __construct($code, $data)
+  public function __construct($extension, $code, $data)
   {
+    $this->extension = $extension;
     $this->rdapData = $data;
     $this->json = json_decode($data, true);
+
+    $this->reserved = $this->getReserved();
+    if ($this->reserved) {
+      return;
+    }
 
     $this->registered = $code !== 404;
     if (!$this->registered) {
@@ -15,11 +21,6 @@ class ParserRDAP extends Parser
 
     if (empty($this->rdapData)) {
       $this->unknown = true;
-      return;
-    }
-
-    $this->reserved = $this->getReserved();
-    if ($this->reserved) {
       return;
     }
 
@@ -60,6 +61,20 @@ class ParserRDAP extends Parser
           isset($variant["relations"]) &&
           in_array("RESTRICTED_REGISTRATION", $variant["relations"])
         ) {
+          return true;
+        }
+      }
+    }
+
+    if (isset($this->json["description"])) {
+      foreach ($this->json["description"] as $desc) {
+        $keywords = [
+          // fuck.ca
+          "has usage restrictions",
+          // 233.ky, xxx.my
+          "is not available",
+        ];
+        if (preg_match("/" . implode("|", $keywords) . "/i", $desc)) {
           return true;
         }
       }
@@ -163,10 +178,17 @@ class ParserRDAP extends Parser
       return;
     }
 
+    $rel = $this->extension === "iana" ? "alternate" : "related";
+
     foreach ($this->json["links"] as $link) {
-      if (isset($link["rel"]) && $link["rel"] === "related" && !empty($link["href"])) {
-        $this->registrarRDAPServer = explode("/domain/", $link["href"])[0] . "/";
-        break;
+      if (isset($link["rel"]) && $link["rel"] === $rel && !empty($link["href"])) {
+        $href = $link["href"];
+        if ($rel === "related") {
+          $this->registrarRDAPServer = explode("/domain/", $href)[0] . "/";
+        } else {
+          $this->registrarRDAPServer = str_ends_with($href, "/") ? $href : "$href/";
+        }
+        return;
       }
     }
   }

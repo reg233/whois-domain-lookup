@@ -1,6 +1,8 @@
 <?php
 class Parser
 {
+  protected $extension = null;
+
   protected $dateFormat = null;
 
   protected $timezone = "UTC";
@@ -147,15 +149,18 @@ class Parser
     "on a restricted list",
     // by
     "object is blocked",
-    // ca, nz, sg, sx
+    // ca, nz, xxx.sg, sx
+    // 新加坡.新加坡
     "has usage restrictions",
     // cn.cn, iana.su, pk.pk, uk.uk
+    // 中国.中国, 中國.中國
     "can ?not be registered",
     // dm, ir, kw, ky, mc, my, xxx.uz
     "is not available",
     // a.do, www.idf.il
     "domain(?: name)? is not allowed",
-    // hk
+    // hk.hk
+    // 香港.香港
     "not available for registration",
     // hu, om, sm, iana.tv, iana.vu
     "reserved domain",
@@ -187,11 +192,12 @@ class Parser
 
   private const UNREGISTERED_KEYWORDS = [
     // com, am, br, cc, cn, ge, gm, jp, mo, no, pt, sa, th, tr, uk
-    // укр
+    // 中国, 中國, 澳門, укр
     "no match",
     // ac, ag, ai, au, ax, bm, bn, bz, ca, dz, ee, fi, fr, ga, gg, gi, gw, hm, ie, im, io, je, kg
     // kr, lc, me, mn, mu, ni, nu, nz, pa, pm, pr, re, sc, se, sg, sh, sk, sn, sx, tf, tw, ug, uz
     // vc, wf, ye, yt
+    // 新加坡, 台湾, 台灣
     "not? found",
     // ad, as, bh, bw, by, ci, cm, co, cv, ec, et, fj, fm, fo, gd, gl, gn, hn, id, ke, kn, la, lb
     // ly, ma, mg, ml, mm, mr, ms, mz, pg, pw, rw, sd, so, ss, td, vg, ws, zm
@@ -218,6 +224,7 @@ class Parser
     // gt, hu, nr, pk, rs
     "not registered",
     // hk
+    // 香港
     "has not been registered",
     // ls
     "no record found",
@@ -259,7 +266,8 @@ class Parser
     // gt, gw, hk, hm, hn, hr, id, ie, im, in, io, jo, jp, ke, kn, kr, kw, ky, kz, la, lb, lc, lk
     // ly, ma, me, mg, ml, mm, mn, mo, mr, ms, mt, mu, mx, my, mz, ni, nl, no, np, nr, nz, om, pa
     // pe, pg, ph, pr, ps, pw, qa, ro, rs, rw, sa, sc, sd, se, sg, sh, sl, sm, so, ss, st, sx, sy
-    // tc, td, th, tj, tn, to, tt, tv, tw, ug, us, uz, vc, vg, vu, ws, ye, za, zm
+    // tc, td, th, tj, tn, to, tt, tv, ug, us, uz, vc, vg, vu, ws, ye, za, zm
+    // 中国, 中國, 香港, 澳門, 新加坡
     "domain name",
     // ar, at, ax, be, br, cr, cz, de, dk, eu, fi, fr, gg, hu, il, ir, is, it, je, ls, lt, lv, mc
     // mk, mw, nc, nu, pk, pm, pt, re, ru, si, sk, sr, su, tf, tg, tm, tz, ua, wf, yt
@@ -297,15 +305,18 @@ class Parser
     // mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my, mz, nc, nu, nz, om, pg, ph, pm, pr
     // ps, pw, re, ro, rs, ru, rw, sc, sd, se, sg, sh, si, sn, so, ss, st, su, sx, td, tf, tg, th
     // tj, tn, to, tv, tz, us, uz, vc, vg, vu, wf, ws, ye, yt, za, zm
-    // рф, укр
+    // рф, 新加坡, укр
     "registrar",
     // ae, au, cl, hk, il, qa
+    // 香港
     "registrar name",
     // cn, gh, pe, sl, sr, sy, tc
+    // 中国, 中國
     "sponsoring registrar",
     // lu
     "registrar-name",
     // tw
+    // 台湾, 台灣
     "registration service provider",
   ];
 
@@ -336,6 +347,7 @@ class Parser
     // lu, si
     "registrar-url",
     // tw
+    // 台湾, 台灣
     "registration service url",
   ];
 
@@ -372,6 +384,8 @@ class Parser
     "whois tcp uri",
     // pl
     "whois database responses",
+    // iana
+    "whois",
   ];
 
   protected function getRegistrarWHOISServerRegExp()
@@ -394,7 +408,7 @@ class Parser
     // io, ke, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nl, nz, pa
     // pg, ph, pk, pr, ps, pt, pw, rw, sc, sd, sg, sh, sl, so, sr, ss, sx, sy, tc, td, tn, to, tv
     // us, uz, vc, vg, vu, ws, ye, za, zm
-    // укр
+    // 新加坡, укр
     "creation date",
     // am, ar, be, cr, cz, dk, ee, hu, ls, lt, mk, mt, mw, tz
     "registered",
@@ -404,10 +418,12 @@ class Parser
     // bt, jo, nr, rs, sm, tj, tt
     "registration date",
     // cn
+    // 中国, 中國
     "registration time",
     // gw
     "submission date",
     // hk
+    // 香港
     "domain name commencement date",
     // hm
     "domain creation date",
@@ -455,6 +471,7 @@ class Parser
     // et, fj, fm, fo, gd, ge, gh, gi, gl, gn, hn, id, ie, in, io, ke, kn, kw, ky, la, lb, lc, lk
     // ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, ni, pa, pg, pr, ps, pw, rw, sc, sd, sg, sh
     // sl, so, sr, ss, sx, sy, tc, td, to, tv, us, vc, vg, vu, ye, za, zm
+    // 新加坡
     "registry expiry date",
     // am, ax, br, dk, fi, is, lt, nu, se, ua
     "expires",
@@ -466,8 +483,10 @@ class Parser
     // укр
     "expiration date",
     // cn
+    // 中国, 中國
     "expiration time",
     // fr, hk, hu, im, pk, pm, re, tf, uk, wf, yt
+    // 香港
     "expiry date",
     // gt, nr, tg
     "expiration",
@@ -516,7 +535,7 @@ class Parser
     // ec, et, fj, fm, fo, gd, gh, gi, gl, gn, hn, hr, id, ie, in, io, ke, kn, kw, ky, la, lb, lc
     // ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nl, nz, pa, pg, ph, pr, ps, pw, rw, sc, sd
     // sg, sh, so, ss, sx, sy, td, th, to, tv, us, uz, vc, vg, vu, ws, ye, za, zm
-    // укр
+    // 新加坡, укр
     "updated date",
     // am, au, kz, pl, qa
     "last modified",
@@ -671,6 +690,7 @@ class Parser
     // kr, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nz, pa, pe, pg, pr
     // ps, pt, pw, ro, rs, rw, sc, sd, sg, sh, sk, so, ss, sx, sy, tc, td, tn, to, tr, tv, tw, us
     // vc, vg, vu, ws, ye, za, zm
+    // 中国, 中國, 香港, 新加坡, 台湾, 台灣
     "domain status",
     // ae, am, au, aw, ax, br, cr, cz, de, dk, ee, fi, gw, hu, il, it, jp, ls, lt, lv, mc, mk, mw
     // mx, nl, nu, ph, pk, qa, se, si, sm, sr, st, tg, th, tm, tz, ua, ug, uz
@@ -768,6 +788,7 @@ class Parser
     // im, in, io, jp, ke, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz
     // nz, om, pa, pe, pg, ph, pk, pr, ps, pt, pw, qa, rw, sa, sc, sd, sg, sh, sl, so, sr, ss, st
     // sx, sy, tc, td, th, to, tv, us, vc, vg, vu, ws, ye, za, zm
+    // 中国, 中國, 新加坡
     "name server",
     // ar, at, ax, br, cr, cz, de, ee, fi, fr, il, ir, is, ls, lu, lv, mc, mk, mw, nu, pm, re, ru
     // se, su, tf, tz, ua, wf, yt

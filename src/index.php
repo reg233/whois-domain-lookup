@@ -383,7 +383,9 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
                     WHOIS Server
                   </div>
                   <div>
-                    <?php if (preg_match("#^https?://#i", $parser->registrarWHOISServer)): ?>
+                    <?php if ($lookup->extension === "iana"): ?>
+                      <?= $parser->registrarWHOISServer; ?>
+                    <?php elseif (preg_match("#^https?://#i", $parser->registrarWHOISServer)): ?>
                       <a href="<?= $parser->registrarWHOISServer; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $parser->registrarWHOISServer; ?></a>
                     <?php else: ?>
                       <a href="<?= generatorRegistrarServerHref("whois", $parser->registrarWHOISServer); ?>"><?= $parser->registrarWHOISServer; ?></a>
@@ -395,7 +397,11 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
                     RDAP Server
                   </div>
                   <div>
-                    <a href="<?= generatorRegistrarServerHref("rdap", $parser->registrarRDAPServer); ?>"><?= $parser->registrarRDAPServer; ?></a>
+                    <?php if ($lookup->extension === "iana"): ?>
+                      <a href="<?= $parser->registrarRDAPServer; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $parser->registrarRDAPServer; ?></a>
+                    <?php else: ?>
+                      <a href="<?= generatorRegistrarServerHref("rdap", $parser->registrarRDAPServer); ?>"><?= $parser->registrarRDAPServer; ?></a>
+                    <?php endif; ?>
                   </div>
                 <?php endif; ?>
                 <?php if ($parser->creationDate): ?>

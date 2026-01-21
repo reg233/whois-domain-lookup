@@ -118,7 +118,7 @@ class Lookup
 
       $this->rdapData = $data;
 
-      $parser = new ParserRDAP($code, $data);
+      $parser = new ParserRDAP($this->extension, $code, $data);
       if ($this->dataSource === ["rdap"]) {
         $this->parser = $parser;
 
