@@ -3,6 +3,8 @@ class ParserQA extends Parser
 {
   protected function getReservedRegExp()
   {
+    // 0.qa
+    // qa.qa
     return "/reserved by qdr|is not available/i";
   }
 

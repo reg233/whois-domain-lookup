@@ -83,7 +83,10 @@ class RDAP
 
   public function getData()
   {
-    $curl = curl_init("{$this->server}domain/{$this->domain}");
+    $server = rtrim($this->server, "/");
+    $domain = idn_to_ascii($this->domain);
+
+    $curl = curl_init("{$server}/domain/$domain");
 
     curl_setopt_array($curl, [
       CURLOPT_RETURNTRANSFER => true,

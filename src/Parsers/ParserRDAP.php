@@ -66,7 +66,8 @@ class ParserRDAP extends Parser
       }
     }
 
-    if (isset($this->json["description"])) {
+    // The description of sr and ye extension is a string
+    if (isset($this->json["description"]) && is_array($this->json["description"])) {
       foreach ($this->json["description"] as $desc) {
         $keywords = [
           // fuck.ca
@@ -184,9 +185,9 @@ class ParserRDAP extends Parser
       if (isset($link["rel"]) && $link["rel"] === $rel && !empty($link["href"])) {
         $href = $link["href"];
         if ($rel === "related") {
-          $this->registrarRDAPServer = explode("/domain/", $href)[0] . "/";
+          $this->registrarRDAPServer = explode("/domain/", $href)[0];
         } else {
-          $this->registrarRDAPServer = str_ends_with($href, "/") ? $href : "$href/";
+          $this->registrarRDAPServer = $href;
         }
         return;
       }

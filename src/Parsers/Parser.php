@@ -134,20 +134,22 @@ class Parser
   private const RESERVED_KEYWORDS = [
     // 233.ac, data.au, xxx.bm, domain.bz, 233.gm, fuck.io, data.mu, xxx.sh
     "reserved by (?:the )?registry",
-    // ae, pw
+    // xxx.ae, pw
+    // امارات.امارات
     "has been reserved",
-    // am
+    // fuck.am
+    // հայ.հայ
     "reserved name",
     // as, bj, bw, cm, cv, do, ec, gn, hn, ke, kn, lb, ly, ma, mg, mr, ms, pe, rw, sl, so, ss
     // xxx.tc
     "prohibited string",
     // be
     "status:\tnot allowed",
-    // bg
+    // iana.bg
     "status: forbidden",
     // bi, ps
     "on a restricted list",
-    // by
+    // fuck.by
     "object is blocked",
     // ca, nz, xxx.sg, sx
     // 新加坡.新加坡
@@ -158,13 +160,18 @@ class Parser
     // dm, ir, kw, ky, mc, my, xxx.uz
     "is not available",
     // a.do, www.idf.il
+    // ישראל.ישראל
     "domain(?: name)? is not allowed",
+    // ue.eu
+    // ею.ею, ευ.ευ
+    "status: not available",
     // hk.hk
     // 香港.香港
     "not available for registration",
     // hu, om, sm, iana.tv, iana.vu
     "reserved domain",
-    // kr, lk
+    // kr.kr, lk
+    // 한국.한국
     "name is restricted",
     // lv
     "status: unavailable",
@@ -173,6 +180,7 @@ class Parser
     // pt
     "forbiden name",
     // rs.rs, xxx.tm, iana.ye
+    // срб.срб
     "domain (?:name )?(?:is )?reserved",
     // si.si
     "is forbidden",
@@ -192,36 +200,42 @@ class Parser
 
   private const UNREGISTERED_KEYWORDS = [
     // com, am, br, cc, cn, ge, gm, jp, mo, no, pt, sa, th, tr, uk
-    // 中国, 中國, 澳門, укр
+    // հայ, 中国, 中國, 澳門, укр
     "no match",
     // ac, ag, ai, au, ax, bm, bn, bz, ca, dz, ee, fi, fr, ga, gg, gi, gw, hm, ie, im, io, je, kg
     // kr, lc, me, mn, mu, ni, nu, nz, pa, pm, pr, re, sc, se, sg, sh, sk, sn, sx, tf, tw, ug, uz
     // vc, wf, ye, yt
-    // 新加坡, 台湾, 台灣
+    // 한국, 新加坡, 台湾, 台灣
     "not? found",
     // ad, as, bh, bw, by, ci, cm, co, cv, ec, et, fj, fm, fo, gd, gl, gn, hn, id, ke, kn, la, lb
     // ly, ma, mg, ml, mm, mr, ms, mz, pg, pw, rw, sd, so, ss, td, vg, ws, zm
+    // бел
     "not exist",
     // ae, il, mc, om, qa, tv, us, vu
+    // امارات, ישראל, قطر
     "no data",
     // at, kz
+    // қаз
     "nothing found",
     // be
     "status:\tavailable",
     // bf, bi, bj, cd, do, gh, pe, ps, sl, sr, sy, tc, tg, tn
+    // تونس
     "no object found",
     // bg, eu, mt, np
+    // бг, ею, ευ
     "status: available",
     // bt
     "could not be found",
     // cl, cr, cz, dk, hr, ir, is, md, mk, mw, nc, ro, ru, si, sm, st, su, tz, ua
-    // рф
+    // мкд, рф
     "no entries found",
     // de, lv
     "status: free",
     // dm, in, jo, kw, ky, lk, my, to
     "is available for registration",
     // gt, hu, nr, pk, rs
+    // срб
     "not registered",
     // hk
     // 香港
@@ -267,11 +281,11 @@ class Parser
     // ly, ma, me, mg, ml, mm, mn, mo, mr, ms, mt, mu, mx, my, mz, ni, nl, no, np, nr, nz, om, pa
     // pe, pg, ph, pr, ps, pw, qa, ro, rs, rw, sa, sc, sd, se, sg, sh, sl, sm, so, ss, st, sx, sy
     // tc, td, th, tj, tn, to, tt, tv, ug, us, uz, vc, vg, vu, ws, ye, za, zm
-    // 中国, 中國, 香港, 澳門, 新加坡
+    // امارات, հայ, бг, бел, 中国, 中國, 香港, 한국, қаз, 澳門, قطر, срб, 新加坡, تونس
     "domain name",
     // ar, at, ax, be, br, cr, cz, de, dk, eu, fi, fr, gg, hu, il, ir, is, it, je, ls, lt, lv, mc
     // mk, mw, nc, nu, pk, pm, pt, re, ru, si, sk, sr, su, tf, tg, tm, tz, ua, wf, yt
-    // рф
+    // ею, ευ, ישראל, мкд, рф
     "domain",
     // lu
     "domainname",
@@ -305,10 +319,10 @@ class Parser
     // mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my, mz, nc, nu, nz, om, pg, ph, pm, pr
     // ps, pw, re, ro, rs, ru, rw, sc, sd, se, sg, sh, si, sn, so, ss, st, su, sx, td, tf, tg, th
     // tj, tn, to, tv, tz, us, uz, vc, vg, vu, wf, ws, ye, yt, za, zm
-    // рф, 新加坡, укр
+    // հայ, бел, мкд, срб, рф, 新加坡, تونس, укр
     "registrar",
     // ae, au, cl, hk, il, qa
-    // 香港
+    // امارات, 香港, ישראל, قطر
     "registrar name",
     // cn, gh, pe, sl, sr, sy, tc
     // 中国, 中國
@@ -408,14 +422,16 @@ class Parser
     // io, ke, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nl, nz, pa
     // pg, ph, pk, pr, ps, pt, pw, rw, sc, sd, sg, sh, sl, so, sr, ss, sx, sy, tc, td, tn, to, tv
     // us, uz, vc, vg, vu, ws, ye, za, zm
-    // 新加坡, укр
+    // бел, 新加坡, تونس, укр
     "creation date",
     // am, ar, be, cr, cz, dk, ee, hu, ls, lt, mk, mt, mw, tz
+    // հայ, мкд
     "registered",
     // ax, br, fi, fr, is, it, mc, no, nu, pl, pm, re, ru, se, si, sk, su, tf, ua, wf, yt
     // рф
     "created",
     // bt, jo, nr, rs, sm, tj, tt
+    // срб
     "registration date",
     // cn
     // 中国, 中國
@@ -428,14 +444,17 @@ class Parser
     // hm
     "domain creation date",
     // il
+    // ישראל
     "assigned",
     // jp, mx, nc, tr
     "created on",
     // kg
     "record created",
     // kr
+    // 한국
     "registered date",
     // kz
+    // қаз
     "domain created",
     // md, ro, ug, uk
     "registered on",
@@ -474,13 +493,15 @@ class Parser
     // 新加坡
     "registry expiry date",
     // am, ax, br, dk, fi, is, lt, nu, se, ua
+    // հայ
     "expires",
     // ar, cr, cz, ee, ls, mk, mw, si, tz
+    // мкд
     "expire",
     // bb, hr, ws
     "registrar registration expiration date",
     // bn, bt, by, cl, gw, kr, mx, ph, pt, rs, uz
-    // укр
+    // бел, 한국, срб, укр
     "expiration date",
     // cn
     // 中国, 中國
@@ -493,6 +514,7 @@ class Parser
     // hm
     "domain expiration date",
     // il
+    // ישראל
     "validity",
     // it
     "expire date",
@@ -538,14 +560,17 @@ class Parser
     // 新加坡, укр
     "updated date",
     // am, au, kz, pl, qa
+    // հայ, қаз, قطر
     "last modified",
     // ar, at, br, cr, cz, de, ee, ls, mk, mw, tz
+    // мкд
     "changed",
     // ax, fi, nu, se, ua
     "modified",
     // bn
     "modified date",
     // by
+    // бел
     "update date",
     // fr, pm, re, tf, wf, yt
     "last-update",
@@ -556,10 +581,12 @@ class Parser
     // kg
     "record last updated on",
     // kr, np
+    // 한국
     "last updated date",
     // mx, nc
     "last updated on",
     // rs
+    // срб
     "modification date",
     // sk
     "updated",
@@ -690,12 +717,14 @@ class Parser
     // kr, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nz, pa, pe, pg, pr
     // ps, pt, pw, ro, rs, rw, sc, sd, sg, sh, sk, so, ss, sx, sy, tc, td, tn, to, tr, tv, tw, us
     // vc, vg, vu, ws, ye, za, zm
-    // 中国, 中國, 香港, 新加坡, 台湾, 台灣
+    // 中国, 中國, 香港, 한국, срб, 新加坡, تونس, 台湾, 台灣
     "domain status",
     // ae, am, au, aw, ax, br, cr, cz, de, dk, ee, fi, gw, hu, il, it, jp, ls, lt, lv, mc, mk, mw
     // mx, nl, nu, ph, pk, qa, se, si, sm, sr, st, tg, th, tm, tz, ua, ug, uz
+    // امارات, հայ, ישראל, мкд, قطر
     "status",
     // bg
+    // бг
     "registration status",
     // md
     "domain state",
@@ -788,13 +817,14 @@ class Parser
     // im, in, io, jp, ke, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz
     // nz, om, pa, pe, pg, ph, pk, pr, ps, pt, pw, qa, rw, sa, sc, sd, sg, sh, sl, so, sr, ss, st
     // sx, sy, tc, td, th, to, tv, us, vc, vg, vu, ws, ye, za, zm
-    // 中国, 中國, 新加坡
+    // امارات, бел, 中国, 中國, قطر, 新加坡
     "name server",
     // ar, at, ax, br, cr, cz, de, ee, fi, fr, il, ir, is, ls, lu, lv, mc, mk, mw, nu, pm, re, ru
     // se, su, tf, tz, ua, wf, yt
-    // рф
+    // ישראל, мкд, рф
     "nserver",
     // dk, kr, tj
+    // 한국
     "host ?name",
     // lt, md, ro, si, sk, ug
     "nameserver",
@@ -844,7 +874,8 @@ class Parser
     "pendingDelete",
     // si
     "pending_delete",
-    // tz
+    // mk, tz
+    // мкд
     "to be deleted",
   ];
 

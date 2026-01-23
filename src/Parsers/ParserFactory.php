@@ -21,7 +21,7 @@ class ParserFactory
     "cy" => ["cy"],
     "cz" => ["cz"],
     "ee" => ["ee"],
-    "eu" => ["eu", "ευ", "ею"],
+    "eu" => ["eu", "ею", "ευ"],
     "fi" => ["fi"],
     "fr" => ["fr", "pm", "re", "tf", "wf", "yt"],
     "ga" => ["ga", "sn"],
