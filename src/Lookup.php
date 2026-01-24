@@ -50,7 +50,7 @@ class Lookup
   private function parseDomain($domain)
   {
     $publicSuffixList = Rules::fromPath(__DIR__ . "/data/public-suffix-list.dat");
-    $domain = Domain::fromIDNA2008($domain);
+    $domain = Domain::fromIDNA2008(idn_to_utf8($domain));
 
     try {
       $domainName = $publicSuffixList->getPrivateDomain($domain);
@@ -118,7 +118,7 @@ class Lookup
 
       $this->rdapData = $data;
 
-      $parser = new ParserRDAP($this->extension, $code, $data);
+      $parser = new ParserRDAP($rdap->extension, $code, $data);
       if ($this->dataSource === ["rdap"]) {
         $this->parser = $parser;
 

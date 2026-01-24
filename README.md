@@ -1,10 +1,14 @@
+[简体中文 README](README.zh.md)
+
 <img alt="WHOIS domain lookup" src="public/images/favicon.svg" width="80" />
 
 # WHOIS domain lookup
 
 A simple WHOIS domain lookup website with strong TLD compatibility.
 
-[简体中文 README](README.zh.md)
+[![GitHub Release](https://img.shields.io/github/v/release/reg233/whois-domain-lookup)](https://github.com/reg233/whois-domain-lookup/releases/latest)
+[![GitHub Downloads](https://img.shields.io/github/downloads/reg233/whois-domain-lookup/total)](https://github.com/reg233/whois-domain-lookup/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/reg233/whois-domain-lookup)](https://hub.docker.com/r/reg233/whois-domain-lookup)
 
 <table>
   <tr>

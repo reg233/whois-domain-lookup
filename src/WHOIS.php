@@ -67,7 +67,7 @@ class WHOIS
 
     $server = $this->servers[idn_to_ascii($this->extension)] ?? "";
 
-    if (empty($server) && !in_array($this->extension, WHOISWeb::EXTENSIONS)) {
+    if (empty($server) && !WHOISWeb::isSupported($this->extension)) {
       throw new RuntimeException("No WHOIS server found for '$this->domain'");
     }
 
@@ -76,7 +76,7 @@ class WHOIS
 
   public function getData()
   {
-    if (in_array($this->extension, WHOISWeb::EXTENSIONS)) {
+    if (WHOISWeb::isSupported($this->extension)) {
       return (new WHOISWeb($this->domain, $this->extension))->getData();
     }
 

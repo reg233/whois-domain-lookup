@@ -10,9 +10,9 @@ require_once __DIR__ . "/../vendor/autoload.php";
 
 spl_autoload_register(function ($class) {
   if (str_starts_with($class, "Parser")) {
-    require_once "Parsers/$class.php";
+    require_once __DIR__ . "/Parsers/$class.php";
   } else {
-    require_once "$class.php";
+    require_once __DIR__ . "/$class.php";
   }
 });
 

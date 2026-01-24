@@ -36,7 +36,7 @@ class ParserFactory
     "im" => ["im"],
     "it" => ["it"],
     "je" => ["je"],
-    "jo" => ["jo"],
+    "jo" => ["jo", "الاردن"],
     "jp" => ["jp"],
     "kg" => ["kg"],
     "kr" => ["kr", "한국"],
@@ -86,8 +86,8 @@ class ParserFactory
   public static function create($extension, $data): Parser
   {
     foreach (self::$extensionToClassSuffix as $classSuffix => $extensions) {
-      $class = "Parser" . strtoupper($classSuffix);
-      if (in_array(strtolower($extension), $extensions) && class_exists($class)) {
+      if (in_array(strtolower($extension), $extensions)) {
+        $class = "Parser" . strtoupper($classSuffix);
         return new $class($data);
       }
     }

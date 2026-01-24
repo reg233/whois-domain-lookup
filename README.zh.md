@@ -1,10 +1,14 @@
+[English README](README.md)
+
 <img alt="WHOIS domain lookup" src="public/images/favicon.svg" width="80" />
 
 # WHOIS 域名查询
 
 一个简约的 WHOIS 域名查询网站，具有强大的 TLD 兼容性。
 
-[English README](README.md)
+[![GitHub Release](https://img.shields.io/github/v/release/reg233/whois-domain-lookup)](https://github.com/reg233/whois-domain-lookup/releases/latest)
+[![GitHub Downloads](https://img.shields.io/github/downloads/reg233/whois-domain-lookup/total)](https://github.com/reg233/whois-domain-lookup/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/reg233/whois-domain-lookup)](https://hub.docker.com/r/reg233/whois-domain-lookup)
 
 <table>
   <tr>

@@ -5,29 +5,40 @@ class WHOISWeb
 
   public $extension;
 
-  public const EXTENSIONS = [
-    "bb",
-    "bt",
-    "cu",
-    "cy",
-    "dz",
-    "gm",
-    "gt",
-    "gw",
-    "hm",
-    "hu",
-    "jo",
-    "lk",
-    "mt",
-    "ni",
-    "np",
-    "nr",
-    "pa",
-    "ph",
-    "sv",
-    "tj",
-    "tt",
+  private static $extensionToFunctionSuffix = [
+    "bb" => ["bb"],
+    "bt" => ["bt"],
+    "cu" => ["cu"],
+    "cy" => ["cy"],
+    "dz" => ["dz", "الجزائر"],
+    "gm" => ["gm"],
+    "gt" => ["gt"],
+    "gw" => ["gw"],
+    "hm" => ["hm"],
+    "hu" => ["hu"],
+    "jo" => ["jo", "الاردن"],
+    "lk" => ["lk"],
+    "mt" => ["mt"],
+    "ni" => ["ni"],
+    "np" => ["np"],
+    "nr" => ["nr"],
+    "pa" => ["pa"],
+    "ph" => ["ph"],
+    "sv" => ["sv"],
+    "tj" => ["tj"],
+    "tt" => ["tt"],
   ];
+
+  public static function isSupported($extension)
+  {
+    foreach (self::$extensionToFunctionSuffix as $extensions) {
+      if (in_array($extension, $extensions)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   public function __construct($domain, $extension)
   {
@@ -37,9 +48,14 @@ class WHOISWeb
 
   public function getData()
   {
-    $functionName = "get" . strtoupper($this->extension);
+    foreach (self::$extensionToFunctionSuffix as $functionSuffix => $extensions) {
+      if (in_array(strtolower($this->extension), $extensions)) {
+        $functionName = "get" . strtoupper($functionSuffix);
+        return $this->$functionName();
+      }
+    }
 
-    return $this->$functionName();
+    return "";
   }
 
   private function request($url, $options = [], $returnArray = false)
@@ -280,7 +296,8 @@ class WHOISWeb
 
   private function getDZ()
   {
-    $url = "https://api.nic.dz/v1/domains/" . $this->domain;
+    $segment = $this->extension === "dz" ? "/" : "/arabic/";
+    $url = "https://api.nic.dz/v1" . $segment . "domains/" . $this->domain;
 
     $options = [CURLOPT_SSL_VERIFYPEER => false];
 
