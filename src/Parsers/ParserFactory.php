@@ -8,6 +8,7 @@ class ParserFactory
     "aw" => ["aw", "nl"],
     "ax" => ["ax"],
     "bb" => ["bb"],
+    "bd" => ["bd"],
     "be" => ["be"],
     "bg" => ["bg", "бг"],
     "bn" => ["bn"],
