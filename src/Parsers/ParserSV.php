@@ -1,9 +1,20 @@
 <?php
-class ParserSV extends ParserBO
+class ParserSV extends Parser
 {
   protected function getReservedRegExp()
   {
+    // sv.sv
     return "/no se puede registrar/i";
+  }
+
+  protected function getUnregisteredRegExp()
+  {
+    return "/no registrado/i";
+  }
+
+  protected function getDomainRegExp()
+  {
+    return $this->getBaseRegExp("nombre de dominio");
   }
 
   protected function getCreationDateRegExp()

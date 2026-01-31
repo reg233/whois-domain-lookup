@@ -1,23 +1,23 @@
 <?php
 class ParserBO extends Parser
 {
-  protected function getUnregisteredRegExp()
+  protected function getStatusRegExp()
   {
-    return "/no registrado/i";
+    return $this->getBaseRegExp("state");
   }
 
-  protected function getDomainRegExp()
+  protected function getStatus($subject = null)
   {
-    return $this->getBaseRegExp("nombre de dominio");
+    // Due to the redundancy of the state, it needs to be extracted from the specified string.
+    if (preg_match("/other data(.+)/is", $this->data, $matches)) {
+      return parent::getStatus($matches[1]);
+    }
+
+    return [];
   }
 
-  protected function getCreationDateRegExp()
+  protected function getNameServersRegExp()
   {
-    return $this->getBaseRegExp("fecha de activación");
-  }
-
-  protected function getExpirationDateRegExp()
-  {
-    return $this->getBaseRegExp("fecha de corte");
+    return $this->getBaseRegExp("dns\d");
   }
 }

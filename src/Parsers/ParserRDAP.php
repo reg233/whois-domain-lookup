@@ -53,8 +53,8 @@ class ParserRDAP extends Parser
 
   protected function getReserved()
   {
-    // as, bw, cm, cv, cx, ec, gn, gy, hn, ht, ki, kn, lb, mg, mr, ms, nf, ng, rw, sb, so, ss
-    // fuck.tl
+    // aa.af, as, bw, cm, cv, fuck.cx, ec, gn, gy.gy, hn, fuck.ht, fuck.ki, kn, lb, 233.ly, mg, mr, ms
+    // fuck.nf, ng, rw, fuck.sb, so, ss, fuck.tl
     if (isset($this->json["variants"])) {
       foreach ($this->json["variants"] as $variant) {
         if (
@@ -72,7 +72,7 @@ class ParserRDAP extends Parser
         $keywords = [
           // fuck.ca
           "has usage restrictions",
-          // 233.ky, xxx.my
+          // www.iq, 233.ky, xxx.my
           "is not available",
         ];
         if (preg_match("/" . implode("|", $keywords) . "/i", $desc)) {

@@ -3,11 +3,6 @@ class ParserPF extends Parser
 {
   protected $dateFormat = "d/m/Y";
 
-  protected function getBaseRegExp($pattern)
-  {
-    return "/(?:$pattern) :(.+)/i";
-  }
-
   protected function getDomainRegExp()
   {
     return "/informations about '(.+)'/i";

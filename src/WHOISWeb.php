@@ -5,12 +5,16 @@ class WHOISWeb
 
   public $extension;
 
+  private $domainParts;
+
   private static $extensionToFunctionSuffix = [
     "bb" => ["bb"],
+    "bo" => ["bo"],
     "bt" => ["bt"],
     "cu" => ["cu"],
     "cy" => ["cy"],
     "dz" => ["dz", "الجزائر"],
+    "gf" => ["gf", "mq"],
     "gm" => ["gm"],
     "gt" => ["gt"],
     "gw" => ["gw"],
@@ -44,6 +48,9 @@ class WHOISWeb
   {
     $this->domain = $domain;
     $this->extension = $extension;
+    $this->domainParts = explode(".", $domain, 2);
+
+    libxml_use_internal_errors(true);
   }
 
   public function getData()
@@ -102,7 +109,6 @@ class WHOISWeb
 
     $response = str_replace(["<<<", ">>>"], ["&lt;&lt;&lt;", "&gt;&gt;&gt;"], $response);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -128,20 +134,82 @@ class WHOISWeb
     return trim($whois);
   }
 
+  private function getBO()
+  {
+    $url = "https://nic.bo/whois.php";
+
+    $data = [
+      "dominio" => $this->domainParts[0],
+      "subdominio" => "." . $this->domainParts[1],
+      "enviar" => "",
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+      CURLOPT_COOKIE => "app_language=en",
+    ];
+
+    $response = $this->request($url, $options);
+
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $xPath = new DOMXPath($document);
+
+    $error = $xPath->query('//div[@class="texto_error"]')->item(0)?->textContent;
+    if ($error && trim($error)) {
+      return trim($error);
+    }
+
+    preg_match('/window\.self\.location="(.+)"/i', $response, $matches);
+
+    if (empty($matches[1])) {
+      return "";
+    }
+
+    $url = "https://nic.bo/" . $matches[1];
+
+    $options = [CURLOPT_COOKIE => "app_language=en"];
+
+    $response = $this->request($url, $options);
+
+    $document->loadHTML(str_replace(" :&nbsp;&nbsp;", "", $response));
+
+    $whois = "";
+
+    $h4 = $document->getElementById("whois")?->getElementsByTagName("h4")->item(0);
+    if ($h4) {
+      $whois .= trim($h4->textContent) . "\n";
+    }
+
+    $trs = $document->getElementsByTagName("tr");
+    foreach ($trs as $tr) {
+      $tds = $tr->getElementsByTagName("td");
+      if ($tds->length === 1) {
+        $whois .= strtoupper(trim($tds->item(0)->textContent)) . "\n";
+      } else if ($tds->length === 2) {
+        $key = trim($tds->item(0)->textContent);
+        $value = trim($tds->item(1)->textContent);
+
+        $whois .= "$key: $value\n";
+      }
+    }
+
+    return $whois;
+  }
+
   private function getBT()
   {
-    $domainParts = explode(".", $this->domain, 2);
-
     $params = [
-      "query" => $domainParts[0],
-      "ext" => "." . $domainParts[1],
+      "query" => $this->domainParts[0],
+      "ext" => "." . $this->domainParts[1],
     ];
 
     $url = "https://www.nic.bt/search?" . http_build_query($params);
 
     $response = $this->request($url);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -186,7 +254,6 @@ class WHOISWeb
 
     $response = $this->request($url, $options);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML('<?xml encoding="UTF-8"?>' . $response);
 
@@ -228,11 +295,9 @@ class WHOISWeb
   {
     $url = "https://registry.nic.cy/api/domains/_search";
 
-    $domainParts = explode(".", $this->domain, 2);
-
     $data = [
-      "domainName" => $domainParts[0],
-      "domainEndingName" => $domainParts[1],
+      "domainName" => $this->domainParts[0],
+      "domainEndingName" => $this->domainParts[1],
     ];
 
     $options = [
@@ -330,11 +395,61 @@ class WHOISWeb
     return $whois;
   }
 
+  private function getGF()
+  {
+    $url = "https://www.dom-enic.com/whois.html";
+
+    $data = [
+      "SMq5BXJw" => $this->domainParts[0],
+      "UQWhRrMF" => "." . $this->domainParts[1],
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+    ];
+
+    $response = $this->request($url, $options);
+
+    $document = new DOMDocument();
+    $document->loadHTML($response);
+
+    $xPath = new DOMXPath($document);
+
+    $message = $xPath->query('//div[@class="texte1"]')->item(0)?->textContent;
+    if ($message && trim($message)) {
+      return trim($message);
+    }
+
+    $whois = "";
+
+    $blockquotes = $document->getElementsByTagName("blockquote");
+    foreach ($blockquotes as $i => $blockquote) {
+      foreach ($blockquote->childNodes as $child) {
+        switch ($child->nodeName) {
+          case "br":
+            $whois .= "\n";
+            break;
+          case "#text":
+          case "u":
+            $whois .= str_replace("\r\n", " ", trim($child->textContent));
+            break;
+          default:
+            break;
+        }
+      }
+
+      if ($i < $blockquotes->length - 1) {
+        $whois .= "\n\n";
+      }
+    }
+
+    return preg_replace("/ {2,}/", " ", $whois);
+  }
+
   private function getGM()
   {
-    $domainParts = explode(".", $this->domain, 2);
-
-    $url = "https://www.nic.gm/NIC2/scripts/checkdom.aspx?dname=" . $domainParts[0];
+    $url = "https://www.nic.gm/NIC2/scripts/checkdom.aspx?dname=" . $this->domainParts[0];
 
     $options = [
       CURLOPT_FOLLOWLOCATION => false,
@@ -356,7 +471,7 @@ class WHOISWeb
     ) {
       $whois .= "This name is reserved by the registry.\n";
     } else if (str_contains($headers, "/NIC2/whois-details.html")) {
-      $url = "https://www.nic.gm/NIC2/REG/login.aspx?whois=" . $domainParts[0];
+      $url = "https://www.nic.gm/NIC2/REG/login.aspx?whois=" . $this->domainParts[0];
 
       $response = $this->request($url);
 
@@ -397,7 +512,6 @@ class WHOISWeb
 
     $response = $this->request($url);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML(str_replace("&nbsp;", " ", $response));
 
@@ -475,7 +589,6 @@ class WHOISWeb
       return "Domain not found";
     }
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -545,7 +658,6 @@ class WHOISWeb
 
     $response = $this->request($url, $options);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -581,7 +693,6 @@ class WHOISWeb
 
     $response = $this->request($url, $options);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -610,8 +721,6 @@ class WHOISWeb
 
   private function getJO()
   {
-    $domainParts = explode(".", $this->domain, 2);
-
     $url = "https://dns.jo/FirstPageen.aspx";
 
     $options = [CURLOPT_HEADER => true];
@@ -628,13 +737,12 @@ class WHOISWeb
     preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
     $cookies = implode("; ", $matches[1]);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($body);
 
     $xPath = new DOMXPath($document);
 
-    $expression = "//select[@id='ddl']/option[normalize-space(text())='." . $domainParts[1] .  "']";
+    $expression = "//select[@id='ddl']/option[normalize-space(text())='." . $this->domainParts[1] .  "']";
     $ddl = $xPath->query($expression)->item(0)?->attributes->getNamedItem("value")?->value;
 
     $viewState = $document->getElementById("__VIEWSTATE")?->attributes->getNamedItem("value")?->value;
@@ -644,7 +752,7 @@ class WHOISWeb
 
     $data = [
       "ctl00" => "ResultsUpdatePanel|b1",
-      "TextBox1" => $domainParts[0],
+      "TextBox1" => $this->domainParts[0],
       "ddl" => $ddl,
       "b1" => "WhoIs",
       "__ASYNCPOST" => "true",
@@ -677,7 +785,7 @@ class WHOISWeb
 
     $data = [
       "ctl00" => "ResultsUpdatePanel|WhoIs\$ctl02\$link",
-      "TextBox1" => $domainParts[0],
+      "TextBox1" => $this->domainParts[0],
       "ddl" => $ddl,
       "__ASYNCPOST" => "true",
       "__EVENTTARGET" => "WhoIs\$ctl02\$link",
@@ -770,7 +878,6 @@ class WHOISWeb
 
     $response = $this->request($url);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -829,7 +936,6 @@ class WHOISWeb
     preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
     $cookies = implode("; ", $matches[1]);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($body);
 
@@ -849,12 +955,10 @@ class WHOISWeb
 
     $url = "https://register.com.np/checkdomain_whois";
 
-    $domainParts = explode(".", $this->domain, 2);
-
     $data = [
       "_token" => $token,
-      "domainName" => $domainParts[0],
-      "domainExtension" => "." . $domainParts[1],
+      "domainName" => $this->domainParts[0],
+      "domainExtension" => "." . $this->domainParts[1],
     ];
 
     $options = [
@@ -897,11 +1001,9 @@ class WHOISWeb
 
   private function getNR()
   {
-    $domainParts = explode(".", $this->domain, 2);
-
     $params = [
-      "subdomain" => $domainParts[0],
-      "tld" => $domainParts[1],
+      "subdomain" => $this->domainParts[0],
+      "tld" => $this->domainParts[1],
       "whois" => "Submit",
     ];
 
@@ -909,7 +1011,6 @@ class WHOISWeb
 
     $response = $this->request($url);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -1028,7 +1129,6 @@ class WHOISWeb
 
     $response = $this->request($url);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -1076,7 +1176,7 @@ class WHOISWeb
 
     $data = [
       "key" => "Buscar",
-      "nombre" => explode(".", $this->domain, 2)[0],
+      "nombre" => $this->domainParts[0],
     ];
 
     $options = [
@@ -1086,7 +1186,6 @@ class WHOISWeb
 
     $response = $this->request($url, $options);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -1147,7 +1246,6 @@ class WHOISWeb
 
     $response = $this->request($url);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML($response);
 
@@ -1196,7 +1294,6 @@ class WHOISWeb
 
     $response = $this->request($url, $options);
 
-    libxml_use_internal_errors(true);
     $document = new DOMDocument();
     $document->loadHTML(str_replace("&nbsp", " ", $response));
 
