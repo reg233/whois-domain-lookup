@@ -700,7 +700,14 @@ class WHOISWeb
 
     $error = $xPath->query('//p[@class="error"]')->item(0);
     if ($error && trim($error->textContent)) {
-      return trim($error->textContent);
+      $textContent = trim($error->textContent);
+
+      // Conflict with co.ms
+      if ($textContent === "Reserved domain") {
+        return "Reserved domain name";
+      }
+
+      return $textContent;
     }
 
     $whois = "";

@@ -1,6 +1,13 @@
 <?php
 class ParserAM extends Parser
 {
+  protected function getReservedRegExp()
+  {
+    // Conflict with ac.me
+    // fuck.am, xn--y9a3aq.xn--y9a3aq
+    return "/reserved name/i";
+  }
+
   protected function getStatus($subject = null)
   {
     return $this->getStatusFromExplode(",");

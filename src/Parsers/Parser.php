@@ -132,39 +132,37 @@ class Parser
   }
 
   private const RESERVED_KEYWORDS = [
-    // 233.ac, data.au, xxx.bm, domain.bz, 233.gm, fuck.io, name.mn, data.mu, xxx.sh
+    // 233.ac, au.au, xxx.bm, domain.bz, gm.gm, fuck.io, name.mn, data.mu, xxx.sh
     "reserved by (?:the )?registry",
-    // xxx.ae, pw
+    // xxx.ae, co.pw
     // xn--mgbaam7a8h.xn--mgbaam7a8h
     "has been reserved",
-    // aa.af, as, bj, bw, cm, cv, fuck.cx, do, ec, gn, gy.gy, hn, fuck.ht, ke, fuck.ki, kn, lb
-    // 233.ly, fuck.nf, ma, mg, mr, ms, pe, rw, fuck.sb, sl, so, ss, xxx.tc, fuck.tl
+    // aa.af, xxx.as, bf.bf, fuck.bj, bw.bw, email.cm, cv.cv, fuck.cx, 233.ec, xxx.gn, gy.gy
+    // fuck.hn, fuck.ht, 233.ke, fuck.ki, ac.kn, lb.lb, 233.ly, a.ma, mg.mg, xxx.mr, xxx.ms
+    // fuck.nf, pe.pe, xxx.rw, fuck.sb, a.sl, a.so, ss.ss, xxx.tc, fuck.tl
     "prohibited string",
-    // fuck.am
-    // xn--y9a3aq.xn--y9a3aq
-    "reserved name",
     // bd.bd
     "reserved word",
-    // be
+    // a.be
     "status:\tnot allowed",
-    // iana.bg
+    // com.bg
     "status: forbidden",
-    // bi, ps
+    // a.bi, xxx.ps
     "on a restricted list",
     // bo.bo
     "illegal characters",
     // fuck.by
     "object is blocked",
-    // ca, nz, xxx.sg, sx
+    // ca.ca, ie.ie, com.nz, xxx.sg, sx.sx
     // xn--clchc0ea0b2g2a9gcd.xn--clchc0ea0b2g2a9gcd, xn--yfro4i67o.xn--yfro4i67o
     "has usage restrictions",
     // cn.cn, iana.su, pk.pk, uk.uk
     // xn--fiqs8s.xn--fiqs8s, xn--fiqz9s.xn--fiqz9s
     "can ?not be registered",
-    // dm, www.iq, ir.ir, kw, ky, mc, my, xxx.uz
+    // xxx.dm, in.in, www.iq, ir.ir, kw.kw, ky.ky, xxx.my, xxx.uz
     // xn--mgba3a4f16a.xn--mgba3a4f16a
     "is not available",
-    // a.do, www.idf.il
+    // do.do, www.idf.il
     // xn--4dbrk0ce.xn--4dbrk0ce
     "domain(?: name)? is not allowed",
     // ue.eu
@@ -173,22 +171,24 @@ class Parser
     // hk.hk
     // xn--j6w193g.xn--j6w193g
     "not available for registration",
-    // hu, om, sm, iana.tv, iana.vu
-    "reserved domain",
-    // kr.kr, lk
+    // ac.hu, c.om, ac.tv, xxx.vu
+    "reserved domain name",
+    // kr.kr, lk.lk
     // xn--3e0b707e.xn--3e0b707e
     "name is restricted",
-    // lv
+    // id.lv
     "status: unavailable",
-    // mt
-    "status: prohibited",
-    // pt
-    "forbiden name",
-    // rs.rs, xxx.tm, iana.ye
+    // google.mc, rs.rs, xxx.tm, co.tt, ac.ug, iana.ye
     // xn--90a3ac.xn--90a3ac
     "domain (?:name )?(?:is )?reserved",
-    // si.si
-    "is forbidden",
+    // com.mm
+    "is a reserved name",
+    // mt.mt
+    "status: prohibited",
+    // fuck.pt
+    "forbiden name",
+    // ac.sk
+    "domain blocked",
     // fuck.ws
     "restricted from registration",
   ];
@@ -940,12 +940,14 @@ class Parser
   ];
 
   private const EMPTY_VALUES = [
-    // bf
+    // whois.bf
     "http://registrarurl",
-    // lv, nu
+    // lv, whois.nu
     "-",
     // nc, sr
     "none",
+    // whois.pl
+    "not defined",
   ];
 
   protected function removeEmptyValues()

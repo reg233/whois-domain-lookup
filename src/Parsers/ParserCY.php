@@ -3,6 +3,7 @@ class ParserCY extends Parser
 {
   protected function getReserved()
   {
+    // ac.cy
     return str_contains($this->data, "Status: Απαγορευμένο");
   }
 

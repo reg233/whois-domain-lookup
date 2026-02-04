@@ -3,6 +3,7 @@ class ParserLU extends Parser
 {
   protected function getReservedRegExp()
   {
+    // lu.lu
     return "/domaintype: {5}reserved/i";
   }
 

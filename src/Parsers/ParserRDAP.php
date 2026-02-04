@@ -53,8 +53,9 @@ class ParserRDAP extends Parser
 
   protected function getReserved()
   {
-    // aa.af, as, bw, cm, cv, fuck.cx, ec, gn, gy.gy, hn, fuck.ht, fuck.ki, kn, lb, 233.ly, mg, mr, ms
-    // fuck.nf, ng, rw, fuck.sb, so, ss, fuck.tl
+    // aa.af, xxx.as, bw.bw, email.cm, cv.cv, fuck.cx, 233.ec, xxx.gn, gy.gy, fuck.hn, fuck.ht
+    // fuck.ki, ac.kn, lb.lb, 233.ly, mg.mg, xxx.mr, xxx.ms, fuck.nf, 233.ng, xxx.rw, fuck.sb, a.so
+    // ss.ss, fuck.tl
     if (isset($this->json["variants"])) {
       foreach ($this->json["variants"] as $variant) {
         if (
@@ -70,15 +71,24 @@ class ParserRDAP extends Parser
     if (isset($this->json["description"]) && is_array($this->json["description"])) {
       foreach ($this->json["description"] as $desc) {
         $keywords = [
-          // fuck.ca
+          // ca.ca
           "has usage restrictions",
-          // www.iq, 233.ky, xxx.my
+          // in.in, www.iq, ky.ky, xxx.my
           "is not available",
         ];
         if (preg_match("/" . implode("|", $keywords) . "/i", $desc)) {
           return true;
         }
       }
+    }
+
+    // iana.ye
+    if (
+      isset($this->json["error"]) &&
+      is_string($this->json["error"]) &&
+      $this->json["error"] === "Domain name is reserved or restricted"
+    ) {
+      return true;
     }
 
     return false;

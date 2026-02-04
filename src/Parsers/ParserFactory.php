@@ -66,6 +66,7 @@ class ParserFactory
     "ro" => ["ro"],
     "rs" => ["rs", "срб"],
     "ru" => ["ru", "su", "рф", "net.ru", "org.ru", "pp.ru"],
+    "si" => ["si"],
     "sk" => ["sk"],
     "sm" => ["sm"],
     "st" => ["st"],

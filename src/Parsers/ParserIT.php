@@ -5,6 +5,7 @@ class ParserIT extends Parser
 
   protected function getReservedRegExp()
   {
+    // it.it
     return "/status: {13}unassignable/i";
   }
 

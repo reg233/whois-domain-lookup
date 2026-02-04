@@ -3,6 +3,7 @@ class ParserJP extends Parser
 {
   protected function getReservedRegExp()
   {
+    // com.jp
     return "/\[Status\] {24}reserved/i";
   }
 
