@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-01-30T00:00:01Z",
+  "publication": "2026-02-04T20:00:02Z",
   "services": [
     [
       [
@@ -4875,6 +4875,14 @@
       ],
       [
         "https://rdap.ryce-rsp.com/rdap/"
+      ]
+    ],
+    [
+      [
+        "sg"
+      ],
+      [
+        "https://rdap.sgnic.sg/rdap/"
       ]
     ],
     [
