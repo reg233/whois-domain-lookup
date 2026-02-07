@@ -7,7 +7,7 @@
 A simple WHOIS domain lookup website with strong TLD compatibility.
 
 [![GitHub Release](https://img.shields.io/github/v/release/reg233/whois-domain-lookup)](https://github.com/reg233/whois-domain-lookup/releases/latest)
-[![GitHub Downloads](https://img.shields.io/github/downloads/reg233/whois-domain-lookup/total)](https://github.com/reg233/whois-domain-lookup/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/reg233/whois-domain-lookup/whois-domain-lookup.zip?displayAssetName=false)](https://github.com/reg233/whois-domain-lookup/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/reg233/whois-domain-lookup)](https://hub.docker.com/r/reg233/whois-domain-lookup)
 
 <table>

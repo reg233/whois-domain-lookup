@@ -71,7 +71,7 @@ class ParserRDAP extends Parser
     if (isset($this->json["description"]) && is_array($this->json["description"])) {
       foreach ($this->json["description"] as $desc) {
         $keywords = [
-          // ca.ca
+          // ca.ca, xxx.sg
           "has usage restrictions",
           // in.in, www.iq, ky.ky, xxx.my
           "is not available",
