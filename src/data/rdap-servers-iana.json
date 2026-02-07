@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-02-04T20:00:02Z",
+  "publication": "2026-02-06T23:00:01Z",
   "services": [
     [
       [
@@ -1031,7 +1031,6 @@
         "ggee",
         "gmo",
         "goldpoint",
-        "goo",
         "hisamitsu",
         "hitachi",
         "honda",
