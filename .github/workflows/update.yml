@@ -28,10 +28,10 @@ jobs:
 
       - name: Commit and push
         run: |
-          psl_updated=$(git diff --quiet src/data/public-suffix-list.dat || echo "true")
-          rdap_updated=$(git diff --quiet src/data/rdap-servers-iana.json || echo "true")
+          psl_updated=$(git diff --quiet src/data/public-suffix-list.dat; echo $?)
+          rdap_updated=$(git diff --quiet src/data/rdap-servers-iana.json; echo $?)
 
-          if $psl_updated || $rdap_updated; then
+          if [ $psl_updated -eq 1 ] || [ $rdap_updated -eq 1 ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
 
@@ -48,11 +48,11 @@ jobs:
             git add src/footer.php
 
             commit_message="Update version"
-            if $psl_updated; then
+            if [ $psl_updated -eq 1 ]; then
               git add src/data/public-suffix-list.dat
               commit_message="${commit_message} and public-suffix-list.dat"
             fi
-            if $rdap_updated; then
+            if [ $rdap_updated -eq 1 ]; then
               git add src/data/rdap-servers-iana.json
               commit_message="${commit_message} and rdap-servers-iana.json"
             fi
