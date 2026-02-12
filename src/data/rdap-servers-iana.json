@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-02-10T00:00:01Z",
+  "publication": "2026-02-12T00:00:02Z",
   "services": [
     [
       [
@@ -4902,6 +4902,14 @@
     ],
     [
       [
+        "xn--clchc0ea0b2g2a9gcd"
+      ],
+      [
+        "https://rdap.ta.sgnic.sg/rdap/"
+      ]
+    ],
+    [
+      [
         "anquan",
         "shouji",
         "xihuan",
@@ -5195,6 +5203,14 @@
       ],
       [
         "https://rdap.zdnsgtld.com/xn--ses554g/"
+      ]
+    ],
+    [
+      [
+        "xn--yfro4i67o"
+      ],
+      [
+        "https://rdap.zh.sgnic.sg/rdap/"
       ]
     ],
     [
