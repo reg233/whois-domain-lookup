@@ -72,6 +72,7 @@ class ParserRDAP extends Parser
       foreach ($this->json["description"] as $desc) {
         $keywords = [
           // ca.ca, xxx.sg
+          // xn--clchc0ea0b2g2a9gcd.xn--clchc0ea0b2g2a9gcd, xn--yfro4i67o.xn--yfro4i67o
           "has usage restrictions",
           // in.in, www.iq, ky.ky, xxx.my
           "is not available",
