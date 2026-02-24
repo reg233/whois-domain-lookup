@@ -101,6 +101,10 @@ server {
     rewrite ^ /src/manifest.php?$args last;
   }
 
+  location = /prices {
+    rewrite ^ /src/prices.php?$args last;
+  }
+
   location ~ \.php$ {
     fastcgi_pass localhost:9000;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;

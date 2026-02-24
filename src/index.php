@@ -816,7 +816,7 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
         const startTime = Date.now();
 
         try {
-          const response = await fetch("https://api.tian.hu/whois.php?domain=<?= $domain; ?>&action=checkPrice");
+          const response = await fetch("/prices?domain=<?= $domain; ?>");
 
           if (!response.ok) {
             throw new Error();
