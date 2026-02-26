@@ -28,6 +28,7 @@ class WHOISWeb
     "nr" => ["nr"],
     "pa" => ["pa"],
     "ph" => ["ph"],
+    "py" => ["py"],
     "sv" => ["sv"],
     "tj" => ["tj"],
     "tt" => ["tt"],
@@ -1175,6 +1176,90 @@ class WHOISWeb
     }
 
     return trim($whois);
+  }
+
+  private function getPY()
+  {
+    $url = "https://www.nic.py/consultdompy.php";
+
+    $options = [CURLOPT_HEADER => true];
+
+    ["response" => $response, "headerSize" => $headerSize] = $this->request($url, $options, true);
+
+    $headers = substr($response, 0, $headerSize);
+    $body = substr($response, $headerSize);
+
+    preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
+    $cookies = implode("; ", $matches[1]);
+
+    $document = new DOMDocument();
+    $document->loadHTML($body);
+
+    $xPath = new DOMXPath($document);
+
+    $hidden = $xPath->query("//input[@type='hidden']")->item(0);
+    $hiddenName = $hidden?->attributes->getNamedItem("name")?->value;
+    $hiddenValue = $hidden?->attributes->getNamedItem("value")?->value;
+
+    $text = $xPath->query("//input[@type='text']")->item(0)?->attributes->getNamedItem("name")?->value;
+
+    $select = $xPath->query("//select")->item(0)?->attributes->getNamedItem("name")?->value;
+
+    if (!$hiddenName || !$hiddenValue || !$text || !$select) {
+      return "";
+    }
+
+    $data = [
+      $hiddenName => $hiddenValue,
+      $text => $this->domainParts[0],
+      $select => explode(".", $this->domainParts[1])[0],
+      "btn_modificar" => "Consultar",
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => $data,
+      CURLOPT_COOKIE => $cookies,
+    ];
+
+    $response = $this->request($url, $options);
+
+    $document->loadHTML($response);
+
+    $xPath = new DOMXPath($document);
+
+    $dataElement = $document->getElementById("mostrar_datos");
+
+    if (!$dataElement) {
+      return "";
+    }
+
+    $whois = "";
+
+    foreach ($dataElement->childNodes as $child) {
+      switch ($child->nodeName) {
+        case "h2":
+        case "h4":
+          $whois .= $child->textContent . "\n";
+          break;
+        case "br":
+          $whois .= "\n";
+          break;
+        case "table":
+          foreach ($xPath->query("./tbody/tr | ./tr", $child) as $tr) {
+            $tds = $xPath->query("./td", $tr);
+            if ($tds->length >= 2) {
+              $key = trim($tds->item(0)->textContent);
+              $value = trim($tds->item(1)->textContent);
+
+              $whois .= "$key $value\n";
+            }
+          }
+          break;
+      }
+    }
+
+    return $whois;
   }
 
   private function getSV()
