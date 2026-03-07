@@ -297,9 +297,9 @@ class Parser
     // xn--mgbayh7gpa, xn--mgberp4a5d4ar, xn--mgbtx2b, xn--mix891f, xn--o3cw4h, xn--ogbpf8fl
     // xn--pgbs0dh, xn--q7ce6a, xn--wgbl6a, xn--y9a3aq, xn--yfro4i67o
     "domain name",
-    // ar, at, ax, be, br, cr, cz, de, dk, eu, fi, fr, gg, hu, il, ir, is, it, je, ls, lt, lv, mc
-    // mk, mw, nc, nu, pk, pm, pt, re, ru, si, sk, sr, su, tf, tg, tm, tz, ua, wf, yt
-    // xn--4dbrk0ce, xn--d1alf, xn--e1a4c, xn--mgba3a4f16a, xn--p1ai, xn--qxa6a
+    // ar, at, ax, be, br, cr, cz, de, dk, eu, fi, fr, gg, gr, hu, il, ir, is, it, je, ls, lt, lv
+    // mc, mk, mw, nc, nu, pk, pm, pt, re, ru, si, sk, sr, su, tf, tg, tm, tz, ua, wf, yt
+    // xn--4dbrk0ce, xn--d1alf, xn--e1a4c, xn--mgba3a4f16a, xn--p1ai, xn--qxa6a, xn--qxam
     "domain",
     // lu
     "domainname",
@@ -438,12 +438,12 @@ class Parser
 
   private const CREATION_DATE_KEYWORDS = [
     // com, ac, ad, af, ag, ai, as, aw, bb, bf, bh, bi, bj, bm, bn, bw, by, bz, ca, cc, cd, ci, cl
-    // cm, co, cv, cx, cy, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gs, gy, hn
-    // hr, ht, id, ie, in, io, iq, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr
-    // ms, mu, my, mz, nf, nl, nz, pa, pg, ph, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl, so
-    // sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vu, ws, ye, za, zm
+    // cm, co, cv, cx, cy, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gr, gs, gy
+    // hn, hr, ht, id, ie, in, io, iq, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn
+    // mr, ms, mu, my, mz, nf, nl, nz, pa, pg, ph, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl
+    // so, sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vu, ws, ye, za, zm
     // xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--j1amh, xn--lgbbat1ad8j, xn--mgbtx2b, xn--ogbpf8fl
-    // xn--pgbs0dh, xn--q7ce6a, xn--yfro4i67o
+    // xn--pgbs0dh, xn--q7ce6a, xn--qxam, xn--yfro4i67o
     "creation date",
     // am, ar, be, cr, cz, dk, ee, hu, ls, lt, mk, mt, mw, tz, ve
     // xn--d1alf, xn--y9a3aq
@@ -528,8 +528,8 @@ class Parser
     // bd, fr, hk, hu, im, pk, pm, re, tf, uk, wf, yt
     // xn--j6w193g
     "expiry date",
-    // bn, bt, by, cl, gw, kr, mx, ph, pt, rs, uz
-    // xn--3e0b707e, xn--90a3ac, xn--90ais, xn--j1amh
+    // bn, bt, by, cl, gr, gw, kr, mx, ph, pt, rs, uz
+    // xn--3e0b707e, xn--90a3ac, xn--90ais, xn--j1amh, xn--qxam
     "expiration date",
     // bo
     "cutoff date",
@@ -604,15 +604,15 @@ class Parser
     "update date",
     // fr, pm, re, tf, wf, yt
     "last-update",
+    // gr, kr, np
+    // xn--3e0b707e, xn--qxam
+    "last updated date",
     // it, mc
     "last update",
     // jp, no, uk
     "last updated",
     // kg
     "record last updated on",
-    // kr, np
-    // xn--3e0b707e
-    "last updated date",
     // mx, nc
     "last updated on",
     // rs
@@ -863,7 +863,8 @@ class Parser
     // dk, kr, tj
     // xn--3e0b707e
     "host ?name",
-    // lt, md, ro, si, sk, ug
+    // gr, lt, md, ro, si, sk, ug
+    // xn--qxam
     "nameserver",
   ];
 

@@ -8,14 +8,20 @@ class WHOISWeb
   private $domainParts;
 
   private static $extensionToFunctionSuffix = [
+    "ao" => ["ao"],
+    "az" => ["az"],
+    "ba" => ["ba"],
     "bb" => ["bb"],
     "bo" => ["bo"],
     "bt" => ["bt"],
     "cu" => ["cu"],
     "cy" => ["cy"],
+    "dj" => ["dj"],
     "dz" => ["dz", "الجزائر"],
     "gf" => ["gf", "mq"],
     "gm" => ["gm"],
+    "gq" => ["gq"],
+    "gr" => ["gr", "ελ"],
     "gt" => ["gt"],
     "gw" => ["gw"],
     "hm" => ["hm"],
@@ -32,6 +38,7 @@ class WHOISWeb
     "sv" => ["sv"],
     "tj" => ["tj"],
     "tt" => ["tt"],
+    "vn" => ["vn"],
   ];
 
   public static function isSupported($extension)
@@ -100,6 +107,21 @@ class WHOISWeb
     }
 
     return $response;
+  }
+
+  private function getAO()
+  {
+    return "Please visit https://www.dns.ao/ao/whois/";
+  }
+
+  private function getAZ()
+  {
+    return "Please visit https://whois.az";
+  }
+
+  private function getBA()
+  {
+    return "Please visit https://nic.ba/?culture=en";
   }
 
   private function getBB()
@@ -360,6 +382,11 @@ class WHOISWeb
     return $whois;
   }
 
+  private function getDJ()
+  {
+    return "Please visit https://dot.dj";
+  }
+
   private function getDZ()
   {
     $segment = $this->extension === "dz" ? "/" : "/arabic/";
@@ -502,6 +529,132 @@ class WHOISWeb
       if ($response) {
         $whois .= ">>> Last update of whois database: " . trim($response) . " <<<";
       }
+    }
+
+    return $whois;
+  }
+
+  private function getGQ()
+  {
+    return "Please visit http://www.dominio.gq/en/whois.html";
+  }
+
+  private function getGR()
+  {
+    $url = "https://grweb.ics.forth.gr/public/whois?lang=en";
+
+    $options = [CURLOPT_HEADER => true];
+
+    ["response" => $response, "headerSize" => $headerSize] = $this->request($url, $options, true);
+
+    $headers = substr($response, 0, $headerSize);
+    $body = substr($response, $headerSize);
+
+    preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
+    $cookies = implode("; ", $matches[1]);
+
+    $document = new DOMDocument();
+    $document->loadHTML($body);
+
+    $xPath = new DOMXPath($document);
+
+    $csrf = $xPath->query("//input[@name='_csrf']")->item(0)?->attributes->getNamedItem("value")?->value;
+
+    if (!$csrf) {
+      return "";
+    }
+
+    $url = "https://grweb.ics.forth.gr/public/whois/query";
+
+    $data = [
+      "_csrf" => $csrf,
+      "domain" => $this->domain,
+      "Submit" => "",
+    ];
+
+    $options = [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => http_build_query($data),
+      CURLOPT_COOKIE => $cookies,
+    ];
+
+    $response = $this->request($url, $options);
+
+    $document->loadHTML($response);
+
+    $xPath = new DOMXPath($document);
+
+    $invalid = $xPath->query('//span[@class="invalid-feedback"]')->item(0);
+    if ($invalid) {
+      return trim($invalid->textContent);
+    }
+
+    $whois = "";
+
+    $alert = $xPath->query('//div[@role="alert"]')->item(0);
+    if ($alert) {
+      $rows = $xPath->query('.//div[@class="row"]', $alert);
+      foreach ($rows as $row) {
+        $whois .= trim($row->textContent) . "\n";
+      }
+
+      $whois .= "\n";
+    }
+
+    $cards = $xPath->query('//div[@class="card"]');
+    foreach ($cards as $card) {
+      $heading = $xPath->query('.//div[contains(@class, "card-heading")]', $card)->item(0);
+      if ($heading) {
+        $whois .= trim($heading->textContent) . "\n";
+      }
+
+      $rows = $xPath->query('.//li/div[@class="row"]', $card);
+      foreach ($rows as $row) {
+        $children = $xPath->query("./div", $row);
+        if ($children->length === 2) {
+          $key = trim($children->item(0)->textContent, " :\n");
+
+          $nestedRows = $xPath->query('./div[@class="row"]', $children->item(1));
+          if ($nestedRows->length) {
+            foreach ($nestedRows as $nestedRow) {
+              $value = trim($nestedRow->textContent);
+
+              $whois .= "$key: $value\n";
+            }
+          } else {
+            $value = trim($children->item(1)->textContent);
+
+            $whois .= "$key: $value\n";
+          }
+        }
+      }
+
+      $accordionHeader = $xPath->query('.//h2[@class="accordion-header"]', $card)->item(0);
+      if ($accordionHeader) {
+        $whois .= trim($accordionHeader->textContent) . ":\n";
+      }
+
+      $accordionBody = $xPath->query('.//div[contains(@class, "accordion-body")]', $card)->item(0);
+      if ($accordionBody) {
+        $ths = $xPath->query("./div/text()", $accordionBody);
+        foreach ($ths as $th) {
+          $whois .= trim($th->textContent) . "  ";
+        }
+
+        $whois .= "\n";
+
+        $lis = $xPath->query('.//li[@class="list-group-item"]', $accordionBody);
+        foreach ($lis as $li) {
+          $spans = $xPath->query('.//span[not(@class)]', $li);
+          foreach ($spans as $span) {
+            $whois .= trim($span->textContent) . "  ";
+          }
+
+          $whois .= "\n";
+        }
+      }
+
+      $whois .= "\n";
     }
 
     return $whois;
@@ -1410,6 +1563,11 @@ class WHOISWeb
     }
 
     return str_replace(" (owner can view under Retrieve->Domain Details)", "", $whois);
+  }
+
+  private function getVN()
+  {
+    return "Please visit https://vnnic.vn/en/whois-information?lang=en";
   }
 
   private function decodeCFEmail($cfEmail)
