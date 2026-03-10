@@ -286,12 +286,12 @@ class Parser
 
   private const DOMAIN_KEYWORDS = [
     // com, ac, ad, ae, af, ag, ai, am, as, au, aw, bb, bd, bf, bg, bh, bi, bj, bm, bn, bo, bt, bw
-    // by, bz, ca, cc, cd, ci, cm, cn, co, cv, cx, cy, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gf
-    // gh, gi, gl, gm, gn, gs, gt, gw, gy, hk, hm, hn, hr, ht, id, ie, im, in, io, iq, jo, jp, ke
-    // ki, kn, kr, kw, ky, kz, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mo, mq, mr, ms, mt, mu
-    // mx, my, mz, nf, ni, nl, no, np, nr, nz, om, pa, pe, pg, ph, pr, ps, pw, qa, ro, rs, rw, sa
-    // sb, sc, sd, se, sg, sh, sl, sm, so, ss, st, sx, sy, tc, td, th, tj, tl, tn, to, tt, tv, ug
-    // us, uz, vc, ve, vg, vu, ws, ye, za, zm
+    // by, bz, ca, cc, cd, ci, cm, cn, co, cv, cx, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gf, gh
+    // gi, gl, gm, gn, gs, gt, gw, gy, hk, hm, hn, hr, ht, id, ie, im, in, io, iq, jo, jp, ke, ki
+    // kn, kr, kw, ky, kz, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mo, mq, mr, ms, mt, mu, mx
+    // my, mz, nf, ni, nl, no, np, nr, nz, om, pa, pe, pg, ph, pr, ps, pw, qa, ro, rs, rw, sa, sb
+    // sc, sd, se, sg, sh, sl, sm, so, ss, st, sx, sy, tc, td, th, tj, tl, tn, to, tt, tv, ug, us
+    // uz, vc, ve, vg, vu, ws, ye, za, zm
     // xn--3e0b707e, xn--80ao21a, xn--90a3ac, xn--90ae, xn--90ais, xn--clchc0ea0b2g2a9gcd
     // xn--fiqs8s, xn--fiqz9s, xn--j6w193g, xn--lgbbat1ad8j, xn--mgb9awbf, xn--mgbaam7a8h
     // xn--mgbayh7gpa, xn--mgberp4a5d4ar, xn--mgbtx2b, xn--mix891f, xn--o3cw4h, xn--ogbpf8fl
@@ -438,10 +438,10 @@ class Parser
 
   private const CREATION_DATE_KEYWORDS = [
     // com, ac, ad, af, ag, ai, as, aw, bb, bf, bh, bi, bj, bm, bn, bw, by, bz, ca, cc, cd, ci, cl
-    // cm, co, cv, cx, cy, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gr, gs, gy
-    // hn, hr, ht, id, ie, in, io, iq, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn
-    // mr, ms, mu, my, mz, nf, nl, nz, pa, pg, ph, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl
-    // so, sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vu, ws, ye, za, zm
+    // cm, co, cv, cx, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gr, gs, gy, hn
+    // hr, ht, id, ie, in, io, iq, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr
+    // ms, mu, my, mz, nf, nl, nz, pa, pg, ph, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl, so
+    // sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vu, ws, ye, za, zm
     // xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--j1amh, xn--lgbbat1ad8j, xn--mgbtx2b, xn--ogbpf8fl
     // xn--pgbs0dh, xn--q7ce6a, xn--qxam, xn--yfro4i67o
     "creation date",
@@ -510,11 +510,11 @@ class Parser
   }
 
   private const EXPIRATION_DATE_KEYWORDS = [
-    // com, ac, ad, af, ag, ai, bf, bh, bi, bj, bm, bw, bz, ca, cc, cd, ci, cm, co, cv, cx, cy, dm
-    // do, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gn, gs, gy, hn, ht, id, ie, in, io, iq, ke, ki
-    // kn, kw, ky, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, ni, pa, pg
-    // pr, ps, pw, rw, sb, sc, sd, sg, sh, sl, so, sr, ss, sx, sy, tc, td, tl, to, tv, us, vc, vg
-    // vu, ye, za, zm
+    // com, ac, ad, af, ag, ai, bf, bh, bi, bj, bm, bw, bz, ca, cc, cd, ci, cm, co, cv, cx, dm, do
+    // ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gn, gs, gy, hn, ht, id, ie, in, io, iq, ke, ki, kn
+    // kw, ky, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, ni, pa, pg, pr
+    // ps, pw, rw, sb, sc, sd, sg, sh, sl, so, sr, ss, sx, sy, tc, td, tl, to, tv, us, vc, vg, vu
+    // ye, za, zm
     // xn--clchc0ea0b2g2a9gcd, xn--mgbtx2b, xn--ogbpf8fl, xn--q7ce6a, xn--yfro4i67o
     "registry expiry date",
     // am, ax, br, dk, fi, is, lt, nu, se, ua
@@ -847,11 +847,11 @@ class Parser
 
   private const NAME_SERVERS_KEYWORDS = [
     // com, ac, ad, ae, af, ag, ai, as, au, bb, bf, bh, bi, bj, bm, bw, by, bz, ca, cc, cd, ci, cl
-    // cm, cn, co, cv, cx, cy, dm, do, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gs, gy, hm
-    // hn, hr, ht, id, ie, im, in, io, iq, jp, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml
-    // mm, mn, mr, ms, mu, my, mz, nf, nz, om, pa, pe, pg, ph, pk, pr, ps, pt, pw, qa, rw, sa, sb
-    // sc, sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vu, ws, ye
-    // za, zm
+    // cm, cn, co, cv, cx, dm, do, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gs, gy, hm, hn
+    // hr, ht, id, ie, im, in, io, iq, jp, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm
+    // mn, mr, ms, mu, my, mz, nf, nz, om, pa, pe, pg, ph, pk, pr, ps, pt, pw, qa, rw, sa, sb, sc
+    // sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vu, ws, ye, za
+    // zm
     // xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--mgb9awbf, xn--mgbaam7a8h
     // xn--mgberp4a5d4ar, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a, xn--wgbl6a
     // xn--yfro4i67o

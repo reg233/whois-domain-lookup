@@ -316,70 +316,7 @@ class WHOISWeb
 
   private function getCY()
   {
-    $url = "https://registry.nic.cy/api/domains/_search";
-
-    $data = [
-      "domainName" => $this->domainParts[0],
-      "domainEndingName" => $this->domainParts[1],
-    ];
-
-    $options = [
-      CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => json_encode($data),
-      CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
-    ];
-
-    $response = $this->request($url, $options);
-
-    $json = json_decode($response, true);
-
-    if (!$json) {
-      return "";
-    } else if (!isset($json[0]["id"])) {
-      $whois = "Status: " . ($json[0]["status"] ?? "") . "\n";
-      $whois .= "Description: " . ($json[0]["description"] ?? "") . "\n";
-
-      return $whois;
-    }
-
-    $url = "https://registry.nic.cy/api/whoIs/" . $json[0]["id"];
-
-    $response = $this->request($url);
-
-    $json = json_decode($response, true);
-
-    $whois = "";
-    if (isset($json["domainWhoIs"])) {
-      $domain = $json["domainWhoIs"];
-
-      $whois .= "Domain Name: " . ($domain["domainFullname"] ?? "") . "\n";
-      $whois .= "Creation Date: " . implode("-", $domain["domainCreationDate"] ?? []) . "\n";
-      $whois .= "Registry Expiry Date: " . implode("-", $domain["domainExpirationDate"] ?? []) . "\n";
-
-      foreach ($domain["domainServers"] ?? [] as $server) {
-        $whois .= "Name Server: " . ($server["name"] ?? "") . "\n";
-      }
-    }
-    if (isset($json["registrantWhoIs"]["personWhoIs"])) {
-      foreach ($json["registrantWhoIs"]["personWhoIs"] as $key => $value) {
-        $label = $key === "personPostalCode"
-          ? "Postal Code"
-          : str_replace("person", "", $key);
-        $whois .= "Registrant $label: $value\n";
-      }
-    } else if (isset($json["registrantWhoIs"]["organizationWhoIs"])) {
-      foreach ($json["registrantWhoIs"]["organizationWhoIs"] as $key => $value) {
-        $label = str_replace("company", "", $key);
-        if ($label === "Adress") {
-          $label = "Address";
-        } else if ($label === "PostalCode") {
-          $label = "Postal Code";
-        }
-        $whois .= "Registrant $label: $value\n";
-      }
-    }
-
-    return $whois;
+    return "Please visit https://registry.nic.cy/cy-ui/home";
   }
 
   private function getDJ()
@@ -1333,86 +1270,7 @@ class WHOISWeb
 
   private function getPY()
   {
-    $url = "https://www.nic.py/consultdompy.php";
-
-    $options = [CURLOPT_HEADER => true];
-
-    ["response" => $response, "headerSize" => $headerSize] = $this->request($url, $options, true);
-
-    $headers = substr($response, 0, $headerSize);
-    $body = substr($response, $headerSize);
-
-    preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
-    $cookies = implode("; ", $matches[1]);
-
-    $document = new DOMDocument();
-    $document->loadHTML($body);
-
-    $xPath = new DOMXPath($document);
-
-    $hidden = $xPath->query("//input[@type='hidden']")->item(0);
-    $hiddenName = $hidden?->attributes->getNamedItem("name")?->value;
-    $hiddenValue = $hidden?->attributes->getNamedItem("value")?->value;
-
-    $text = $xPath->query("//input[@type='text']")->item(0)?->attributes->getNamedItem("name")?->value;
-
-    $select = $xPath->query("//select")->item(0)?->attributes->getNamedItem("name")?->value;
-
-    if (!$hiddenName || !$hiddenValue || !$text || !$select) {
-      return "";
-    }
-
-    $data = [
-      $hiddenName => $hiddenValue,
-      $text => $this->domainParts[0],
-      $select => explode(".", $this->domainParts[1])[0],
-      "btn_modificar" => "Consultar",
-    ];
-
-    $options = [
-      CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => $data,
-      CURLOPT_COOKIE => $cookies,
-    ];
-
-    $response = $this->request($url, $options);
-
-    $document->loadHTML($response);
-
-    $xPath = new DOMXPath($document);
-
-    $dataElement = $document->getElementById("mostrar_datos");
-
-    if (!$dataElement) {
-      return "";
-    }
-
-    $whois = "";
-
-    foreach ($dataElement->childNodes as $child) {
-      switch ($child->nodeName) {
-        case "h2":
-        case "h4":
-          $whois .= $child->textContent . "\n";
-          break;
-        case "br":
-          $whois .= "\n";
-          break;
-        case "table":
-          foreach ($xPath->query("./tbody/tr | ./tr", $child) as $tr) {
-            $tds = $xPath->query("./td", $tr);
-            if ($tds->length >= 2) {
-              $key = trim($tds->item(0)->textContent);
-              $value = trim($tds->item(1)->textContent);
-
-              $whois .= "$key $value\n";
-            }
-          }
-          break;
-      }
-    }
-
-    return $whois;
+    return "Please visit https://www.nic.py/consultdompy.php";
   }
 
   private function getSV()
