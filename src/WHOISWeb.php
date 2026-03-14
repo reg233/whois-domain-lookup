@@ -1425,7 +1425,120 @@ class WHOISWeb
 
   private function getVN()
   {
-    return "Please visit https://vnnic.vn/en/whois-information?lang=en";
+    $url = "https://whois.inet.vn/api/whois/domainspecify/" . $this->domain;
+
+    $response = $this->request($url);
+
+    $json = json_decode($response, true);
+
+    $json["message"] = null;
+
+    $code = $json["code"] ?? "";
+
+    if ($code === "1") {
+      $url = "https://whois.inet.vn/api/domain/checkavailable";
+
+      $data = ["name" => $this->domain];
+
+      $options = [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($data),
+        CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
+        CURLOPT_COOKIE => "iclid=233",
+      ];
+
+      $response = $this->request($url, $options);
+
+      $jsonNew = json_decode($response, true);
+
+      $availability = $jsonNew["availability"] ?? "";
+      if ($availability) {
+        $json["availability"] = $availability;
+      }
+
+      $message = $jsonNew["message"] ?? "";
+      if ($message) {
+        $json["message"] = $message;
+      }
+    }
+
+    $whois = "";
+
+    $availability = $json["availability"] ?? "";
+    if ($availability) {
+      switch ($availability) {
+        case "available":
+          $whois .= "The domain name has not been registered\n";
+          break;
+        case "notavailable":
+          $whois .= "The domain $this->domain cannot be registered\n";
+
+          $message = $json["message"] ?? "";
+          if ($message) {
+            $whois .= "$message\n";
+          }
+          break;
+      }
+    }
+
+    if ($code === "0") {
+      $whois .= "Domain Name: " . ($json["domainName"] ?? "") . "\n";
+      $whois .= "Registrar: " . ($json["registrar"] ?? "") . "\n";
+
+      $rawText = $json["rawtext"] ?? "";
+      if ($rawText) {
+        $raw = json_decode($rawText, true);
+
+        $issuedDate = $raw["issuedDate"] ?? null;
+        if ($issuedDate) {
+          $whois .= "Creation Date: " . $this->formatVNDate($issuedDate) . "\n";
+        }
+
+        $expiredDate = $raw["expiredDate"] ?? null;
+        if ($expiredDate) {
+          $whois .= "Registry Expiry Date: " . $this->formatVNDate($expiredDate) . "\n";
+        }
+      } else {
+        $whois .= "Creation Date: " . ($json["creationDate"] ?? "") . "\n";
+        $whois .= "Registry Expiry Date: " . ($json["expirationDate"] ?? "") . "\n";
+      }
+
+      foreach ($json["status"] ?? [] as $status) {
+        $whois .= "Domain Status: " . $status . "\n";
+      }
+
+      foreach ($json["nameServer"] ?? [] as $nameServer) {
+        $whois .= "Name Server: " . $nameServer . "\n";
+      }
+
+      $whois .= "Registrant Name: " . ($json["registrantName"] ?? "") . "\n";
+      $whois .= "DNSSEC: " . ($json["DNSSEC"] ?? "") . "\n";
+    }
+
+    return $whois;
+  }
+
+  private function formatVNDate($date)
+  {
+    $dateString = sprintf(
+      "%04d-%02d-%02d %02d:%02d:%02d",
+      $date["year"] ?? 1970,
+      $date["month"] ?? 1,
+      $date["day"] ?? 1,
+      $date["hour"] ?? 0,
+      $date["minute"] ?? 0,
+      $date["second"] ?? 0
+    );
+
+    $timezoneOffset = $date["timezone"] ?? 0;
+    $offsetHours = intdiv($timezoneOffset, 60);
+    $offsetMinutes = abs($timezoneOffset % 60);
+    $timezone = sprintf("%+03d:%02d", $offsetHours, $offsetMinutes);
+
+    $dateTime = new DateTime($dateString, new DateTimeZone($timezone));
+    $dateTime->setTimezone(new DateTimeZone("UTC"));
+
+    return $dateTime->format('Y-m-d\TH:i:s\Z');
   }
 
   private function decodeCFEmail($cfEmail)
