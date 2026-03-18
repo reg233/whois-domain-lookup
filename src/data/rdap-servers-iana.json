@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-03-12T20:00:01Z",
+  "publication": "2026-03-17T18:19:24Z",
   "services": [
     [
       [
@@ -410,14 +410,6 @@
     ],
     [
       [
-        "fun"
-      ],
-      [
-        "https://rdap.centralnic.com/fun/"
-      ]
-    ],
-    [
-      [
         "game"
       ],
       [
@@ -470,14 +462,6 @@
       ],
       [
         "https://rdap.centralnic.com/homes/"
-      ]
-    ],
-    [
-      [
-        "host"
-      ],
-      [
-        "https://rdap.centralnic.com/host/"
       ]
     ],
     [
@@ -642,14 +626,6 @@
     ],
     [
       [
-        "online"
-      ],
-      [
-        "https://rdap.centralnic.com/online/"
-      ]
-    ],
-    [
-      [
         "ooo"
       ],
       [
@@ -674,26 +650,10 @@
     ],
     [
       [
-        "press"
-      ],
-      [
-        "https://rdap.centralnic.com/press/"
-      ]
-    ],
-    [
-      [
         "protection"
       ],
       [
         "https://rdap.centralnic.com/protection/"
-      ]
-    ],
-    [
-      [
-        "pw"
-      ],
-      [
-        "https://rdap.centralnic.com/pw/"
       ]
     ],
     [
@@ -778,14 +738,6 @@
     ],
     [
       [
-        "site"
-      ],
-      [
-        "https://rdap.centralnic.com/site/"
-      ]
-    ],
-    [
-      [
         "skin"
       ],
       [
@@ -798,14 +750,6 @@
       ],
       [
         "https://rdap.centralnic.com/smart/"
-      ]
-    ],
-    [
-      [
-        "space"
-      ],
-      [
-        "https://rdap.centralnic.com/space/"
       ]
     ],
     [
@@ -834,22 +778,6 @@
     ],
     [
       [
-        "store"
-      ],
-      [
-        "https://rdap.centralnic.com/store/"
-      ]
-    ],
-    [
-      [
-        "tech"
-      ],
-      [
-        "https://rdap.centralnic.com/tech/"
-      ]
-    ],
-    [
-      [
         "theatre"
       ],
       [
@@ -874,14 +802,6 @@
     ],
     [
       [
-        "uno"
-      ],
-      [
-        "https://rdap.centralnic.com/uno/"
-      ]
-    ],
-    [
-      [
         "vg"
       ],
       [
@@ -894,14 +814,6 @@
       ],
       [
         "https://rdap.centralnic.com/viva/"
-      ]
-    ],
-    [
-      [
-        "website"
-      ],
-      [
-        "https://rdap.centralnic.com/website/"
       ]
     ],
     [
@@ -4776,6 +4688,24 @@
       ],
       [
         "https://rdap.publicinterestregistry.org/rdap/"
+      ]
+    ],
+    [
+      [
+        "fun",
+        "host",
+        "online",
+        "press",
+        "pw",
+        "site",
+        "space",
+        "store",
+        "tech",
+        "uno",
+        "website"
+      ],
+      [
+        "https://rdap.radix.host/rdap/"
       ]
     ],
     [
