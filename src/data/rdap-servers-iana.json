@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-03-17T18:19:24Z",
+  "publication": "2026-03-23T19:00:02Z",
   "services": [
     [
       [
@@ -490,14 +490,6 @@
     ],
     [
       [
-        "kfh"
-      ],
-      [
-        "https://rdap.centralnic.com/kfh/"
-      ]
-    ],
-    [
-      [
         "kpn"
       ],
       [
@@ -830,14 +822,6 @@
       ],
       [
         "https://rdap.centralnic.com/xn--4gbrim/"
-      ]
-    ],
-    [
-      [
-        "xn--ngbe9e0a"
-      ],
-      [
-        "https://rdap.centralnic.com/xn--ngbe9e0a/"
       ]
     ],
     [
@@ -4784,6 +4768,15 @@
       ],
       [
         "https://rdap.registry.hiphop/rdap/"
+      ]
+    ],
+    [
+      [
+        "kfh",
+        "xn--ngbe9e0a"
+      ],
+      [
+        "https://rdap.registry.kfh/rdap/"
       ]
     ],
     [
