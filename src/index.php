@@ -605,13 +605,38 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
           domainClearElement.classList.remove("visible");
         }
       });
+      domainElement.addEventListener("paste", (e) => {
+        try {
+          const pasteData = e.clipboardData.getData("text");
+          const hostname = new URL(pasteData).hostname;
+
+          e.preventDefault();
+
+          if (document.queryCommandSupported("insertText")) {
+            domainElement.select();
+            document.execCommand("insertText", false, hostname);
+          } else {
+            const end = domainElement.value.length;
+            domainElement.setRangeText(hostname, 0, end, "end");
+            domainElement.dispatchEvent(new Event("input", {
+              bubbles: true,
+            }));
+          }
+        } catch (e) {
+          // Ignore
+        }
+      });
       domainClearElement.addEventListener("click", () => {
         domainElement.focus();
         domainElement.select();
-        if (!document.execCommand("delete", false)) {
+        if (document.queryCommandSupported("delete")) {
+          document.execCommand("delete", false);
+        } else {
           domainElement.setRangeText("");
+          domainElement.dispatchEvent(new Event("input", {
+            bubbles: true,
+          }));
         }
-        domainClearElement.classList.remove("visible");
       });
 
       const checkboxNames = ["whois", "rdap", "prices"];
