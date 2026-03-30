@@ -160,7 +160,12 @@ class Parser
     // xn--fiqs8s.xn--fiqs8s, xn--fiqz9s.xn--fiqz9s
     "can ?not be registered",
     // xxx.dm, in.in, www.iq, ir.ir, kw.kw, ky.ky, xxx.my, xxx.uz
-    // xn--mgba3a4f16a.xn--mgba3a4f16a
+    // xn--2scrj9c.xn--2scrj9c, xn--3hcrj9c.xn--3hcrj9c, xn--45br5cyl.xn--45br5cyl
+    // xn--45brj9c.xn--45brj9c, xn--fpcrj9c3d.xn--fpcrj9c3d, xn--gecrj9c.xn--gecrj9c
+    // xn--h2breg3eve.xn--h2breg3eve, xn--h2brj9c.xn--h2brj9c, xn--h2brj9c8c.xn--h2brj9c8c
+    // xn--mgba3a4f16a.xn--mgba3a4f16a, a.xn--mgbbh1a, xn--mgbbh1a71e.xn--mgbbh1a71e
+    // xn--mgbgu82a.xn--mgbgu82a, xn--rvc1e0am3e.xn--rvc1e0am3e, xn--s9brj9c.xn--s9brj9c
+    // a.xn--xkc2dl3a5ee0h
     "is not available",
     // do.do, www.idf.il
     // xn--4dbrk0ce.xn--4dbrk0ce
@@ -242,7 +247,9 @@ class Parser
     // de, lv
     "status: free",
     // dm, in, iq, kw, ky, lk, my, to
-    // xn--mgbtx2b
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--fpcrj9c3d, xn--gecrj9c
+    // xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgbgu82a
+    // xn--mgbtx2b, xn--rvc1e0am3e, xn--s9brj9c, xn--xkc2dl3a5ee0h
     "is available for registration",
     // gt, hu, nr, pk, rs
     // xn--90a3ac
@@ -292,10 +299,12 @@ class Parser
     // my, mz, nf, ni, nl, no, np, nr, nz, om, pa, pe, pg, ph, pr, ps, pw, qa, ro, rs, rw, sa, sb
     // sc, sd, se, sg, sh, sl, sm, so, ss, st, sx, sy, tc, td, th, tj, tl, tn, to, tt, tv, ug, us
     // uz, vc, ve, vg, vn, vu, ws, ye, za, zm
-    // xn--3e0b707e, xn--80ao21a, xn--90a3ac, xn--90ae, xn--90ais, xn--clchc0ea0b2g2a9gcd
-    // xn--fiqs8s, xn--fiqz9s, xn--j6w193g, xn--lgbbat1ad8j, xn--mgb9awbf, xn--mgbaam7a8h
-    // xn--mgbayh7gpa, xn--mgberp4a5d4ar, xn--mgbtx2b, xn--mix891f, xn--o3cw4h, xn--ogbpf8fl
-    // xn--pgbs0dh, xn--q7ce6a, xn--wgbl6a, xn--y9a3aq, xn--yfro4i67o
+    // xn--2scrj9c, xn--3e0b707e, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--80ao21a, xn--90a3ac
+    // xn--90ae, xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d
+    // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j6w193g, xn--lgbbat1ad8j
+    // xn--mgb9awbf, xn--mgbaam7a8h, xn--mgbayh7gpa, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgberp4a5d4ar
+    // xn--mgbgu82a, xn--mgbtx2b, xn--mix891f, xn--o3cw4h, xn--ogbpf8fl, xn--pgbs0dh, xn--q7ce6a
+    // xn--rvc1e0am3e, xn--s9brj9c, xn--wgbl6a, xn--xkc2dl3a5ee0h, xn--y9a3aq, xn--yfro4i67o
     "domain name",
     // ar, at, ax, be, br, cr, cz, de, dk, eu, fi, fr, gg, gr, hu, il, ir, is, it, je, ls, lt, lv
     // mc, mk, mw, nc, nu, pk, pm, pt, re, ru, si, sk, sr, su, tf, tg, tm, tz, ua, wf, yt
@@ -334,9 +343,11 @@ class Parser
     // nf, nu, nz, om, pg, ph, pm, pr, ps, pw, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh, si, sn
     // so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn, vu, wf
     // ws, ye, yt, za, zm
-    // xn--90a3ac, xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--d1alf, xn--j1amh, xn--lgbbat1ad8j
-    // xn--mgb9awbf, xn--mgbtx2b, xn--o3cw4h, xn--p1ai, xn--pgbs0dh, xn--q7ce6a, xn--y9a3aq
-    // xn--yfro4i67o
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90a3ac, xn--90ais
+    // xn--clchc0ea0b2g2a9gcd, xn--d1alf, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
+    // xn--h2brj9c8c, xn--j1amh, xn--lgbbat1ad8j, xn--mgb9awbf, xn--mgbbh1a, xn--mgbbh1a71e
+    // xn--mgbgu82a, xn--mgbtx2b, xn--o3cw4h, xn--p1ai, xn--pgbs0dh, xn--q7ce6a, xn--rvc1e0am3e
+    // xn--s9brj9c, xn--xkc2dl3a5ee0h, xn--y9a3aq, xn--yfro4i67o
     "registrar",
     // ae, au, cl, hk, il, qa
     // xn--4dbrk0ce, xn--j6w193g, xn--mgbaam7a8h, xn--wgbl6a
@@ -370,7 +381,10 @@ class Parser
     // fm, fo, gd, gi, gl, gn, gs, gy, hn, hr, hu, id, ie, in, io, iq, ke, ki, kw, ky, la, lb, lc
     // me, mm, mn, mu, my, mz, nf, nz, om, pr, ps, pw, rw, sb, sc, sd, sh, so, sx, to, tv, us, vc
     // vg, vu, ws, ye, za, zm
-    // xn--j1amh, xn--mgb9awbf, xn--mgbtx2b, xn--q7ce6a
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--fpcrj9c3d, xn--gecrj9c
+    // xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh, xn--mgb9awbf, xn--mgbbh1a
+    // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
+    // xn--xkc2dl3a5ee0h
     "registrar url",
     // gh, sr, tc
     "sponsoring registrar url",
@@ -407,7 +421,8 @@ class Parser
     // com, ac, af, ag, ai, au, bb, bh, bm, bz, ca, cc, co, cx, dm, et, fm, fo, gd, gi, gl, gn, gs
     // gy, hr, ht, id, ie, in, io, iq, ke, kw, ky, la, lc, me, mg, mm, mn, mu, my, mz, om, pr, pw
     // sb, sc, sh, so, sx, tl, to, tv, us, vc, vg, vu, ye, za
-    // xn--mgb9awbf, xn--mgbtx2b, xn--q7ce6a
+    // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--mgb9awbf, xn--mgbtx2b
+    // xn--q7ce6a
     "registrar whois server",
     // bd, gh, sl, sr, sy, tc, uz, ws
     // xn--ogbpf8fl
@@ -442,8 +457,11 @@ class Parser
     // hr, ht, id, ie, in, io, iq, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr
     // ms, mu, my, mz, nf, nl, nz, pa, pg, ph, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl, so
     // sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vn, vu, ws, ye, za, zm
-    // xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--j1amh, xn--lgbbat1ad8j, xn--mgbtx2b, xn--ogbpf8fl
-    // xn--pgbs0dh, xn--q7ce6a, xn--qxam, xn--yfro4i67o
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90ais, xn--clchc0ea0b2g2a9gcd
+    // xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh
+    // xn--lgbbat1ad8j, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--ogbpf8fl
+    // xn--pgbs0dh, xn--q7ce6a, xn--qxam, xn--rvc1e0am3e, xn--s9brj9c, xn--xkc2dl3a5ee0h
+    // xn--yfro4i67o
     "creation date",
     // am, ar, be, cr, cz, dk, ee, hu, ls, lt, mk, mt, mw, tz, ve
     // xn--d1alf, xn--y9a3aq
@@ -515,7 +533,10 @@ class Parser
     // kw, ky, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, ni, pa, pg, pr
     // ps, pw, rw, sb, sc, sd, sg, sh, sl, so, sr, ss, sx, sy, tc, td, tl, to, tv, us, vc, vg, vn
     // vu, ye, za, zm
-    // xn--clchc0ea0b2g2a9gcd, xn--mgbtx2b, xn--ogbpf8fl, xn--q7ce6a, xn--yfro4i67o
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--clchc0ea0b2g2a9gcd, xn--fpcrj9c3d
+    // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--mgbbh1a, xn--mgbbh1a71e
+    // xn--mgbgu82a, xn--mgbtx2b, xn--ogbpf8fl, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
+    // xn--xkc2dl3a5ee0h, xn--yfro4i67o
     "registry expiry date",
     // am, ax, br, dk, fi, is, lt, nu, se, ua
     // xn--y9a3aq
@@ -586,8 +607,10 @@ class Parser
     // ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, nl, nz, pa
     // pg, ph, pr, ps, pw, rw, sb, sc, sd, sg, sh, so, ss, sx, sy, td, th, tl, to, tv, us, uz, vc
     // vg, vu, ws, ye, za, zm
-    // xn--clchc0ea0b2g2a9gcd, xn--j1amh, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a
-    // xn--yfro4i67o
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--clchc0ea0b2g2a9gcd, xn--fpcrj9c3d
+    // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh, xn--mgbbh1a
+    // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a
+    // xn--rvc1e0am3e, xn--s9brj9c, xn--xkc2dl3a5ee0h, xn--yfro4i67o
     "updated date",
     // am, au, kz, pl, qa
     // xn--80ao21a, xn--wgbl6a, xn--y9a3aq
@@ -748,8 +771,11 @@ class Parser
     // in, io, iq, je, ke, ki, kn, kr, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu
     // my, mz, nf, nz, pa, pe, pg, pr, ps, pt, pw, ro, rs, rw, sb, sc, sd, sg, sh, sk, so, ss, sx
     // sy, tc, td, tl, tn, to, tr, tv, tw, us, vc, vg, vn, vu, ws, ye, za, zm
-    // xn--3e0b707e, xn--90a3ac, xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--j6w193g
-    // xn--kprw13d, xn--kpry57d, xn--mgbtx2b, xn--ogbpf8fl, xn--pgbs0dh, xn--q7ce6a, xn--yfro4i67o
+    // xn--2scrj9c, xn--3e0b707e, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90a3ac
+    // xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve
+    // xn--h2brj9c, xn--h2brj9c8c, xn--j6w193g, xn--kprw13d, xn--kpry57d, xn--mgbbh1a
+    // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--ogbpf8fl, xn--pgbs0dh, xn--q7ce6a
+    // xn--rvc1e0am3e, xn--s9brj9c, xn--xkc2dl3a5ee0h, xn--yfro4i67o
     "domain status",
     // ae, am, au, aw, ax, br, cr, cz, de, dk, ee, fi, gw, hu, il, it, jp, ls, lt, lv, mc, mk, mw
     // mx, nl, nu, pf, ph, pk, qa, se, si, sm, sr, st, tg, th, tm, tz, ua, ug, uz
@@ -853,9 +879,11 @@ class Parser
     // mn, mr, ms, mu, my, mz, nf, nz, om, pa, pe, pg, ph, pk, pr, ps, pt, pw, qa, rw, sa, sb, sc
     // sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vn, vu, ws, ye
     // za, zm
-    // xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--mgb9awbf, xn--mgbaam7a8h
-    // xn--mgberp4a5d4ar, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a, xn--wgbl6a
-    // xn--yfro4i67o
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90ais, xn--clchc0ea0b2g2a9gcd
+    // xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
+    // xn--h2brj9c8c, xn--mgb9awbf, xn--mgbaam7a8h, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgberp4a5d4ar
+    // xn--mgbgu82a, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
+    // xn--wgbl6a, xn--xkc2dl3a5ee0h, xn--yfro4i67o
     "name server",
     // ar, at, ax, br, cr, cz, de, ee, fi, fr, il, ir, is, ls, lu, lv, mc, mk, mw, nu, pm, re, ru
     // se, su, tf, tz, ua, ve, wf, yt

@@ -67,7 +67,7 @@ class WHOIS
 
     $server = $this->servers[idn_to_ascii($this->extension)] ?? "";
 
-    if (empty($server) && !WHOISWeb::isSupported($this->extension)) {
+    if (!$server && !WHOISWeb::isSupported($this->extension)) {
       throw new RuntimeException("No WHOIS server found for '$this->domain'");
     }
 
@@ -76,7 +76,7 @@ class WHOIS
 
   public function getData()
   {
-    if (WHOISWeb::isSupported($this->extension)) {
+    if (empty($_GET["whois-server"]) && WHOISWeb::isSupported($this->extension)) {
       return (new WHOISWeb($this->domain, $this->extension))->getData();
     }
 
@@ -87,7 +87,7 @@ class WHOIS
 
     if (is_array($this->server)) {
       $host = $this->server["host"];
-      $query = str_replace("{domain}", $domain, $this->server["query"]);
+      $query = sprintf($this->server["query"], $domain);
     }
 
     $socket = @stream_socket_client("tcp://$host:43", $errno, $errstr, 10);
