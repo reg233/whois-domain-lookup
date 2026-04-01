@@ -575,10 +575,24 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
     <?php if ($whoisData || $rdapData): ?>
       <section class="raw-data">
         <?php if ($whoisData): ?>
-          <pre class="raw-data-whois" id="raw-data-whois" tabindex="0"><code><?= htmlspecialchars($whoisData, ENT_QUOTES, "UTF-8"); ?></code></pre>
+          <div id="raw-data-whois">
+            <button class="copy-button" id="raw-data-whois-copy">
+              <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" fill-rule="evenodd" />
+              </svg>
+            </button>
+            <pre class="raw-data-whois" tabindex="0"><code><?= htmlspecialchars($whoisData, ENT_QUOTES, "UTF-8"); ?></code></pre>
+          </div>
         <?php endif; ?>
         <?php if ($rdapData): ?>
-          <pre class="raw-data-rdap" id="raw-data-rdap" tabindex="0"><code><?= $rdapData; ?></code></pre>
+          <div id="raw-data-rdap">
+            <button class="copy-button" id="raw-data-rdap-copy">
+              <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" fill-rule="evenodd" />
+              </svg>
+            </button>
+            <pre class="raw-data-rdap" tabindex="0"><code><?= $rdapData; ?></code></pre>
+          </div>
         <?php endif; ?>
       </section>
     <?php endif; ?>
@@ -590,7 +604,7 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
     </svg>
   </button>
   <script>
-    window.addEventListener("DOMContentLoaded", function() {
+    window.addEventListener("DOMContentLoaded", () => {
       const domainElement = document.getElementById("domain");
       const domainClearElement = document.getElementById("domain-clear");
 
@@ -687,8 +701,8 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
   </script>
   <?php if ($whoisData || $rdapData): ?>
     <script>
-      window.addEventListener("DOMContentLoaded", function() {
-        function updateDateElementText(elementId) {
+      window.addEventListener("DOMContentLoaded", () => {
+        const updateDateElementText = (elementId) => {
           const element = document.getElementById(elementId);
           if (element) {
             const iso8601 = element.dataset.iso8601;
@@ -734,13 +748,14 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
     <script src="public/js/linkify.min.js" defer></script>
     <script src="public/js/linkify-html.min.js" defer></script>
     <script>
-      window.addEventListener("DOMContentLoaded", function() {
+      window.addEventListener("DOMContentLoaded", () => {
         tippy.setDefaultProps({
           arrow: false,
+          hideOnClick: false,
           offset: [0, 8],
         });
 
-        function updateDateElementTooltip(elementId) {
+        const updateDateElementTooltip = (elementId) => {
           const element = document.getElementById(elementId);
           if (element) {
             const offset = element.dataset.offset;
@@ -758,7 +773,7 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
         updateDateElementTooltip("updated-date");
         updateDateElementTooltip("available-date");
 
-        function updateSecondsElementTooltip(elementId, prefix) {
+        const updateSecondsElementTooltip = (elementId, prefix) => {
           const element = document.getElementById(elementId);
           if (element) {
             const seconds = element.dataset.seconds;
@@ -782,7 +797,9 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
         const dataSourceWHOIS = document.getElementById("data-source-whois");
         const dataSourceRDAP = document.getElementById("data-source-rdap");
         const rawDataWHOIS = document.getElementById("raw-data-whois");
+        const rawDataWHOISCopy = document.getElementById("raw-data-whois-copy");
         const rawDataRDAP = document.getElementById("raw-data-rdap");
+        const rawDataRDAPCopy = document.getElementById("raw-data-rdap-copy");
 
         if (dataSourceWHOIS && dataSourceRDAP) {
           dataSourceWHOIS.addEventListener("click", () => {
@@ -807,12 +824,72 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
           });
         }
 
-        if (rawDataRDAP) {
-          const rdapData = <?= json_encode($rdapData); ?>;
-          setupJSONViewer(rawDataRDAP, rdapData);
+        const copyToClipboard = (data) => {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(data);
+          } else {
+            const fakeElement = document.createElement("textarea");
+            fakeElement.style.border = "0";
+            fakeElement.style.fontSize = "12pt";
+            fakeElement.style.margin = "0";
+            fakeElement.style.padding = "0";
+            fakeElement.style.position = "absolute";
+
+            const isRTL = document.documentElement.getAttribute("dir") === "rtl";
+            fakeElement.style[isRTL ? "right" : "left"] = "-9999px";
+            const yPosition = window.pageYOffset || document.documentElement.scrollTop;
+            fakeElement.style.top = `${yPosition}px`;
+
+            fakeElement.setAttribute("readonly", "");
+            fakeElement.value = data;
+
+            document.body.appendChild(fakeElement);
+
+            fakeElement.select();
+            fakeElement.setSelectionRange(0, fakeElement.value.length);
+
+            document.execCommand("copy");
+
+            fakeElement.remove();
+          }
+        };
+
+        const setupCopyButton = (element, copyAction) => {
+          if (element) {
+            const copyTippy = tippy(element, {
+              placement: "bottom",
+              onHide: (instance) => {
+                if (copyTimeoutId) {
+                  clearTimeout(copyTimeoutId);
+                  copyTimeoutId = null;
+                }
+              },
+              onShow: (instance) => {
+                instance.setContent("Copy to clipboard");
+              },
+            });
+
+            let copyTimeoutId;
+
+            element.addEventListener("click", () => {
+              if (copyTimeoutId) {
+                clearTimeout(copyTimeoutId);
+                copyTimeoutId = null;
+              }
+
+              const valueToCopy = copyAction();
+              if (valueToCopy) {
+                copyToClipboard(valueToCopy);
+                copyTippy.setContent("Copied!");
+                copyTimeoutId = setTimeout(() => {
+                  copyTippy.setContent("Copy to clipboard");
+                }, 2333);
+              }
+            });
+          }
         }
 
-        function linkifyRawData(element) {
+        const linkifyRawData = (element) => {
           if (element) {
             element.innerHTML = linkifyHtml(element.innerHTML, {
               rel: "nofollow noopener noreferrer",
@@ -824,8 +901,20 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
           }
         }
 
-        linkifyRawData(rawDataWHOIS);
-        linkifyRawData(rawDataRDAP);
+        if (rawDataWHOIS) {
+          const pre = rawDataWHOIS.querySelector("pre");
+
+          setupCopyButton(rawDataWHOISCopy, () => pre.innerText);
+          linkifyRawData(pre);
+        }
+        if (rawDataRDAP) {
+          const pre = rawDataRDAP.querySelector("pre");
+          const rdapData = <?= json_encode($rdapData); ?>;
+
+          setupCopyButton(rawDataRDAPCopy, () => JSON.stringify(JSON.parse(rdapData), null, 2));
+          setupJSONViewer(pre, rdapData);
+          linkifyRawData(pre);
+        }
       });
     </script>
   <?php endif; ?>

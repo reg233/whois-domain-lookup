@@ -410,6 +410,32 @@ button.message-tag > span {
   padding-right: 20px;
 }
 
+#raw-data-whois,
+#raw-data-rdap {
+  position: relative;
+}
+
+#raw-data-whois + #raw-data-rdap {
+  display: none;
+}
+
+.copy-button {
+  background-color: #ffffff;
+  font-size: 16px;
+  padding: 8px;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+}
+
+.copy-button:hover {
+  background-color: #f3f4f6;
+}
+
+.copy-button:active {
+  background-color: #e5e7eb;
+}
+
 .raw-data-whois,
 .raw-data-rdap {
   border: 1px solid #2e2e2e;
@@ -439,10 +465,6 @@ button.message-tag > span {
 .raw-data-rdap:focus-visible {
   border-color: #19cccc;
   outline-color: #5ee8e8;
-}
-
-.raw-data-whois + .raw-data-rdap {
-  display: none;
 }
 
 code {
