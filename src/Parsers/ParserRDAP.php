@@ -216,6 +216,7 @@ class ParserRDAP extends Parser
 
   protected const EXPIRATION_DATE_KEYWORDS = [
     "expiration",
+    "registrar expiration",
     // is
     "soft expiration",
     // kg
