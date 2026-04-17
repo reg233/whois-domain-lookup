@@ -1,7 +1,5 @@
 <?php
-define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "");
-
-define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS domain lookup");
+define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
 define("SITE_SHORT_TITLE", getenv("SITE_SHORT_TITLE") ?: "WHOIS");
 
@@ -20,7 +18,3 @@ define("CUSTOM_SCRIPT", getenv("CUSTOM_SCRIPT") ?: "");
 define("CUSTOM_HEAD_LOGIN", getenv("CUSTOM_HEAD_LOGIN") ?: "");
 
 define("CUSTOM_SCRIPT_LOGIN", getenv("CUSTOM_SCRIPT_LOGIN") ?: "");
-
-define("HOSTED_ON", getenv("HOSTED_ON") ?: "");
-
-define("HOSTED_ON_URL", getenv("HOSTED_ON_URL") ?: "");

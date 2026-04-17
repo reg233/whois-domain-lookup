@@ -25,6 +25,8 @@ class Parser
 
   public $registrarURL = "";
 
+  public $registrarIANAId = "";
+
   public $registrarWHOISServer = "";
 
   public $registrarRDAPServer = "";
@@ -49,13 +51,23 @@ class Parser
 
   public $nameServers = [];
 
-  public $age = "";
+  public $dnssecSigned = null;
 
-  public $ageSeconds = null;
+  public $createdAgo = "";
 
-  public $remaining = "";
+  public $createdAgoSeconds = null;
 
-  public $remainingSeconds = null;
+  public $expiresIn = "";
+
+  public $expiresInSeconds = null;
+
+  public $updatedAgo = "";
+
+  public $updatedAgoSeconds = null;
+
+  public $availableIn = "";
+
+  public $availableInSeconds = null;
 
   public $gracePeriod = false;
 
@@ -87,6 +99,7 @@ class Parser
 
     $this->registrar = $this->getRegistrar();
     $this->registrarURL = $this->getRegistrarURL();
+    $this->registrarIANAId = $this->getRegistrarIANAId();
     $this->registrarWHOISServer = $this->getRegistrarWHOISServer();
 
     // Check if the registrar contains a URL
@@ -113,11 +126,16 @@ class Parser
     $this->setStatusUrl();
 
     $this->nameServers = $this->getNameServers();
+    $this->dnssecSigned = $this->getDNSSECSigned();
 
-    $this->age = $this->getDateDiffText($this->creationDateISO8601, "now");
-    $this->ageSeconds = $this->getDateDiffSeconds($this->creationDateISO8601, "now");
-    $this->remaining = $this->getDateDiffText("now", $this->expirationDateISO8601);
-    $this->remainingSeconds = $this->getDateDiffSeconds("now", $this->expirationDateISO8601);
+    $this->createdAgo = $this->getDateDiffText($this->creationDateISO8601, "now");
+    $this->createdAgoSeconds = $this->getDateDiffSeconds($this->creationDateISO8601, "now");
+    $this->expiresIn = $this->getDateDiffText("now", $this->expirationDateISO8601);
+    $this->expiresInSeconds = $this->getDateDiffSeconds("now", $this->expirationDateISO8601);
+    $this->updatedAgo = $this->getDateDiffText($this->updatedDateISO8601, "now");
+    $this->updatedAgoSeconds = $this->getDateDiffSeconds($this->updatedDateISO8601, "now");
+    $this->availableIn = $this->getDateDiffText("now", $this->availableDateISO8601);
+    $this->availableInSeconds = $this->getDateDiffSeconds("now", $this->availableDateISO8601);
 
     $this->gracePeriod = $this->hasKeywordInStatus(self::GRACE_PERIOD_KEYWORDS);
     $this->redemptionPeriod = $this->hasKeywordInStatus(self::REDEMPTION_PERIOD_KEYWORDS);
@@ -412,6 +430,28 @@ class Parser
       }
 
       return $url;
+    }
+
+    return "";
+  }
+
+  private const REGISTRAR_IANA_ID_KEYWORDS = [
+    // com
+    "registrar iana id",
+  ];
+
+  protected function getRegistrarIANAIdRegExp()
+  {
+    return $this->getBaseRegExp(implode("|", self::REGISTRAR_IANA_ID_KEYWORDS));
+  }
+
+  protected function getRegistrarIANAId()
+  {
+    if (preg_match($this->getRegistrarIANAIdRegExp(), $this->data, $matches)) {
+      $ianaId = trim($matches[1]);
+      if (preg_match("/^\d+$/", $ianaId)) {
+        return $ianaId;
+      }
     }
 
     return "";
@@ -827,10 +867,10 @@ class Parser
     if (preg_match_all($this->getStatusRegExp(), $subject ?? $this->data, $matches)) {
       return array_map(
         function ($item) {
-          if (preg_match("#^[a-z]+ https?://.+#i", $item, $matches)) {
-            $parts = explode(" ", $item, 2);
+          $pattern = "#^([a-z]+)\s+(?:(https?://\S+)|\((https?://[^\s\)]+)\))#i";
 
-            return ["text" => $parts[0], "url" => $parts[1]];
+          if (preg_match($pattern, $item, $matches)) {
+            return ["text" => $matches[1], "url" => $matches[2] ?: $matches[3]];
           }
 
           return ["text" => $item, "url" => ""];
@@ -927,6 +967,60 @@ class Parser
     }
 
     return [];
+  }
+
+  private const DNSSEC_SIGNED_KEYWORDS = [
+    // com, ac, ad, ai, at, au, aw, bg, ca, cn, fi, gd, in, me, my, nl, pl, ro, vu, za, zm
+    "dnssec",
+  ];
+
+  private const DNSSEC_SIGNED_EXTRA_KEYWORDS = [
+    // br
+    "dsrecord",
+    // cr
+    "dnskey",
+    // fr, pm, re, tf, wf, yt
+    "key1-tag",
+    // iana
+    "ds-rdata",
+  ];
+
+  private const DNSSEC_SIGNED_VALUES = [
+    // com, ac, ad, ai, au, ca, cn, gd, in, me, my, vu, za, zm
+    "signeddelegation",
+    // at, pl, uk
+    "signed",
+    // bg, ro
+    "active",
+    // aw, nl,
+    "yes",
+    // fi
+    "signed delegation",
+  ];
+
+  protected function getDNSSECSignedRegExp()
+  {
+    return $this->getBaseRegExp(implode("|", self::DNSSEC_SIGNED_KEYWORDS));
+  }
+
+  protected function getDNSSECSignedExtraRegExp()
+  {
+    return $this->getBaseRegExp(implode("|", self::DNSSEC_SIGNED_EXTRA_KEYWORDS));
+  }
+
+  protected function getDNSSECSigned()
+  {
+    if (preg_match($this->getDNSSECSignedRegExp(), $this->data, $matches)) {
+      $value = trim($matches[1]);
+      if ($value) {
+        return in_array(strtolower($value), self::DNSSEC_SIGNED_VALUES, true);
+      }
+    }
+    if (preg_match($this->getDNSSECSignedExtraRegExp(), $this->data, $matches)) {
+      return !!trim($matches[1]);
+    }
+
+    return null;
   }
 
   protected const GRACE_PERIOD_KEYWORDS = [

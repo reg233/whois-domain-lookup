@@ -35,4 +35,9 @@ class ParserUK extends Parser
   {
     return $this->getNameServersFromExplode("\r\n");
   }
+
+  protected function getDNSSECSignedRegExp()
+  {
+    return "/dnssec:\r\n(.+)/i";
+  }
 }

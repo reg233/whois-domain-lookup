@@ -45,6 +45,10 @@ class Lookup
     if (in_array("whois", $dataSource, true) && in_array("rdap", $dataSource, true)) {
       $this->merge();
     }
+
+    if ($this->parser->registrarIANAId || $this->parser->registrar) {
+      $this->getRegistrarURL();
+    }
   }
 
   private function parseDomain($domain)
@@ -102,7 +106,7 @@ class Lookup
         throw $e;
       }
 
-      if ($e->getMessage() === "No WHOIS server found for '$this->domain'") {
+      if ($e->getMessage() === "No WHOIS server found for '$this->domain'.") {
         $this->whoisUnknown = $e->getMessage();
       } else {
         $this->whoisError = $e->getMessage();
@@ -133,7 +137,7 @@ class Lookup
         throw $e;
       }
 
-      if ($e->getMessage() === "No RDAP server found for '$this->domain'") {
+      if ($e->getMessage() === "No RDAP server found for '$this->domain'.") {
         $this->rdapUnknown = $e->getMessage();
       } else {
         $this->rdapError = $e->getMessage();
@@ -144,7 +148,7 @@ class Lookup
   private function merge()
   {
     if ($this->whoisUnknown && $this->rdapUnknown) {
-      throw new RuntimeException("No WHOIS or RDAP server found for '$this->domain'");
+      throw new RuntimeException("No WHOIS or RDAP server found for '$this->domain'.");
     }
 
     if (($this->whoisError && $this->rdapUnknown) || ($this->whoisUnknown && $this->rdapError)) {
@@ -152,7 +156,7 @@ class Lookup
     }
 
     if ($this->whoisError && $this->rdapError) {
-      throw new RuntimeException("A temporary error has occurred");
+      throw new RuntimeException("A temporary error has occurred.");
     }
 
     if ($this->whoisParser && $this->rdapParser) {
@@ -162,7 +166,7 @@ class Lookup
     } else if ($this->rdapParser) {
       $this->parser = $this->rdapParser;
     } else {
-      throw new RuntimeException("A temporary error has occurred");
+      throw new RuntimeException("A temporary error has occurred.");
     }
   }
 
@@ -180,6 +184,7 @@ class Lookup
       "domain",
       "registrar",
       "registrarURL",
+      "registrarIANAId",
       "registrarWHOISServer",
       "registrarRDAPServer",
       "creationDate",
@@ -192,8 +197,11 @@ class Lookup
       "availableDateISO8601",
       "status",
       "nameServers",
-      "age",
-      "remaining",
+      "dnssecSigned",
+      "createdAgo",
+      "expiresIn",
+      "updatedAgo",
+      "availableIn",
       "gracePeriod",
       "redemptionPeriod",
       "pendingDelete",
@@ -205,7 +213,14 @@ class Lookup
       }
     }
 
-    foreach (["ageSeconds", "remainingSeconds"] as $property) {
+    $secondsProperties = [
+      "createdAgoSeconds",
+      "expiresInSeconds",
+      "updatedAgoSeconds",
+      "availableInSeconds",
+    ];
+
+    foreach ($secondsProperties as $property) {
       if ($this->rdapParser->$property !== null) {
         $this->parser->$property = $this->rdapParser->$property;
       }
@@ -214,6 +229,47 @@ class Lookup
     $this->parser->unknown = $this->parser->getUnknown();
     if ($this->parser->unknown) {
       $this->parser->registered = false;
+    }
+  }
+
+  private function getRegistrarURL()
+  {
+    $filename = __DIR__ . "/data/icann-accredited-registrars.csv";
+    if (!file_exists($filename)) {
+      return;
+    }
+
+    if (($stream = fopen($filename, "r")) === false) {
+      return;
+    }
+
+    try {
+      if (fgetcsv($stream, 0, ",", '"', "\\") === false) {
+        return;
+      }
+
+      while (($row = fgetcsv($stream, 0, ",", '"', "\\")) !== false) {
+        $ianaId = trim($row[1]);
+        $registrar = trim($row[0]);
+
+        if (
+          ($this->parser->registrarIANAId && $ianaId === $this->parser->registrarIANAId) ||
+          ($this->parser->registrar && $registrar === $this->parser->registrar)
+        ) {
+          $this->parser->registrarIANAId = $ianaId;
+          if (!$this->parser->registrarURL) {
+            $this->parser->registrarURL = trim($row[4]);
+          }
+
+          return;
+        }
+      }
+
+      if ($this->parser->registrarIANAId) {
+        $this->parser->registrarIANAId = "";
+      }
+    } finally {
+      fclose($stream);
     }
   }
 }

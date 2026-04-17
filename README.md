@@ -6,9 +6,7 @@
 
 A simple WHOIS domain lookup website with strong TLD compatibility.
 
-[![GitHub Release](https://img.shields.io/github/v/release/reg233/whois-domain-lookup)](https://github.com/reg233/whois-domain-lookup/releases/latest)
-[![GitHub Downloads](https://img.shields.io/github/downloads/reg233/whois-domain-lookup/whois-domain-lookup.zip?displayAssetName=false)](https://github.com/reg233/whois-domain-lookup/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/reg233/whois-domain-lookup)](https://hub.docker.com/r/reg233/whois-domain-lookup)
+[![GitHub Release](https://img.shields.io/github/v/release/reg233/whois-domain-lookup?style=flat-square)](https://github.com/reg233/whois-domain-lookup/releases/latest)
 
 <table>
   <tr>
@@ -16,7 +14,15 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
       <img alt="Screenshot" src="public/images/manifest-screenshot-wide.png" />
     </td>
     <td>
+      <img alt="Screenshot" src="public/images/manifest-screenshot-wide-dark.png" />
+    </td>
+  </tr>
+  <tr>
+    <td>
       <img alt="Screenshot" src="public/images/manifest-screenshot-narrow.png" />
+    </td>
+    <td>
+      <img alt="Screenshot" src="public/images/manifest-screenshot-narrow-dark.png" />
     </td>
   </tr>
 </table>
@@ -28,7 +34,7 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 - Simple, Clear UI
 - Strong TLD compatibility, including most ccTLDs and a few private domains
 - WHOIS and RDAP support
-- Display prices, age, remaining days, and other information
+- Display domain days, and other information
 - Highlight url and email in raw data
 - API support
 - Access control
@@ -101,10 +107,6 @@ server {
     rewrite ^ /src/manifest.php?$args last;
   }
 
-  location = /prices {
-    rewrite ^ /src/prices.php?$args last;
-  }
-
   location ~ \.php$ {
     fastcgi_pass localhost:9000;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
@@ -121,7 +123,6 @@ server {
 
 | Key | Description | Example | Default |
 | :-- | :-- | :-- | :-- |
-| `DEFAULT_EXTENSION` | The default extension when no extension is entered. | `com` |  |
 | `SITE_TITLE` | Title of the website. | `WHOIS lookup` | `WHOIS domain lookup` |
 | `SITE_SHORT_TITLE` | Short title of the website, used for the mobile home screen. | `RDAP` | `WHOIS` |
 | `SITE_DESCRIPTION` | Description of the website, used for SEO | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
@@ -132,14 +133,12 @@ server {
 | `CUSTOM_SCRIPT` | Custom content to insert before `</body>` on the home page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
 | `CUSTOM_HEAD_LOGIN` | Custom content to insert before `</head>` on the login page (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT_LOGIN` | Custom content to insert before `</body>` on the login page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
-| `HOSTED_ON` | Name of the hosting platform, displayed at the bottom of the page. | `Serv00` |  |
-| `HOSTED_ON_URL` | URL of the hosting platform, used together with `HOSTED_ON` . | `https://serv00.com` |  |
 
 If you deploy using `web hosting`, you should modify the `config/config.php` file, like this:
 
 ```php
 <?php
-define("DEFAULT_EXTENSION", getenv("DEFAULT_EXTENSION") ?: "com");
+define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
 ...
 ```
@@ -171,15 +170,6 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 Example: `Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381f57160b5c5b86426`
 
 [SHA256 online tool](https://emn178.github.io/online-tools/sha256.html)
-
-## TODO
-
-- [ ] Improve reserved domain detection
-
-## Thanks
-
-- [Gandi](https://whois.gandi.net)
-- [tian.hu](https://tian.hu)
 
 ## Collaboration
 

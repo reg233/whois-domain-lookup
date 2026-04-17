@@ -25,13 +25,15 @@ jobs:
         run: |
           curl -fsSL "https://publicsuffix.org/list/public_suffix_list.dat" -o src/data/public-suffix-list.dat
           curl -fsSL "https://data.iana.org/rdap/dns.json" -o src/data/rdap-servers-iana.json
+          curl -fsSL "https://www.icann.org/en/contracted-parties/accredited-registrars/list-of-accredited-registrars/csvdownload?sort-param=iana-number&sort-direction=asc" -o src/data/icann-accredited-registrars.csv
 
       - name: Commit and push
         run: |
           psl_updated=$(git diff --quiet src/data/public-suffix-list.dat; echo $?)
           rdap_updated=$(git diff --quiet src/data/rdap-servers-iana.json; echo $?)
+          registrars_updated=$(git diff --quiet src/data/icann-accredited-registrars.csv; echo $?)
 
-          if [ $psl_updated -eq 1 ] || [ $rdap_updated -eq 1 ]; then
+          if [ $psl_updated -eq 1 ] || [ $rdap_updated -eq 1 ] || [ $registrars_updated -eq 1 ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
 
@@ -55,6 +57,10 @@ jobs:
             if [ $rdap_updated -eq 1 ]; then
               git add src/data/rdap-servers-iana.json
               commit_message="${commit_message} and rdap-servers-iana.json"
+            fi
+            if [ $registrars_updated -eq 1 ]; then
+              git add src/data/icann-accredited-registrars.csv
+              commit_message="${commit_message} and icann-accredited-registrars.csv"
             fi
 
             git commit -m "${commit_message}"

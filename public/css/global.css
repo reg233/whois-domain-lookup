@@ -1,3 +1,141 @@
+:root {
+  color-scheme: light;
+  --border-back-to-top: #86b8f0;
+  --border-card: #007fff26;
+  --border-input: #007fff33;
+  --brand-primary: #007fff;
+  --elevation-back-to-top: 0 10px 24px #b5cde8;
+  --elevation-card: 0 12px 30px #1d3b6b1a;
+  --feedback-error-bg: #ff5c7a1f;
+  --feedback-error-border: #ff5c7a45;
+  --feedback-error-fg: #b4234d;
+  --feedback-info-bg: #007fff1c;
+  --feedback-info-border: #007fff40;
+  --feedback-info-fg: #005fcc;
+  --feedback-neutral-bg: #5f7fa31f;
+  --feedback-neutral-fg: #4f6c8d;
+  --feedback-success-bg: #00b8941f;
+  --feedback-success-border: #00b89445;
+  --feedback-success-fg: #007a63;
+  --feedback-success-solid: #00a985;
+  --feedback-warning-bg: #f7a60024;
+  --feedback-warning-border: #f7a60045;
+  --feedback-warning-fg: #8a5a00;
+  --focus-ring: #007fffb8;
+  --scrollbar-thumb: #173a66a6;
+  --surface-back-to-top: #f3f8ff;
+  --surface-back-to-top-active: #c5defd;
+  --surface-back-to-top-hover: #dcecff;
+  --surface-card: #ffffff;
+  --surface-chip: #007fff12;
+  --surface-chip-hover: #007fff2b;
+  --surface-copy: #cfe6ff;
+  --surface-copy-active: #a9cdff;
+  --surface-copy-hover: #bddbff;
+  --surface-input: #f9fbff;
+  --surface-link-hover: #007fff14;
+  --surface-page: linear-gradient(160deg, #eef6ff 0%, #fdf4ea 100%);
+  --surface-primary-button: linear-gradient(
+    135deg,
+    var(--brand-primary) 0%,
+    #4db2ff 100%
+  );
+  --surface-primary-button-active: linear-gradient(
+    135deg,
+    #0079f2 0%,
+    #49a9f2 100%
+  );
+  --surface-primary-button-hover: linear-gradient(
+    135deg,
+    #0086ff 0%,
+    #50bbff 100%
+  );
+  --surface-raw-data-head: #f2f8ff;
+  --surface-toggle-active: #007fff2e;
+  --surface-toggle-hover: #007fff1a;
+  --surface-toggle-indicator: #007fff26;
+  --surface-toggle-indicator-active: #007fff40;
+  --text-link: #005fcc;
+  --text-link-hover: #00469e;
+  --text-link-underline: #007fff7a;
+  --text-link-underline-hover: #00469eb3;
+  --text-muted: #506f95;
+  --text-primary: #0c1f3f;
+  --text-primary-button: #f8fbff;
+  --text-secondary: #2b466f;
+  --text-toggle-active: #005fcc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --border-back-to-top: #5f89c1;
+    --border-card: #7fb0ff42;
+    --border-input: #7fb0ff59;
+    --brand-primary: #007fff;
+    --elevation-back-to-top: 0 10px 24px #020918;
+    --elevation-card: 0 14px 36px #00000052;
+    --feedback-error-bg: #ff6f912b;
+    --feedback-error-border: #ff6f9150;
+    --feedback-error-fg: #ff9bb2;
+    --feedback-info-bg: #66b2ff2b;
+    --feedback-info-border: #66b2ff52;
+    --feedback-info-fg: #9dd0ff;
+    --feedback-neutral-bg: #9ab4d82b;
+    --feedback-neutral-fg: #b7cae5;
+    --feedback-success-bg: #3dd7b02b;
+    --feedback-success-border: #3dd7b052;
+    --feedback-success-fg: #7cf0d0;
+    --feedback-success-solid: #48dcb6;
+    --feedback-warning-bg: #ffc14a2b;
+    --feedback-warning-border: #ffc14a52;
+    --feedback-warning-fg: #ffd98d;
+    --focus-ring: #79bfffe0;
+    --scrollbar-thumb: #dce9ff94;
+    --surface-back-to-top: #15264a;
+    --surface-back-to-top-active: #24508f;
+    --surface-back-to-top-hover: #1c3768;
+    --surface-card: #0c1530;
+    --surface-chip: #66b2ff1a;
+    --surface-chip-hover: #66b2ff36;
+    --surface-copy: #13244a;
+    --surface-copy-active: #24508a;
+    --surface-copy-hover: #1a3765;
+    --surface-input: #070d21;
+    --surface-link-hover: #66b2ff1a;
+    --surface-page: linear-gradient(170deg, #050a1a 0%, #0b1230 100%);
+    --surface-primary-button: linear-gradient(
+      135deg,
+      var(--brand-primary) 0%,
+      #66b2ff 100%
+    );
+    --surface-primary-button-active: linear-gradient(
+      135deg,
+      #0079f2 0%,
+      #61a9f2 100%
+    );
+    --surface-primary-button-hover: linear-gradient(
+      135deg,
+      #0086ff 0%,
+      #6bbcff 100%
+    );
+    --surface-raw-data-head: #070e20;
+    --surface-toggle-active: #66b2ff36;
+    --surface-toggle-hover: #66b2ff24;
+    --surface-toggle-indicator: #66b2ff38;
+    --surface-toggle-indicator-active: #66b2ff52;
+    --text-link: #79bfff;
+    --text-link-hover: #d8ecff;
+    --text-link-underline: #66b2ff8c;
+    --text-link-underline-hover: #d7ecffd1;
+    --text-muted: #9ab4d8;
+    --text-primary: #f2f7ff;
+    --text-primary-button: #f8fbff;
+    --text-secondary: #ccdaf3;
+    --text-toggle-active: #79bfff;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -5,49 +143,65 @@
 html {
   scroll-behavior: smooth;
   text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
   -moz-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: #ffffff;
-  color: #1f1f1f;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.4286;
+  color: var(--text-primary);
+  font-family:
+    "-apple-system", BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.5;
   margin: 0;
 }
 
-body::selection,
-body ::selection {
-  background-color: #c2f5f5;
-  color: #1f1f1f;
+body::before {
+  background: var(--surface-page);
+  bottom: 0;
+  content: "";
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: -1;
 }
 
-body::-moz-selection,
-body ::-moz-selection {
-  background-color: #c2f5f5;
-  color: #1f1f1f;
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family:
+    "Fraunces", "-apple-system", BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1;
+  margin: 0;
+  text-wrap: balance;
 }
 
 a {
-  color: #1f1f1f;
+  color: var(--text-link);
   outline: 3px solid transparent;
-  outline-offset: 4px;
-  transition: all 190ms ease;
+  outline-offset: 3px;
+  text-decoration: underline;
+  text-decoration-color: var(--text-link-underline);
+  text-underline-offset: 0.25rem;
+  transition: all 233ms ease;
 }
 
 a:hover {
-  color: #139a9a;
+  background-color: var(--surface-link-hover);
+  color: var(--text-link-hover);
+  text-decoration-color: var(--text-link-underline-hover);
 }
 
 a:focus {
-  outline-color: #5ee8e8;
+  outline-color: var(--focus-ring);
 }
 
 a:focus:not(:focus-visible) {
@@ -55,32 +209,26 @@ a:focus:not(:focus-visible) {
 }
 
 a:focus-visible {
-  outline-color: #5ee8e8;
+  outline-color: var(--focus-ring);
 }
 
 button {
   align-items: center;
-  appearance: button;
   background-color: transparent;
   border: none;
-  border-radius: 4px;
   color: inherit;
   cursor: pointer;
   display: inline-flex;
-  font-family: inherit;
-  font-size: inherit;
+  font: inherit;
   justify-content: center;
-  line-height: inherit;
-  margin: 0;
   outline: 3px solid transparent;
+  outline-offset: 3px;
   padding: 0;
-  transition: all 190ms ease;
-  -moz-appearance: button;
-  -webkit-appearance: button;
+  transition: all 233ms ease;
 }
 
 button:focus {
-  outline-color: #5ee8e8;
+  outline-color: var(--focus-ring);
 }
 
 button:focus:not(:focus-visible) {
@@ -88,36 +236,39 @@ button:focus:not(:focus-visible) {
 }
 
 button:focus-visible {
-  outline-color: #5ee8e8;
+  outline-color: var(--focus-ring);
+}
+
+footer {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.input-box {
+  position: relative;
 }
 
 .input {
-  background-color: #ffffff;
-  border: 1px solid #1f1f1f;
-  border-radius: 4px;
+  background-color: var(--surface-input);
+  border: 1px solid var(--border-input);
+  border-radius: 999px;
   color: inherit;
-  font-family: inherit;
-  font-size: 16px;
-  height: 48px;
-  line-height: 1.5;
+  font: inherit;
   outline: 3px solid transparent;
-  outline-offset: 0;
-  padding: 8px 16px;
-  transition: all 190ms ease;
+  outline-offset: 3px;
+  padding: 0.75rem 2.5rem 0.75rem 1.5rem;
+  transition: all 233ms ease;
   width: 100%;
 }
 
 .input::placeholder {
-  color: #757575;
-}
-
-.input:hover {
-  border-color: #19cccc;
+  color: var(--text-muted);
 }
 
 .input:focus {
-  border-color: #19cccc;
-  outline-color: #5ee8e8;
+  outline-color: var(--focus-ring);
 }
 
 .input:focus:not(:focus-visible) {
@@ -125,52 +276,80 @@ button:focus-visible {
 }
 
 .input:focus-visible {
-  outline-color: #5ee8e8;
+  outline-color: var(--focus-ring);
 }
 
-.button {
-  background-color: #1f1f1f;
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
-  height: 48px;
-  line-height: 1.5;
-  padding-left: 16px;
-  padding-right: 16px;
+.input-clear {
+  border-radius: 50%;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  opacity: 0;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  visibility: hidden;
 }
 
-.button:hover {
-  background-color: #2e2e2e;
+.primary-button {
+  background: var(--surface-primary-button);
+  border-radius: 999px;
+  color: var(--text-primary-button);
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  position: relative;
 }
 
-.button:active {
-  background-color: #454545;
+.primary-button:hover {
+  background: var(--surface-primary-button-hover);
 }
 
-.button:disabled {
-  background-color: #757575;
+.primary-button:active {
+  background: var(--surface-primary-button-active);
+}
+
+.primary-button:disabled {
   cursor: not-allowed;
 }
 
-footer {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 48px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 48px;
-  max-width: 1200px;
-  padding-left: 20px;
-  padding-right: 20px;
+.primary-button-label {
+  opacity: 1;
+  visibility: visible;
 }
 
-@media (max-width: 768px) {
-  footer {
-    margin-bottom: 32px;
-    margin-top: 32px;
-    padding-left: 16px;
-    padding-right: 16px;
+.primary-button-loader {
+  animation: primary-button-rotation 1s linear infinite;
+  border: 2.5px solid var(--text-primary-button);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  height: 1.25rem;
+  opacity: 0;
+  position: absolute;
+  visibility: hidden;
+  width: 1.25rem;
+}
+
+@keyframes primary-button-rotation {
+  0% {
+    transform: rotate(0deg);
   }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.primary-button[data-loading="true"] .primary-button-label {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.primary-button[data-loading="true"] .primary-button-loader {
+  opacity: 1;
+  visibility: visible;
+}
+
+.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
 }

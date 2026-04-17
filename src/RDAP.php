@@ -75,7 +75,7 @@ class RDAP
     $server = $this->servers[idn_to_ascii($this->extension)] ?? "";
 
     if (empty($server)) {
-      throw new RuntimeException("No RDAP server found for '$this->domain'");
+      throw new RuntimeException("No RDAP server found for '$this->domain'.");
     }
 
     return $server;

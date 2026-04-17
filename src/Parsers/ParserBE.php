@@ -16,6 +16,11 @@ class ParserBE extends Parser
     return "/Flags:(.+?)(?=\r\n\r\n)/s";
   }
 
+  protected function getStatus($subject = null)
+  {
+    return $this->getStatusFromExplode("\r\n");
+  }
+
   protected function getNameServersRegExp()
   {
     return "/nameservers:(.*?)(?=\r\n\r\n)/is";
@@ -24,5 +29,10 @@ class ParserBE extends Parser
   protected function getNameServers($subject = null)
   {
     return $this->getNameServersFromExplode("\r\n");
+  }
+
+  protected function getDNSSECSignedExtraRegExp()
+  {
+    return "/keys:\r\n(.+)/i";
   }
 }

@@ -35,11 +35,14 @@ class ParserRDAP extends Parser
     $this->getStatus();
 
     $this->getNameServers();
+    $this->getDNSSECSigned();
 
-    $this->age = $this->getDateDiffText($this->creationDateISO8601, "now");
-    $this->ageSeconds = $this->getDateDiffSeconds($this->creationDateISO8601, "now");
-    $this->remaining = $this->getDateDiffText("now", $this->expirationDateISO8601);
-    $this->remainingSeconds = $this->getDateDiffSeconds("now", $this->expirationDateISO8601);
+    $this->createdAgo = $this->getDateDiffText($this->creationDateISO8601, "now");
+    $this->createdAgoSeconds = $this->getDateDiffSeconds($this->creationDateISO8601, "now");
+    $this->expiresIn = $this->getDateDiffText("now", $this->expirationDateISO8601);
+    $this->expiresInSeconds = $this->getDateDiffSeconds("now", $this->expirationDateISO8601);
+    $this->updatedAgo = $this->getDateDiffText($this->updatedDateISO8601, "now");
+    $this->updatedAgoSeconds = $this->getDateDiffSeconds($this->updatedDateISO8601, "now");
 
     $this->gracePeriod = $this->hasKeywordInStatus(self::GRACE_PERIOD_KEYWORDS);
     $this->redemptionPeriod = $this->hasKeywordInStatus(self::REDEMPTION_PERIOD_KEYWORDS);
@@ -152,6 +155,19 @@ class ParserRDAP extends Parser
         } else if (!empty($entity["handle"])) {
           // ar, cr, cz, tz, ve
           $this->registrar = $entity["handle"];
+        }
+
+        if (isset($entity["publicIds"])) {
+          foreach ($entity["publicIds"] as $publicId) {
+            if (
+              isset($publicId["type"]) &&
+              $publicId["type"] === "IANA Registrar ID" &&
+              !empty($publicId["identifier"])
+            ) {
+              $this->registrarIANAId = $publicId["identifier"];
+              break;
+            }
+          }
         }
 
         if (!$this->registrarURL) {
@@ -278,5 +294,12 @@ class ParserRDAP extends Parser
       fn($item) => idn_to_utf8(strtolower(explode(" ", $item["ldhName"])[0])),
       $this->json["nameservers"],
     )));
+  }
+
+  protected function getDNSSECSigned()
+  {
+    if (isset($this->json["secureDNS"]["delegationSigned"])) {
+      $this->dnssecSigned = $this->json["secureDNS"]["delegationSigned"];
+    }
   }
 }

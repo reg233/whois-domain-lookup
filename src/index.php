@@ -61,12 +61,8 @@ function cleanDomain()
   $domain = trim(preg_replace(["/\s+/", "/\.{2,}/"], ["", "."], $domain), ".");
 
   $parsedUrl = parse_url($domain);
-  if (!empty($parsedUrl["host"])) {
+  if ($parsedUrl["host"] ?? "") {
     $domain = $parsedUrl["host"];
-  }
-
-  if (DEFAULT_EXTENSION && strpos($domain, ".") === false) {
-    $domain .= "." . DEFAULT_EXTENSION;
   }
 
   return $domain;
@@ -93,11 +89,12 @@ function getDataSource()
   return $dataSource;
 }
 
-function generatorRegistrarServerHref($dataSource, $server)
+function generateRegistrarServerHref($dataSource, $server)
 {
   $parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
 
   parse_str($parsedUrl["query"] ?? "", $queryParams);
+
   $queryParams[$dataSource] = 1;
   $queryParams["$dataSource-server"] = $server;
 
@@ -109,7 +106,6 @@ checkPassword();
 $domain = cleanDomain();
 
 $dataSource = [];
-$fetchPrices = false;
 $whoisData = null;
 $rdapData = null;
 $parser = new Parser("");
@@ -117,7 +113,6 @@ $error = null;
 
 if ($domain) {
   $dataSource = getDataSource();
-  $fetchPrices = filter_var($_GET["prices"] ?? 0, FILTER_VALIDATE_BOOL);
 
   try {
     $lookup = new Lookup($domain, $dataSource);
@@ -125,10 +120,6 @@ if ($domain) {
     $whoisData = $lookup->whoisData;
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
-
-    if ($lookup->extension === "iana") {
-      $fetchPrices = false;
-    }
   } catch (Exception $e) {
     if ($e instanceof SyntaxError || $e instanceof UnableToResolveDomain) {
       $error = "'$domain' is not a valid domain";
@@ -166,7 +157,7 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
 }
 ?>
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
 
 <head>
@@ -174,7 +165,8 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#e1f9f9">
+  <meta name="theme-color" content="#eef6ff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#050a1a" media="(prefers-color-scheme: dark)">
   <meta name="description" content="<?= SITE_DESCRIPTION ?>">
   <meta name="keywords" content="<?= SITE_KEYWORDS ?>">
   <link rel="shortcut icon" href="public/favicon.ico">
@@ -189,6 +181,7 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1488-2266.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1320-2868.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1206-2622.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-1260-2736.jpg" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1290-2796.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1179-2556.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
@@ -208,6 +201,7 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2266-1488.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2868-1320.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2622-1206.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-2736-1260.jpg" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2796-1290.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2556-1179.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2532-1170.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
@@ -218,6 +212,46 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2048-2732.jpg" media="(prefers-color-scheme: dark) and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1668-2388.jpg" media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1536-2048.jpg" media="(prefers-color-scheme: dark) and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1640-2360.jpg" media="(prefers-color-scheme: dark) and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1668-2224.jpg" media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1620-2160.jpg" media="(prefers-color-scheme: dark) and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1488-2266.jpg" media="(prefers-color-scheme: dark) and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1320-2868.jpg" media="(prefers-color-scheme: dark) and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1206-2622.jpg" media="(prefers-color-scheme: dark) and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1260-2736.jpg" media="(prefers-color-scheme: dark) and (device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1290-2796.jpg" media="(prefers-color-scheme: dark) and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1179-2556.jpg" media="(prefers-color-scheme: dark) and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1170-2532.jpg" media="(prefers-color-scheme: dark) and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1284-2778.jpg" media="(prefers-color-scheme: dark) and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1125-2436.jpg" media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1242-2688.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-828-1792.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1242-2208.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-750-1334.jpg" media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-640-1136.jpg" media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2732-2048.jpg" media="(prefers-color-scheme: dark) and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2388-1668.jpg" media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2048-1536.jpg" media="(prefers-color-scheme: dark) and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2360-1640.jpg" media="(prefers-color-scheme: dark) and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2224-1668.jpg" media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2160-1620.jpg" media="(prefers-color-scheme: dark) and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2266-1488.jpg" media="(prefers-color-scheme: dark) and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2868-1320.jpg" media="(prefers-color-scheme: dark) and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2622-1206.jpg" media="(prefers-color-scheme: dark) and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2736-1260.jpg" media="(prefers-color-scheme: dark) and (device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2796-1290.jpg" media="(prefers-color-scheme: dark) and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2556-1179.jpg" media="(prefers-color-scheme: dark) and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2532-1170.jpg" media="(prefers-color-scheme: dark) and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2778-1284.jpg" media="(prefers-color-scheme: dark) and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2436-1125.jpg" media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2688-1242.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1792-828.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2208-1242.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1334-750.jpg" media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1136-640.jpg" media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   <link rel="manifest" href="<?= $manifestHref; ?>">
   <title><?= ($domain ? "$domain | " : "") . SITE_TITLE ?></title>
   <link rel="stylesheet" href="public/css/global.css">
@@ -227,380 +261,362 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
   <?php endif; ?>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&family=JetBrains+Mono&display=swap">
   <?= CUSTOM_HEAD ?>
 </head>
 
 <body>
-  <header>
-    <div>
+  <div class="root">
+    <header>
       <h1>
         <?php if ($domain): ?>
-          <a href="<?= BASE; ?>"><?= SITE_TITLE ?></a>
+          <a href="<?= BASE; ?>"><?= SITE_TITLE; ?></a>
         <?php else: ?>
-          <?= SITE_TITLE ?>
+          <?= SITE_TITLE; ?>
         <?php endif; ?>
       </h1>
       <form action="" id="form" method="get">
-        <div class="search-box">
-          <input
-            autocapitalize="off"
-            autocomplete="domain"
-            autocorrect="off"
-            <?= $domain ? "" : "autofocus"; ?>
-            class="input search-input"
-            id="domain"
-            inputmode="url"
-            name="domain"
-            placeholder="Enter a domain"
-            required
-            type="text"
-            value="<?= $domain; ?>">
-          <button class="search-clear" id="domain-clear" type="button" aria-label="Clear">
-            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+        <div class="input-box">
+          <input autocapitalize="off" autocomplete="domain" autocorrect="off" <?= $domain ? "" : "autofocus"; ?> class="input" id="domain" inputmode="url" name="domain" placeholder="Enter a domain" required type="text" value="<?= $domain; ?>">
+          <button class="input-clear" id="domain-clear" type="button" aria-label="Clear">
+            <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+              <path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z" />
             </svg>
           </button>
         </div>
-        <button class="button search-button">
-          <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" id="search-icon">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-          </svg>
-          <span>Search</span>
-        </button>
-        <div class="checkboxes">
-          <div class="checkbox">
-            <input <?= in_array("whois", $dataSource, true) ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-whois" name="whois" type="checkbox" value="1">
-            <label class="checkbox-label" for="checkbox-whois">WHOIS</label>
-            <div class="checkbox-icon-wrapper">
-              <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
-                <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z" />
+        <div class="toggles">
+          <button class="toggle" id="toggle-whois" type="button" aria-active="<?= in_array("whois", $dataSource, true) ? "true" : "false" ?>" data-target-input="input-whois">
+            <div class="toggle-indicator">
+              <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="m382-354 339-339q12-12 28-12t28 12q12 12 12 28.5T777-636L410-268q-12 12-28 12t-28-12L182-440q-12-12-11.5-28.5T183-497q12-12 28.5-12t28.5 12l142 143Z" />
               </svg>
             </div>
-          </div>
-          <div class="checkbox">
-            <input <?= in_array("rdap", $dataSource, true) ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-rdap" name="rdap" type="checkbox" value="1">
-            <label class="checkbox-label" for="checkbox-rdap">RDAP</label>
-            <div class="checkbox-icon-wrapper">
-              <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
-                <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z" />
+            <span>WHOIS</span>
+          </button>
+          <button class="toggle" id="toggle-rdap" type="button" aria-active="<?= in_array("rdap", $dataSource, true) ? "true" : "false" ?>" data-target-input="input-rdap">
+            <div class="toggle-indicator">
+              <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="m382-354 339-339q12-12 28-12t28 12q12 12 12 28.5T777-636L410-268q-12 12-28 12t-28-12L182-440q-12-12-11.5-28.5T183-497q12-12 28.5-12t28.5 12l142 143Z" />
               </svg>
             </div>
-          </div>
-          <div class="checkbox">
-            <input <?= $fetchPrices ? "checked" : "" ?> class="checkbox-trigger" id="checkbox-prices" name="prices" type="checkbox" value="1">
-            <label class="checkbox-label" for="checkbox-prices">PRICES</label>
-            <div class="checkbox-icon-wrapper">
-              <svg class="checkbox-icon checkbox-icon-checkmark" width="50" height="39.69" viewBox="0 0 50 39.69" aria-hidden="true">
-                <path d="M43.68 0L16.74 27.051 6.319 16.63l-6.32 6.32 16.742 16.74L50 6.32z" />
-              </svg>
-            </div>
-          </div>
+            <span>RDAP</span>
+          </button>
         </div>
+        <button class="primary-button" id="search-button" data-loading="false">
+          <span class="primary-button-label">Search</span>
+          <span class="primary-button-loader" aria-hidden="true"></span>
+        </button>
+        <input id="input-whois" name="whois" type="hidden" value="<?= in_array("whois", $dataSource, true) ? "1" : "0" ?>">
+        <input id="input-rdap" name="rdap" type="hidden" value="<?= in_array("rdap", $dataSource, true) ? "1" : "0" ?>">
       </form>
-    </div>
-  </header>
-  <main>
+    </header>
     <?php if ($domain): ?>
-      <section class="messages">
-        <div>
+      <main>
+        <section class="message" id="message">
           <?php if ($error): ?>
-            <div class="message message-negative">
-              <div class="message-header">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="message-icon">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
-                <h2 class="message-title">
-                  <?= $error; ?>
-                </h2>
-              </div>
-            </div>
+            <span class="message-icon message-icon-error">
+              <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="M480-429 316-265q-11 11-25 10.5T266-266q-11-11-11-25.5t11-25.5l163-163-164-164q-11-11-10.5-25.5T266-695q11-11 25.5-11t25.5 11l163 164 164-164q11-11 25.5-11t25.5 11q11 11 11 25.5T695-644L531-480l164 164q11 11 11 25t-11 25q-11 11-25.5 11T644-266L480-429Z" />
+              </svg>
+            </span>
+            <span><?= $error; ?></span>
           <?php elseif ($parser->unknown): ?>
-            <div class="message message-notice">
-              <div class="message-header">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="message-icon">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                  <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94" />
-                </svg>
-                <h2 class="message-title">
-                  &#39;<?= $domain; ?>&#39; is unknown
-                </h2>
-              </div>
-              <?php if ($fetchPrices): ?>
-                <div class="message-price" id="message-price">
-                  <div class="skeleton"></div>
-                </div>
-              <?php endif; ?>
-            </div>
+            <span class="message-icon message-icon-unknown">
+              <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="M576-653q0-38-27-62.5T480-740q-26 0-47.5 11.5T395-696q-14 19-35.5 24t-40.5-6q-20-12-24-30.5t10-38.5q29-44 75.5-68.5T480-840q89 0 145 51.5T681-656q0 42-18.5 76.5T596-500q-32 29-43 47t-15 41q-4 23-19.5 37.5T482-360q-22 0-37-14.5T430-409q0-37 17.5-69.5T503-543q43-38 58-60t15-50Zm-96 509q-30 0-51-21t-21-51q0-30 21-51t51-21q30 0 51 21t21 51q0 30-21 51t-51 21Z" />
+              </svg>
+            </span>
+            <span>&#39;<?= $domain; ?>&#39; is unknown.</span>
           <?php elseif ($parser->reserved): ?>
-            <div class="message message-notice">
-              <div class="message-header">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="message-icon">
-                  <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
-                </svg>
-                <h2 class="message-title">
-                  &#39;<?= $domain; ?>&#39; has already been reserved
-                </h2>
-              </div>
-              <?php if ($fetchPrices): ?>
-                <div class="message-price" id="message-price">
-                  <div class="skeleton"></div>
-                </div>
-              <?php endif; ?>
-            </div>
+            <span class="message-icon message-icon-reserved">
+              <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-72q55 0 104-18t89-50L236-673q-32 40-50 89t-18 104q0 130 91 221t221 91Zm244-119q32-40 50-89t18-104q0-130-91-221t-221-91q-55 0-104 18t-89 50l437 437Z" />
+              </svg>
+            </span>
+            <span>&#39;<?= $domain; ?>&#39; is reserved.</span>
           <?php elseif ($parser->registered): ?>
-            <div class="message message-positive">
-              <div class="message-header">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="message-icon">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                  <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
-                </svg>
-                <h2 class="message-title">
-                  <a href="http://<?= $domain; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $domain; ?></a> <?= $parser->domain ? "" : "v_v"; ?> has already been registered
-                </h2>
+            <span class="message-icon message-icon-registered">
+              <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="m389-369 299-299q10.91-11 25.45-11Q728-679 739-668t11 25.58q0 14.58-10.61 25.19L415-292q-10.91 11-25.45 11Q375-281 364-292L221-435q-11-11-11-25.5t11-25.5q11-11 25.67-11 14.66 0 25.33 11l117 117Z" />
+              </svg>
+            </span>
+            <span>
+              <a href="<?= ($lookup->extension === "iana" ? "https://en.wikipedia.org/wiki/." : "http://") . $domain; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $domain; ?></a> is registered.
+            </span>
+            <?php if (
+              ($parser->createdAgoSeconds && $parser->createdAgoSeconds < 7 * 24 * 60 * 60) ||
+              (($parser->expiresInSeconds ?? -1) >= 0 && $parser->expiresInSeconds < 7 * 24 * 60 * 60) ||
+              $parser->pendingDelete ||
+              $parser->expiresInSeconds < 0 ||
+              $parser->gracePeriod ||
+              $parser->redemptionPeriod
+            ): ?>
+              <div class="message-tags">
+                <?php if ($parser->createdAgoSeconds && $parser->createdAgoSeconds < 7 * 24 * 60 * 60): ?>
+                  <span class="tag tag-green">New</span>
+                <?php endif; ?>
+                <?php if (($parser->expiresInSeconds ?? -1) >= 0 && $parser->expiresInSeconds < 7 * 24 * 60 * 60): ?>
+                  <span class="tag tag-yellow">Expiring Soon</span>
+                <?php endif; ?>
+                <?php if ($parser->pendingDelete): ?>
+                  <span class="tag tag-red">Pending Delete</span>
+                <?php elseif ($parser->expiresInSeconds < 0): ?>
+                  <span class="tag tag-red">Expired</span>
+                <?php endif; ?>
+                <?php if ($parser->gracePeriod): ?>
+                  <span class="tag tag-yellow">Grace Period</span>
+                <?php elseif ($parser->redemptionPeriod): ?>
+                  <span class="tag tag-blue">Redemption Period</span>
+                <?php endif; ?>
               </div>
-              <?php if ($fetchPrices): ?>
-                <div class="message-price" id="message-price">
-                  <div class="skeleton"></div>
-                </div>
-              <?php endif; ?>
-              <div class="message-data">
-                <?php if ($parser->registrar): ?>
-                  <div class="message-label">
-                    Registrar
-                  </div>
-                  <div>
+            <?php endif; ?>
+          <?php else: ?>
+            <span class="message-icon message-icon-unregistered">
+              <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="M479.79-672Q450-672 429-693.21t-21-51Q408-774 429.21-795t51-21Q510-816 531-794.79t21 51Q552-714 530.79-693t-51 21Zm.21 528q-25 0-42.5-17.5T420-204v-312q0-25 17.5-42.5T480-576q25 0 42.5 17.5T540-516v312q0 25-17.5 42.5T480-144Z" />
+              </svg>
+            </span>
+            <span>&#39;<?= $domain; ?>&#39; is unregistered.</span>
+          <?php endif; ?>
+        </section>
+        <?php if ($parser->registrar || $parser->registrarIANAId || $parser->registrarWHOISServer || $parser->registrarRDAPServer): ?>
+          <section class="card">
+            <p class="card-title">Registrar</p>
+            <div class="card-items">
+              <?php if ($parser->registrar): ?>
+                <div class="card-item">
+                  <div class="card-item-label">Name</div>
+                  <div class="card-item-value">
                     <?php if ($parser->registrarURL): ?>
-                      <a href="<?= $parser->registrarURL; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $parser->registrar; ?></a>
+                      <a href="<?= $parser->registrarURL; ?>" rel="nofollow noopener noreferrer" target="_blank">
+                        <?= $parser->registrar; ?>
+                      </a>
                     <?php else: ?>
                       <?= $parser->registrar; ?>
                     <?php endif; ?>
                   </div>
-                <?php endif; ?>
-                <?php if ($parser->registrarWHOISServer): ?>
-                  <div class="message-label">
-                    WHOIS Server
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->registrarIANAId): ?>
+                <div class="card-item">
+                  <div class="card-item-label">IANA ID</div>
+                  <div class="card-item-value">
+                    <a href="https://client.rdap.org/?type=registrar&object=<?= $parser->registrarIANAId; ?>&follow-referral=0" rel="nofollow noopener noreferrer" target="_blank">
+                      <?= $parser->registrarIANAId; ?>
+                    </a>
                   </div>
-                  <div>
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->registrarWHOISServer): ?>
+                <div class="card-item">
+                  <div class="card-item-label">WHOIS Server</div>
+                  <div class="card-item-value">
                     <?php if ($lookup->extension === "iana"): ?>
                       <?= $parser->registrarWHOISServer; ?>
                     <?php elseif (preg_match("#^https?://#i", $parser->registrarWHOISServer)): ?>
-                      <a href="<?= $parser->registrarWHOISServer; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $parser->registrarWHOISServer; ?></a>
+                      <a href="<?= $parser->registrarWHOISServer; ?>" rel="nofollow noopener noreferrer" target="_blank">
+                        <?= $parser->registrarWHOISServer; ?>
+                      </a>
                     <?php else: ?>
-                      <a href="<?= generatorRegistrarServerHref("whois", $parser->registrarWHOISServer); ?>"><?= $parser->registrarWHOISServer; ?></a>
+                      <a href="<?= generateRegistrarServerHref("whois", $parser->registrarWHOISServer); ?>">
+                        <?= $parser->registrarWHOISServer; ?>
+                      </a>
                     <?php endif; ?>
                   </div>
-                <?php endif; ?>
-                <?php if ($parser->registrarRDAPServer): ?>
-                  <div class="message-label">
-                    RDAP Server
-                  </div>
-                  <div>
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->registrarRDAPServer): ?>
+                <div class="card-item">
+                  <div class="card-item-label">RDAP Server</div>
+                  <div class="card-item-value">
                     <?php if ($lookup->extension === "iana"): ?>
-                      <a href="<?= $parser->registrarRDAPServer; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $parser->registrarRDAPServer; ?></a>
+                      <a href="<?= $parser->registrarRDAPServer; ?>" rel="nofollow noopener noreferrer" target="_blank">
+                        <?= $parser->registrarRDAPServer; ?>
+                      </a>
                     <?php else: ?>
-                      <a href="<?= generatorRegistrarServerHref("rdap", $parser->registrarRDAPServer); ?>"><?= $parser->registrarRDAPServer; ?></a>
+                      <a href="<?= generateRegistrarServerHref("rdap", $parser->registrarRDAPServer); ?>">
+                        <?= $parser->registrarRDAPServer; ?>
+                      </a>
                     <?php endif; ?>
                   </div>
-                <?php endif; ?>
-                <?php if ($parser->creationDate): ?>
-                  <div class="message-label">
-                    Creation Date
-                  </div>
-                  <div>
+                </div>
+              <?php endif; ?>
+            </div>
+          </section>
+        <?php endif; ?>
+        <?php if ($parser->creationDate || $parser->expirationDate || $parser->updatedDate || $parser->availableDate): ?>
+          <section class="card">
+            <p class="card-title">Dates</p>
+            <div class="card-items">
+              <?php if ($parser->creationDate): ?>
+                <div class="card-item">
+                  <div class="card-item-label">Creation Date</div>
+                  <div class="card-item-value">
                     <?php if ($parser->creationDateISO8601 === null): ?>
                       <span><?= $parser->creationDate; ?></span>
-                    <?php elseif (str_ends_with($parser->creationDateISO8601, "Z")): ?>
-                      <button id="creation-date" data-iso8601="<?= $parser->creationDateISO8601; ?>">
-                        <?= $parser->creationDate; ?>
-                      </button>
                     <?php else: ?>
                       <span id="creation-date" data-iso8601="<?= $parser->creationDateISO8601; ?>">
                         <?= $parser->creationDate; ?>
                       </span>
                     <?php endif; ?>
                   </div>
-                <?php endif; ?>
-                <?php if ($parser->expirationDate): ?>
-                  <div class="message-label">
-                    Expiration Date
-                  </div>
-                  <div>
+                  <?php if ($parser->createdAgo): ?>
+                    <div class="card-item-value-tertiary">
+                      <span id="createdAgo" data-seconds="<?= $parser->createdAgoSeconds; ?>">
+                        <?= $parser->createdAgo; ?> ago
+                      </span>
+                    </div>
+                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->expirationDate): ?>
+                <div class="card-item">
+                  <div class="card-item-label">Expiration Date</div>
+                  <div class="card-item-value">
                     <?php if ($parser->expirationDateISO8601 === null): ?>
                       <span><?= $parser->expirationDate; ?></span>
-                    <?php elseif (str_ends_with($parser->expirationDateISO8601, "Z")): ?>
-                      <button id="expiration-date" data-iso8601="<?= $parser->expirationDateISO8601; ?>">
-                        <?= $parser->expirationDate; ?>
-                      </button>
                     <?php else: ?>
                       <span id="expiration-date" data-iso8601="<?= $parser->expirationDateISO8601; ?>">
                         <?= $parser->expirationDate; ?>
                       </span>
                     <?php endif; ?>
                   </div>
-                <?php endif; ?>
-                <?php if ($parser->updatedDate): ?>
-                  <div class="message-label">
-                    Updated Date
-                  </div>
-                  <div>
+                  <?php if ($parser->expiresIn): ?>
+                    <div class="card-item-value-tertiary">
+                      <span id="expiresIn" data-seconds="<?= $parser->expiresInSeconds; ?>">
+                        <?= $parser->expiresIn; ?> remaining
+                      </span>
+                    </div>
+                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->updatedDate): ?>
+                <div class="card-item">
+                  <div class="card-item-label">Updated Date</div>
+                  <div class="card-item-value">
                     <?php if ($parser->updatedDateISO8601 === null): ?>
                       <span><?= $parser->updatedDate; ?></span>
-                    <?php elseif (str_ends_with($parser->updatedDateISO8601, "Z")): ?>
-                      <button id="updated-date" data-iso8601="<?= $parser->updatedDateISO8601; ?>">
-                        <?= $parser->updatedDate; ?>
-                      </button>
                     <?php else: ?>
                       <span id="updated-date" data-iso8601="<?= $parser->updatedDateISO8601; ?>">
                         <?= $parser->updatedDate; ?>
                       </span>
                     <?php endif; ?>
                   </div>
-                <?php endif; ?>
-                <?php if ($parser->availableDate): ?>
-                  <div class="message-label">
-                    Available Date
-                  </div>
-                  <div>
+                  <?php if ($parser->updatedAgo): ?>
+                    <div class="card-item-value-tertiary">
+                      <span id="updatedAgo" data-seconds="<?= $parser->updatedAgoSeconds; ?>">
+                        <?= $parser->updatedAgo; ?> ago
+                      </span>
+                    </div>
+                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->availableDate): ?>
+                <div class="card-item">
+                  <div class="card-item-label">Available Date</div>
+                  <div class="card-item-value">
                     <?php if ($parser->availableDateISO8601 === null): ?>
                       <span><?= $parser->availableDate; ?></span>
-                    <?php elseif (str_ends_with($parser->availableDateISO8601, "Z")): ?>
-                      <button id="available-date" data-iso8601="<?= $parser->availableDateISO8601; ?>">
-                        <?= $parser->availableDate; ?>
-                      </button>
                     <?php else: ?>
                       <span id="available-date" data-iso8601="<?= $parser->availableDateISO8601; ?>">
                         <?= $parser->availableDate; ?>
                       </span>
                     <?php endif; ?>
                   </div>
-                <?php endif; ?>
-                <?php if ($parser->status): ?>
-                  <div class="message-label">
-                    Status
-                  </div>
-                  <div class="message-value-status">
+                  <?php if ($parser->availableIn): ?>
+                    <div class="card-item-value-tertiary">
+                      <span id="availableIn" data-seconds="<?= $parser->availableInSeconds; ?>">
+                        <?= $parser->availableIn; ?> remaining
+                      </span>
+                    </div>
+                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
+            </div>
+          </section>
+        <?php endif; ?>
+        <?php if ($parser->status || $parser->nameServers): ?>
+          <section class="card">
+            <p class="card-title">Status and DNS</p>
+            <div class="card-items">
+              <?php if ($parser->status): ?>
+                <div class="card-item">
+                  <div class="card-item-label">Status</div>
+                  <div class="card-item-value card-item-values">
                     <?php foreach ($parser->status as $status): ?>
-                      <div>
-                        <?php if ($status["url"]): ?>
-                          <a href="<?= $status["url"]; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $status["text"]; ?></a>
-                        <?php else: ?>
+                      <?php if ($status["url"]): ?>
+                        <a class="chip chip-link" href="<?= $status["url"]; ?>" rel="nofollow noopener noreferrer" target="_blank">
                           <?= $status["text"]; ?>
-                        <?php endif; ?>
-                      </div>
+                        </a>
+                      <?php else: ?>
+                        <span class="chip"><?= $status["text"]; ?></span>
+                      <?php endif; ?>
                     <?php endforeach; ?>
                   </div>
-                <?php endif; ?>
-                <?php if ($parser->nameServers): ?>
-                  <div class="message-label">
-                    Name Servers
-                  </div>
-                  <div class="message-value-name-servers">
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->nameServers): ?>
+                <div class="card-item">
+                  <div class="card-item-label">Name Servers</div>
+                  <div class="card-item-value card-item-values">
                     <?php foreach ($parser->nameServers as $nameServer): ?>
-                      <div>
-                        <?= $nameServer; ?>
-                      </div>
+                      <span class="chip"><?= $nameServer; ?></span>
                     <?php endforeach; ?>
                   </div>
-                <?php endif; ?>
-              </div>
-              <?php if ($parser->age || $parser->remaining || $parser->pendingDelete || $parser->gracePeriod || $parser->redemptionPeriod): ?>
-                <div class="message-tags">
-                  <?php if ($parser->age): ?>
-                    <button class="message-tag message-tag-gray" id="age" data-seconds="<?= $parser->ageSeconds; ?>">
-                      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z" />
-                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0" />
-                      </svg>
-                      <span><?= $parser->age; ?></span>
-                    </button>
-                  <?php endif; ?>
-                  <?php if ($parser->remaining): ?>
-                    <button class="message-tag message-tag-gray" id="remaining" data-seconds="<?= $parser->remainingSeconds; ?>">
-                      <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                        <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z" />
-                      </svg>
-                      <span><?= $parser->remaining; ?></span>
-                    </button>
-                  <?php endif; ?>
-                  <?php if ($parser->ageSeconds && $parser->ageSeconds < 7 * 24 * 60 * 60): ?>
-                    <span class="message-tag message-tag-green">New</span>
-                  <?php endif; ?>
-                  <?php if (($parser->remainingSeconds ?? -1) >= 0 && $parser->remainingSeconds < 7 * 24 * 60 * 60): ?>
-                    <span class="message-tag message-tag-yellow">Expiring Soon</span>
-                  <?php endif; ?>
-                  <?php if ($parser->pendingDelete): ?>
-                    <span class="message-tag message-tag-red">Pending Delete</span>
-                  <?php elseif ($parser->remainingSeconds < 0): ?>
-                    <span class="message-tag message-tag-red">Expired</span>
-                  <?php endif; ?>
-                  <?php if ($parser->gracePeriod): ?>
-                    <span class="message-tag message-tag-yellow">Grace Period</span>
-                  <?php elseif ($parser->redemptionPeriod): ?>
-                    <span class="message-tag message-tag-blue">Redemption Period</span>
-                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->dnssecSigned !== null): ?>
+                <div class="card-item">
+                  <div class="card-item-label">DNSSEC</div>
+                  <div class="card-item-value">
+                    <?php if ($parser->dnssecSigned): ?>
+                      <a href="https://dnsviz.net/d/<?= $domain; ?>/dnssec/" rel="nofollow noopener noreferrer" target="_blank">
+                        Signed
+                      </a>
+                    <?php else: ?>
+                      <span>Unsigned</span>
+                    <?php endif; ?>
+                  </div>
                 </div>
               <?php endif; ?>
             </div>
-          <?php else: ?>
-            <div class="message message-informative">
-              <div class="message-header">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="message-icon">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+          </section>
+        <?php endif; ?>
+        <?php if ($whoisData || $rdapData): ?>
+          <section class="card card-raw-data" id="card-raw-data">
+            <div class="raw-data-head" id="raw-data-head">
+              <?php if ($whoisData && $rdapData): ?>
+                <div class="raw-data-tabs">
+                  <button class="raw-data-tab raw-data-tab-active" id="raw-data-tab-whois">WHOIS</button>
+                  <button class="raw-data-tab" id="raw-data-tab-rdap">RDAP</button>
+                </div>
+              <?php else: ?>
+                <div class="raw-data-head-title"><?= $whoisData ? "WHOIS" : "RDAP"; ?></div>
+              <?php endif; ?>
+              <button class="copy-button" id="copy-button" aria-label="Copy raw data">
+                <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" class="copy-button-icon-copy" aria-hidden="true">
+                  <path d="M360-240q-29.7 0-50.85-21.15Q288-282.3 288-312v-480q0-29.7 21.15-50.85Q330.3-864 360-864h384q29.7 0 50.85 21.15Q816-821.7 816-792v480q0 29.7-21.15 50.85Q773.7-240 744-240H360Zm0-72h384v-480H360v480ZM216-96q-29.7 0-50.85-21.15Q144-138.3 144-168v-516q0-15.3 10.29-25.65Q164.58-720 179.79-720t25.71 10.35Q216-699.3 216-684v516h420q15.3 0 25.65 10.29Q672-147.42 672-132.21t-10.35 25.71Q651.3-96 636-96H216Zm144-216v-480 480Z" />
                 </svg>
-                <h2 class="message-title">
-                  &#39;<?= $domain; ?>&#39; does not appear registered yet
-                </h2>
-              </div>
-              <?php if ($fetchPrices): ?>
-                <div class="message-price" id="message-price">
-                  <div class="skeleton"></div>
-                </div>
-              <?php endif; ?>
+                <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" class="copy-button-icon-check" aria-hidden="true">
+                  <path d="m389-369 299-299q10.91-11 25.45-11Q728-679 739-668t11 25.58q0 14.58-10.61 25.19L415-292q-10.91 11-25.45 11Q375-281 364-292L221-435q-11-11-11-25.5t11-25.5q11-11 25.67-11 14.66 0 25.33 11l117 117Z" />
+                </svg>
+              </button>
             </div>
-          <?php endif; ?>
-        </div>
-      </section>
-    <?php endif; ?>
-    <?php if ($whoisData && $rdapData): ?>
-      <section class="data-source">
-        <div class="segmented">
-          <button class="segmented-item segmented-item-selected" id="data-source-whois" type="button">WHOIS</button>
-          <button class="segmented-item" id="data-source-rdap" type="button">RDAP</button>
-        </div>
-      </section>
-    <?php endif; ?>
-    <?php if ($whoisData || $rdapData): ?>
-      <section class="raw-data">
-        <?php if ($whoisData): ?>
-          <div id="raw-data-whois">
-            <button class="copy-button" id="raw-data-whois-copy">
-              <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" fill-rule="evenodd" />
-              </svg>
-            </button>
-            <pre class="raw-data-whois" tabindex="0"><code><?= htmlspecialchars($whoisData, ENT_QUOTES, "UTF-8"); ?></code></pre>
-          </div>
+            <?php if ($whoisData): ?>
+              <pre class="raw-data-whois" id="raw-data-whois"><code><?= htmlspecialchars($whoisData, ENT_QUOTES, "UTF-8"); ?></code></pre>
+            <?php endif; ?>
+            <?php if ($rdapData): ?>
+              <pre class="raw-data-rdap" id="raw-data-rdap"><code><?= $rdapData; ?></code></pre>
+            <?php endif; ?>
+          </section>
         <?php endif; ?>
-        <?php if ($rdapData): ?>
-          <div id="raw-data-rdap">
-            <button class="copy-button" id="raw-data-rdap-copy">
-              <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" fill-rule="evenodd" />
-              </svg>
-            </button>
-            <pre class="raw-data-rdap" tabindex="0"><code><?= $rdapData; ?></code></pre>
-          </div>
-        <?php endif; ?>
-      </section>
+      </main>
     <?php endif; ?>
-  </main>
-  <?php require_once __DIR__ . "/footer.php"; ?>
-  <button class="back-to-top" id="back-to-top">
-    <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" fill-rule="evenodd" />
+    <?php require_once __DIR__ . "/footer.php"; ?>
+  </div>
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+    <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+      <path d="M200-760q-17 0-28.5-11.5T160-800q0-17 11.5-28.5T200-840h560q17 0 28.5 11.5T800-800q0 17-11.5 28.5T760-760H200Zm280 640q-17 0-28.5-11.5T440-160v-368l-76 76q-11 11-28 11t-28-11q-11-11-11-28t11-28l144-144q6-6 13-8.5t15-2.5q8 0 15 2.5t13 8.5l144 144q11 11 11 28t-11 28q-11 11-28 11t-28-11l-76-76v368q0 17-11.5 28.5T480-120Z" />
     </svg>
   </button>
   <script>
@@ -636,10 +652,9 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
               bubbles: true,
             }));
           }
-        } catch (e) {
-          // Ignore
-        }
+        } catch {}
       });
+
       domainClearElement.addEventListener("click", () => {
         domainElement.focus();
         domainElement.select();
@@ -653,53 +668,96 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
         }
       });
 
-      const checkboxNames = ["whois", "rdap", "prices"];
-      <?php if ($domain): ?>
-        checkboxNames.forEach((name) => {
-          const checkbox = document.getElementById(`checkbox-${name}`);
-          localStorage.setItem(`checkbox-${name}`, +checkbox.checked);
+      const toggles = [
+        document.getElementById("toggle-whois"),
+        document.getElementById("toggle-rdap"),
+      ];
+
+      toggles.forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+          const active = toggle.getAttribute("aria-active") === "true";
+          const nextActive = `${!active}`;
+
+          toggle.setAttribute("aria-active", nextActive);
+
+          const targetInput = document.getElementById(toggle.dataset.targetInput);
+          targetInput.value = nextActive === "true" ? "1" : "0";
         });
-      <?php else: ?>
-        const whoisValue = localStorage.getItem("checkbox-whois") || "0";
-        const rdapValue = localStorage.getItem("checkbox-rdap") || "0";
+      });
 
-        checkboxNames.forEach((name) => {
-          const checkbox = document.getElementById(`checkbox-${name}`);
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get("domain")) {
+        toggles.forEach((toggle) => {
+          const active = toggle.getAttribute("aria-active") === "true";
+          localStorage.setItem(toggle.id, `${+active}`);
+        });
+      } else {
+        const whoisValue = localStorage.getItem("toggle-whois") || "0";
+        const rdapValue = localStorage.getItem("toggle-rdap") || "0";
 
-          if (!+whoisValue && !+rdapValue && name !== "prices") {
-            checkbox.checked = true;
+        toggles.forEach((toggle) => {
+          const targetInput = document.getElementById(toggle.dataset.targetInput);
+
+          if (!+whoisValue && !+rdapValue) {
+            toggle.setAttribute("aria-active", "true");
+            targetInput.value = "1";
           } else {
-            checkbox.checked = localStorage.getItem(`checkbox-${name}`) === "1";
+            const active = `${!!+localStorage.getItem(toggle.id)}`;
+
+            toggle.setAttribute("aria-active", active);
+            targetInput.value = active === "true" ? "1" : "0";
           }
         });
-      <?php endif; ?>
+      }
 
-      document.getElementById("form").addEventListener("submit", () => {
-        document.getElementById("search-icon").classList.add("searching");
+      const form = document.getElementById("form");
+      const searchButton = document.getElementById("search-button");
+
+      form.addEventListener("submit", () => {
+        searchButton.disabled = true;
+        searchButton.dataset.loading = "true";
+      });
+
+      window.addEventListener("pageshow", (e) => {
+        if (e.persisted) {
+          searchButton.disabled = false;
+          searchButton.dataset.loading = "false";
+        }
       });
 
       const backToTop = document.getElementById("back-to-top");
       backToTop.addEventListener("click", () => {
-        window.scrollTo({
+        const body = document.body;
+        const bodyStyle = window.getComputedStyle(body);
+        const scrollElement = bodyStyle.overflow === "auto" ? body : window;
+
+        scrollElement.scrollTo({
           behavior: "smooth",
           top: 0,
         });
       });
 
-      window.addEventListener("scroll", () => {
-        if (document.documentElement.scrollTop > 360) {
-          if (!backToTop.classList.contains("visible")) {
+      const messageElement = document.getElementById("message");
+      if (messageElement) {
+        const observer = new IntersectionObserver(([e]) => {
+          if (e.boundingClientRect.top < 0) {
             backToTop.classList.add("visible");
-          }
-        } else {
-          if (backToTop.classList.contains("visible")) {
+          } else {
             backToTop.classList.remove("visible");
           }
-        }
-      });
+        }, {
+          threshold: [1],
+        });
+        observer.observe(messageElement);
+      }
     });
   </script>
   <?php if ($whoisData || $rdapData): ?>
+    <?php if ($rdapData): ?>
+      <script src="public/js/json-viewer.js" defer></script>
+    <?php endif; ?>
+    <script src="public/js/linkify.min.js" defer></script>
+    <script src="public/js/linkify-html.min.js" defer></script>
     <script>
       window.addEventListener("DOMContentLoaded", () => {
         const updateDateElementText = (elementId) => {
@@ -711,116 +769,102 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
                 const date = new Date(iso8601);
 
                 const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, "0");
-                const day = String(date.getDate()).padStart(2, "0");
-                const hours = String(date.getHours()).padStart(2, "0");
-                const minutes = String(date.getMinutes()).padStart(2, "0");
-                const seconds = String(date.getSeconds()).padStart(2, "0");
+                const month = `${date.getMonth() + 1}`.padStart(2, "0");
+                const day = `${date.getDate()}`.padStart(2, "0");
+                const hours = `${date.getHours()}`.padStart(2, "0");
+                const minutes = `${date.getMinutes()}`.padStart(2, "0");
+                const seconds = `${date.getSeconds()}`.padStart(2, "0");
 
                 element.innerText = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-                const offsetMinutes = date.getTimezoneOffset();
-                const offsetRemainingMinutes = Math.abs(offsetMinutes % 60);
-                const offsetHours = -Math.floor(offsetMinutes / 60);
+                const timezoneOffset = date.getTimezoneOffset();
+
+                const offsetHours = -Math.trunc(timezoneOffset / 60);
                 const sign = offsetHours >= 0 ? "+" : "-";
+                const offsetMinutes = Math.abs(timezoneOffset % 60);
+                const minutesStr = offsetMinutes ? `:${offsetMinutes}` : "";
 
-                const minutesStr = offsetRemainingMinutes ? `:${offsetRemainingMinutes}` : "";
+                const timezoneElement = document.createElement("span");
+                timezoneElement.className = "card-item-value-secondary";
+                timezoneElement.innerText = `UTC${sign}${Math.abs(offsetHours)}${minutesStr}`;
 
-                element.dataset.offset = `UTC${sign}${Math.abs(offsetHours)}${minutesStr}`;
+                element.parentElement.appendChild(timezoneElement);
               } else {
                 element.innerText = iso8601;
               }
             }
           }
-        }
+        };
 
         updateDateElementText("creation-date");
         updateDateElementText("expiration-date");
         updateDateElementText("updated-date");
         updateDateElementText("available-date");
-      });
-    </script>
-    <script src="public/js/popper.min.js" defer></script>
-    <script src="public/js/tippy-bundle.umd.min.js" defer></script>
-    <?php if ($rdapData): ?>
-      <script src="public/js/json-viewer.js" defer></script>
-    <?php endif; ?>
-    <script src="public/js/linkify.min.js" defer></script>
-    <script src="public/js/linkify-html.min.js" defer></script>
-    <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        tippy.setDefaultProps({
-          arrow: false,
-          hideOnClick: false,
-          offset: [0, 8],
-        });
 
-        const updateDateElementTooltip = (elementId) => {
-          const element = document.getElementById(elementId);
-          if (element) {
-            const offset = element.dataset.offset;
-            if (offset) {
-              tippy(`#${elementId}`, {
-                content: offset,
-                placement: "right",
-              });
-            }
-          }
-        }
-
-        updateDateElementTooltip("creation-date");
-        updateDateElementTooltip("expiration-date");
-        updateDateElementTooltip("updated-date");
-        updateDateElementTooltip("available-date");
-
-        const updateSecondsElementTooltip = (elementId, prefix) => {
+        const updateDaysElementText = (elementId) => {
           const element = document.getElementById(elementId);
           if (element) {
             const seconds = element.dataset.seconds;
             if (seconds) {
-              let days = seconds / 24 / 60 / 60;
-              days = seconds < 0 ? Math.ceil(days) : Math.floor(days);
+              let days = Math.trunc(seconds / 24 / 60 / 60);
               if (seconds < 0 && days === 0) {
                 days = "-0";
               }
-              tippy(`#${elementId}`, {
-                content: `${prefix}: ${days} days`,
-                placement: "bottom",
-              });
+
+              element.innerText = `${element.innerText} (${days} days)`;
             }
           }
         }
 
-        updateSecondsElementTooltip("age", "Age");
-        updateSecondsElementTooltip("remaining", "Remaining");
+        updateDaysElementText("createdAgo");
+        updateDaysElementText("expiresIn");
+        updateDaysElementText("updatedAgo");
+        updateDaysElementText("availableIn");
 
-        const dataSourceWHOIS = document.getElementById("data-source-whois");
-        const dataSourceRDAP = document.getElementById("data-source-rdap");
+        const cardRawData = document.getElementById("card-raw-data");
+        const rawDataHead = document.getElementById("raw-data-head");
+        const rawDataTabWHOIS = document.getElementById("raw-data-tab-whois");
+        const rawDataTabRDAP = document.getElementById("raw-data-tab-rdap");
         const rawDataWHOIS = document.getElementById("raw-data-whois");
-        const rawDataWHOISCopy = document.getElementById("raw-data-whois-copy");
         const rawDataRDAP = document.getElementById("raw-data-rdap");
-        const rawDataRDAPCopy = document.getElementById("raw-data-rdap-copy");
 
-        if (dataSourceWHOIS && dataSourceRDAP) {
-          dataSourceWHOIS.addEventListener("click", () => {
-            if (dataSourceWHOIS.classList.contains("segmented-item-selected")) {
-              return;
+        if (rawDataHead) {
+          const observer = new IntersectionObserver(([e]) => {
+            if (e.boundingClientRect.top < 0) {
+              rawDataHead.style.borderRadius = "0";
+            } else {
+              rawDataHead.style.borderRadius = null;
             }
-
-            dataSourceWHOIS.classList.add("segmented-item-selected");
-            rawDataWHOIS.style.display = "block";
-            dataSourceRDAP.classList.remove("segmented-item-selected");
-            rawDataRDAP.style.display = "none";
+          }, {
+            threshold: [1],
           });
-          dataSourceRDAP.addEventListener("click", () => {
-            if (dataSourceRDAP.classList.contains("segmented-item-selected")) {
-              return;
+          observer.observe(rawDataHead);
+        }
+
+        if (rawDataTabWHOIS && rawDataTabRDAP) {
+          rawDataTabWHOIS.addEventListener("click", () => {
+            if (!rawDataTabWHOIS.classList.contains("raw-data-tab-active")) {
+              rawDataTabWHOIS.classList.add("raw-data-tab-active");
+              rawDataWHOIS.style.display = "block";
+              rawDataTabRDAP.classList.remove("raw-data-tab-active");
+              rawDataRDAP.style.display = "none";
             }
 
-            dataSourceWHOIS.classList.remove("segmented-item-selected");
-            rawDataWHOIS.style.display = "none";
-            dataSourceRDAP.classList.add("segmented-item-selected");
-            rawDataRDAP.style.display = "block";
+            cardRawData.scrollIntoView({
+              behavior: "smooth"
+            });
+          });
+          rawDataTabRDAP.addEventListener("click", () => {
+            if (!rawDataTabRDAP.classList.contains("raw-data-tab-active")) {
+              rawDataTabWHOIS.classList.remove("raw-data-tab-active");
+              rawDataWHOIS.style.display = "none";
+              rawDataTabRDAP.classList.add("raw-data-tab-active");
+              rawDataRDAP.style.display = "block";
+            }
+
+            cardRawData.scrollIntoView({
+              behavior: "smooth"
+            });
           });
         }
 
@@ -854,40 +898,37 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
           }
         };
 
-        const setupCopyButton = (element, copyAction) => {
-          if (element) {
-            const copyTippy = tippy(element, {
-              placement: "bottom",
-              onHide: (instance) => {
-                if (copyTimeoutId) {
-                  clearTimeout(copyTimeoutId);
-                  copyTimeoutId = null;
-                }
-              },
-              onShow: (instance) => {
-                instance.setContent("Copy to clipboard");
-              },
-            });
+        const copyButton = document.getElementById("copy-button");
+        if (copyButton) {
+          let timeoutId;
 
-            let copyTimeoutId;
+          copyButton.addEventListener("click", () => {
+            let data;
 
-            element.addEventListener("click", () => {
-              if (copyTimeoutId) {
-                clearTimeout(copyTimeoutId);
-                copyTimeoutId = null;
-              }
+            if (rawDataWHOIS && getComputedStyle(rawDataWHOIS).display === "block") {
+              data = rawDataWHOIS.innerText;
+            } else if (rawDataRDAP && getComputedStyle(rawDataRDAP).display === "block") {
+              data = JSON.stringify(JSON.parse(rdapData), null, 2);
+            }
 
-              const valueToCopy = copyAction();
-              if (valueToCopy) {
-                copyToClipboard(valueToCopy);
-                copyTippy.setContent("Copied!");
-                copyTimeoutId = setTimeout(() => {
-                  copyTippy.setContent("Copy to clipboard");
-                }, 2333);
-              }
-            });
-          }
+            if (!data) {
+              return;
+            }
+
+            if (timeoutId) {
+              clearTimeout(timeoutId);
+              timeoutId = null;
+            }
+
+            copyToClipboard(data);
+            copyButton.dataset.copied = "true";
+            timeoutId = setTimeout(() => {
+              copyButton.dataset.copied = "false";
+            }, 2333);
+          });
         }
+
+        const rdapData = <?= json_encode($rdapData); ?>;
 
         const linkifyRawData = (element) => {
           if (element) {
@@ -899,105 +940,14 @@ if ($_SERVER["QUERY_STRING"] ?? "") {
               },
             });
           }
-        }
+        };
 
         if (rawDataWHOIS) {
-          const pre = rawDataWHOIS.querySelector("pre");
-
-          setupCopyButton(rawDataWHOISCopy, () => pre.innerText);
-          linkifyRawData(pre);
+          linkifyRawData(rawDataWHOIS);
         }
         if (rawDataRDAP) {
-          const pre = rawDataRDAP.querySelector("pre");
-          const rdapData = <?= json_encode($rdapData); ?>;
-
-          setupCopyButton(rawDataRDAPCopy, () => JSON.stringify(JSON.parse(rdapData), null, 2));
-          setupJSONViewer(pre, rdapData);
-          linkifyRawData(pre);
-        }
-      });
-    </script>
-  <?php endif; ?>
-  <?php if ($fetchPrices): ?>
-    <script>
-      window.addEventListener("DOMContentLoaded", async () => {
-        const messagePrice = document.getElementById("message-price");
-
-        if (!messagePrice) {
-          return;
-        }
-
-        const startTime = Date.now();
-
-        try {
-          const response = await fetch("/prices?domain=<?= $domain; ?>");
-
-          if (!response.ok) {
-            throw new Error();
-          }
-
-          const data = await response.json();
-
-          if (data.code !== 200) {
-            throw new Error();
-          }
-
-          let innerHTML = "";
-
-          const isPremium = data.data.premium === "true";
-
-          if (isPremium) {
-            innerHTML = `
-              <button class="message-tag message-tag-purple" id="price-premium">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                  <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z" />
-                </svg>
-              </button>
-            `;
-          }
-
-          let registerUSD = data.data.register_usd;
-          let renewUSD = data.data.renew_usd;
-          let registerCNY = data.data.register;
-          let renewCNY = data.data.renew;
-
-          registerUSD = registerUSD === "unknow" ? "?" : registerUSD;
-          renewUSD = renewUSD === "unknow" ? "?" : renewUSD;
-          registerCNY = registerCNY === "unknow" ? "?" : registerCNY;
-          renewCNY = renewCNY === "unknow" ? "?" : renewCNY;
-
-          innerHTML = `
-            ${innerHTML}
-            <button class="message-tag message-tag-gray" id="price-register">
-              <span>Register: $${registerUSD}</span>
-            </button>
-            <button class="message-tag message-tag-gray" id="price-renew">
-              <span>Renew: $${renewUSD}</span>
-            </button>
-          `;
-
-          setTimeout(() => {
-            messagePrice.innerHTML = innerHTML;
-
-            if (isPremium) {
-              tippy("#price-premium", {
-                content: "Premium",
-                placement: "bottom",
-              });
-            }
-            tippy("#price-register", {
-              content: `¥${registerCNY}`,
-              placement: "bottom"
-            });
-            tippy("#price-renew", {
-              content: `¥${renewCNY}`,
-              placement: "bottom"
-            });
-          }, Math.max(0, 500 - (Date.now() - startTime)));
-        } catch {
-          setTimeout(() => {
-            messagePrice.innerHTML = `<span class="message-tag message-tag-pink">Failed to fetch prices</span>`;
-          }, Math.max(0, 500 - (Date.now() - startTime)));
+          setupJSONViewer(rawDataRDAP, rdapData);
+          linkifyRawData(rawDataRDAP);
         }
       });
     </script>

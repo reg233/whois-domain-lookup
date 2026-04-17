@@ -7,4 +7,9 @@ class ParserSI extends Parser
     // si.si
     return "/is forbidden/i";
   }
+
+  protected function getStatus($subject = null)
+  {
+    return $this->getStatusFromExplode(",");
+  }
 }

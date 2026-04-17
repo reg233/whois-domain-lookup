@@ -1,18 +1,29 @@
+:root {
+  --syntax-punctuation: #6282ab;
+  --syntax-property: #1f3d68;
+  --syntax-boolean: #945f00;
+  --syntax-null: #005fcb;
+  --syntax-number: #c43356;
+  --syntax-string: #007a63;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --syntax-punctuation: #9ab4d8;
+    --syntax-property: #d6e4ff;
+    --syntax-boolean: #ffd98d;
+    --syntax-null: #9dd0ff;
+    --syntax-number: #ff9bb2;
+    --syntax-string: #7cf0d0;
+  }
+}
+
 .json-viewer .collapser {
-  color: #00000061;
-  font-size: 20px;
-  left: -24px;
-  padding: 2px;
+  color: var(--syntax-punctuation);
+  font-size: 1.3125rem;
+  left: -1.3125rem;
   position: absolute;
   top: 0;
-}
-
-.json-viewer .collapser:hover {
-  color: #00000051;
-}
-
-.json-viewer .collapser:active {
-  color: #00000041;
 }
 
 .json-viewer .collapser svg {
@@ -20,18 +31,18 @@
 }
 
 .json-viewer .ellipsis {
-  color: #1a1a1a;
+  color: var(--syntax-property);
   display: none;
 }
 
 .json-viewer .ellipsis:after {
   content: "…";
-  margin: 0 4px;
+  margin: 0 0.25rem;
 }
 
 .json-viewer .collapsible {
   list-style-type: none;
-  margin: 0 0 0 32px;
+  margin: 0 0 0 2rem;
   padding: 0;
 }
 
@@ -47,34 +58,27 @@
   display: none;
 }
 
-@media (max-width: 768px) {
-  .json-viewer .collapser {
-    left: -20px;
-    padding: 0;
-  }
-}
-
 .json-viewer .token.punctuation,
 .json-viewer .token.operator {
-  color: #00000061;
+  color: var(--syntax-punctuation);
 }
 
 .json-viewer .token.property {
-  color: #1a1a1a;
+  color: var(--syntax-property);
 }
 
 .json-viewer .token.boolean {
-  color: #ff8c00;
+  color: var(--syntax-boolean);
 }
 
 .json-viewer .token.null {
-  color: #004ed0;
+  color: var(--syntax-null);
 }
 
 .json-viewer .token.number {
-  color: #ee422e;
+  color: var(--syntax-number);
 }
 
 .json-viewer .token.string {
-  color: #008000;
+  color: var(--syntax-string);
 }

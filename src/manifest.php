@@ -44,20 +44,30 @@ $manifest = [
   ],
   "id" => $id,
   "start_url" => $id,
-  "background_color" => "#ffffff",
   "display" => "standalone",
   "scope" => BASE,
-  "theme_color" => "#e1f9f9",
   "description" => SITE_DESCRIPTION,
   "screenshots" => [
     [
       "src" => BASE . "public/images/manifest-screenshot-narrow.png",
-      "sizes" => "1170x2532",
+      "sizes" => "1290x2796",
+      "type" => "image/png",
+      "form_factor" => "narrow",
+    ],
+    [
+      "src" => BASE . "public/images/manifest-screenshot-narrow-dark.png",
+      "sizes" => "1290x2796",
       "type" => "image/png",
       "form_factor" => "narrow",
     ],
     [
       "src" => BASE . "public/images/manifest-screenshot-wide.png",
+      "sizes" => "3024x1890",
+      "type" => "image/png",
+      "form_factor" => "wide",
+    ],
+    [
+      "src" => BASE . "public/images/manifest-screenshot-wide-dark.png",
       "sizes" => "3024x1890",
       "type" => "image/png",
       "form_factor" => "wide",
