@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-03-23T19:00:02Z",
+  "publication": "2026-04-18T17:52:34Z",
   "services": [
     [
       [
@@ -110,6 +110,14 @@
       ],
       [
         "https://pubapi.registry.google/rdap/"
+      ]
+    ],
+    [
+      [
+        "merck"
+      ],
+      [
+        "https://rdap-merck.dns.business/rdap/"
       ]
     ],
     [
