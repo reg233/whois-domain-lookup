@@ -155,6 +155,11 @@ $manifestHref = "manifest";
 if ($_SERVER["QUERY_STRING"] ?? "") {
   $manifestHref .= "?" . htmlspecialchars($_SERVER["QUERY_STRING"], ENT_QUOTES, "UTF-8");
 }
+
+if (CLASSIC_UI) {
+  require_once __DIR__ . "/classic/index.php";
+  die;
+}
 ?>
 
 <!doctype html>

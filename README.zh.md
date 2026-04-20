@@ -16,6 +16,9 @@
     <td>
       <img alt="Screenshot" src="public/images/manifest-screenshot-wide-dark.png" />
     </td>
+    <td>
+      <img alt="Screenshot" src="public/classic/images/manifest-screenshot-wide.png" />
+    </td>
   </tr>
   <tr>
     <td>
@@ -24,10 +27,15 @@
     <td>
       <img alt="Screenshot" src="public/images/manifest-screenshot-narrow-dark.png" />
     </td>
+    <td>
+      <img alt="Screenshot" src="public/classic/images/manifest-screenshot-narrow.png" />
+    </td>
   </tr>
 </table>
 
 [在线体验](https://whois.233333.best)
+
+[在线体验（经典界面）](https://whois1.233333.best)
 
 ## 特性
 
@@ -127,6 +135,7 @@ server {
 | `SITE_SHORT_TITLE` | 网站的短标题，用于移动端的主屏幕 | `RDAP` | `WHOIS` |
 | `SITE_DESCRIPTION` | 网站的描述，用于搜索引擎优化 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | 网站的关键词，用于搜索引擎优化 | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
+| `CLASSIC_UI` | 启用经典界面 | `1` | `0` |
 | `SITE_PASSWORD` | 网站的密码，用于访问控制 | `233` |  |
 | `BASE` | HTML 中 `base` 标签的 `href` 属性 | `/whois/` | `/` |
 | `CUSTOM_HEAD` | 插入到首页中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |

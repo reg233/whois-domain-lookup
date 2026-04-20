@@ -75,4 +75,23 @@ $manifest = [
   ],
 ];
 
+if (CLASSIC_UI) {
+  $replacePath = fn($src) => str_replace("public/images/", "public/classic/images/", $src);
+
+  $manifest["icons"] = array_map(
+    fn($icon) => [...$icon, "src" => $replacePath($icon["src"])],
+    $manifest["icons"],
+  );
+
+  $manifest["screenshots"] = array_values(
+    array_map(
+      fn($s) => [...$s, "src" => $replacePath($s["src"])],
+      array_filter($manifest["screenshots"], fn($s) => !str_ends_with($s["src"], "dark.png")),
+    )
+  );
+
+  $manifest["background_color"] = "#ffffff";
+  $manifest["theme_color"] = "#e1f9f9";
+}
+
 echo json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

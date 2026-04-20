@@ -1,0 +1,80 @@
+.json-viewer .collapser {
+  color: #00000061;
+  font-size: 20px;
+  left: -24px;
+  padding: 2px;
+  position: absolute;
+  top: 0;
+}
+
+.json-viewer .collapser:hover {
+  color: #00000051;
+}
+
+.json-viewer .collapser:active {
+  color: #00000041;
+}
+
+.json-viewer .collapser svg {
+  pointer-events: none;
+}
+
+.json-viewer .ellipsis {
+  color: #1a1a1a;
+  display: none;
+}
+
+.json-viewer .ellipsis:after {
+  content: "…";
+  margin: 0 4px;
+}
+
+.json-viewer .collapsible {
+  list-style-type: none;
+  margin: 0 0 0 32px;
+  padding: 0;
+}
+
+.json-viewer .collapsible > li {
+  position: relative;
+}
+
+.json-viewer .collapsed > .ellipsis {
+  display: inline-block;
+}
+
+.json-viewer .collapsed > .collapsible {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .json-viewer .collapser {
+    left: -20px;
+    padding: 0;
+  }
+}
+
+.json-viewer .token.punctuation,
+.json-viewer .token.operator {
+  color: #00000061;
+}
+
+.json-viewer .token.property {
+  color: #1a1a1a;
+}
+
+.json-viewer .token.boolean {
+  color: #ff8c00;
+}
+
+.json-viewer .token.null {
+  color: #004ed0;
+}
+
+.json-viewer .token.number {
+  color: #ee422e;
+}
+
+.json-viewer .token.string {
+  color: #008000;
+}

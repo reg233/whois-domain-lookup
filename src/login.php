@@ -39,6 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $failed = true;
   }
 }
+
+if (CLASSIC_UI) {
+  require_once __DIR__ . "/classic/login.php";
+  die;
+}
 ?>
 
 <!doctype html>

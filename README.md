@@ -16,6 +16,9 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
     <td>
       <img alt="Screenshot" src="public/images/manifest-screenshot-wide-dark.png" />
     </td>
+    <td>
+      <img alt="Screenshot" src="public/classic/images/manifest-screenshot-wide.png" />
+    </td>
   </tr>
   <tr>
     <td>
@@ -24,10 +27,15 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
     <td>
       <img alt="Screenshot" src="public/images/manifest-screenshot-narrow-dark.png" />
     </td>
+    <td>
+      <img alt="Screenshot" src="public/classic/images/manifest-screenshot-narrow.png" />
+    </td>
   </tr>
 </table>
 
 [Live Demo](https://whois.233333.best)
+
+[Live Demo (Classic UI)](https://whois1.233333.best)
 
 ## Features
 
@@ -128,6 +136,7 @@ server {
 | `SITE_DESCRIPTION` | Description of the website, used for SEO | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
 | `SITE_KEYWORDS` | Keywords of the website, used for SEO | `whois, rdap, domain lookup` | `whois, rdap, domain lookup, open source, api, tld, cctld, .com, .net, .org` |
 | `SITE_PASSWORD` | Password of the website, used for access control | `233` |  |
+| `CLASSIC_UI` | Enable classic UI | `1` | `0` |
 | `BASE` | The `href` attribute of the `base` tag in the HTML. | `/whois/` | `/` |
 | `CUSTOM_HEAD` | Custom content to insert before `</head>` on the home page (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT` | Custom content to insert before `</body>` on the home page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |

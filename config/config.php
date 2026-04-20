@@ -9,6 +9,11 @@ define("SITE_KEYWORDS", getenv("SITE_KEYWORDS") ?: "whois, rdap, domain lookup, 
 
 define("SITE_PASSWORD", getenv("SITE_PASSWORD") ?: "");
 
+define(
+  "CLASSIC_UI",
+  filter_var(getenv("CLASSIC_UI") === false ? "0" : getenv("CLASSIC_UI"), FILTER_VALIDATE_BOOL),
+);
+
 define("BASE", getenv("BASE") ?: "/");
 
 define("CUSTOM_HEAD", getenv("CUSTOM_HEAD") ?: "");
