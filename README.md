@@ -10,6 +10,11 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 
 <table>
   <tr>
+    <th>Light</th>
+    <th>Dark</th>
+    <th>Classic</th>
+  </tr>
+  <tr>
     <td>
       <img alt="Screenshot" src="public/images/manifest-screenshot-wide.png" />
     </td>
@@ -35,7 +40,7 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 
 [Live Demo](https://whois.233333.best)
 
-[Live Demo (Classic UI)](https://whois1.233333.best)
+[Live Demo (Classic)](https://whois1.233333.best)
 
 ## Features
 

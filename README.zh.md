@@ -10,6 +10,11 @@
 
 <table>
   <tr>
+    <th>浅色</th>
+    <th>深色</th>
+    <th>经典</th>
+  </tr>
+  <tr>
     <td>
       <img alt="Screenshot" src="public/images/manifest-screenshot-wide.png" />
     </td>
@@ -35,7 +40,7 @@
 
 [在线体验](https://whois.233333.best)
 
-[在线体验（经典界面）](https://whois1.233333.best)
+[在线体验（经典）](https://whois1.233333.best)
 
 ## 特性
 
