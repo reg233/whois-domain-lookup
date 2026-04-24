@@ -1,4 +1,4 @@
-name: Update public-suffix-list.dat and rdap-servers-iana.json
+name: Update public-suffix-list.dat and rdap-servers-iana.json and icann-accredited-registrars.csv
 
 on:
   schedule:
@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.MY_GITHUB_TOKEN }}
 
@@ -33,10 +33,10 @@ jobs:
           rdap_updated=$(git diff --quiet src/data/rdap-servers-iana.json; echo $?)
           registrars_updated=$(git diff --quiet src/data/icann-accredited-registrars.csv; echo $?)
 
-          if [ $psl_updated -eq 1 ] || [ $rdap_updated -eq 1 ] || [ $registrars_updated -eq 1 ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          if [ $psl_updated -eq 1 ] || [ $rdap_updated -eq 1 ]; then
             base_tag="v$(date -u +%Y.%-m.%-d)"
             tag="${base_tag}"
             i=1
@@ -46,7 +46,6 @@ jobs:
             done
 
             sed -i "2s/.*/define(\"VERSION\", \"${tag}\");/" src/footer.php
-
             git add src/footer.php
 
             commit_message="Update version"
@@ -68,6 +67,10 @@ jobs:
 
             git tag "${tag}"
             git push origin "${tag}"
+          elif [ $registrars_updated -eq 1 ]; then
+            git add src/data/icann-accredited-registrars.csv
+            git commit -m "Update icann-accredited-registrars.csv"
+            git push
           else
             echo "No updates detected."
           fi
