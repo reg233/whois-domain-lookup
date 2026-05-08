@@ -40,24 +40,41 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
   }
 }
 
-if (CLASSIC_UI) {
-  require_once __DIR__ . "/classic/login.php";
-  die;
-}
+$protocol = (($_SERVER["HTTPS"] ?? "") && $_SERVER["HTTPS"] !== "off") ? "https://" : "http://";
+$origin = $protocol . $_SERVER["HTTP_HOST"];
+
+$title = "Sign in | " . SITE_TITLE;
+$ogUrl = $origin . BASE . "login";
+$ogImage = $origin . BASE . "public/images/og.png";
 ?>
 
 <!doctype html>
 <html lang="en-US">
 
 <head>
-  <base href="<?= BASE; ?>">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="<?= BASE; ?>">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#eef6ff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#050a1a" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="<?= SITE_DESCRIPTION ?>">
-  <meta name="keywords" content="<?= SITE_KEYWORDS ?>">
+  <link rel="manifest" href="manifest">
+  <title><?= $title; ?></title>
+  <meta name="description" content="<?= SITE_DESCRIPTION; ?>">
+  <link rel="canonical" href="<?= $ogUrl; ?>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<?= $ogUrl; ?>">
+  <meta property="og:title" content="<?= $title; ?>">
+  <meta property="og:description" content="<?= SITE_DESCRIPTION; ?>">
+  <meta property="og:image" content="<?= $ogImage; ?>">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="<?= SITE_TITLE; ?>">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?= $title; ?>">
+  <meta name="twitter:description" content="<?= SITE_DESCRIPTION; ?>">
+  <meta name="twitter:image" content="<?= $ogImage; ?>">
   <link rel="shortcut icon" href="public/favicon.ico">
   <link rel="icon" href="public/images/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="public/images/apple-icon-180.png">
@@ -141,21 +158,19 @@ if (CLASSIC_UI) {
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2208-1242.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1334-750.jpg" media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1136-640.jpg" media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-  <link rel="manifest" href="manifest">
-  <title><?= SITE_TITLE ?></title>
   <link rel="stylesheet" href="public/css/global.css">
   <link rel="stylesheet" href="public/css/login.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap">
-  <?= CUSTOM_HEAD_LOGIN ?>
+  <?= CUSTOM_HEAD_LOGIN; ?>
 </head>
 
 <body>
   <div class="root">
     <main>
-      <img alt="<?= SITE_TITLE ?>" height="48" loading="lazy" src="public/images/favicon.svg">
-      <h1><?= SITE_TITLE ?></h1>
+      <img alt="<?= SITE_TITLE; ?>" height="48" loading="lazy" src="public/images/favicon.svg">
+      <h1><?= SITE_TITLE; ?></h1>
       <?php if ($failed): ?>
         <div class="error">Incorrect password.</div>
       <?php endif; ?>
@@ -218,7 +233,7 @@ if (CLASSIC_UI) {
       });
     });
   </script>
-  <?= CUSTOM_SCRIPT_LOGIN ?>
+  <?= CUSTOM_SCRIPT_LOGIN; ?>
 </body>
 
 </html>

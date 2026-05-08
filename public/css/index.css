@@ -345,7 +345,7 @@ pre {
   overflow: auto;
 }
 
-pre + pre {
+.raw-data-whois + .raw-data-rdap {
   display: none;
 }
 

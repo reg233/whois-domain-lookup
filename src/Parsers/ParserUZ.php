@@ -1,5 +1,5 @@
 <?php
-class ParserUZ extends ParserRO
+class ParserUZ extends Parser
 {
   protected $timezone = "Asia/Tashkent";
 

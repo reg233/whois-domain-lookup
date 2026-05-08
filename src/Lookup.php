@@ -182,6 +182,9 @@ class Lookup
     $properties = [
       "registered",
       "domain",
+      "registryWebsite",
+      "registryWHOISServer",
+      "registryRDAPServer",
       "registrar",
       "registrarURL",
       "registrarIANAId",

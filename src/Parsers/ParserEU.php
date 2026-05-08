@@ -20,4 +20,9 @@ class ParserEU extends Parser
   {
     return $this->getNameServersFromExplode("\n");
   }
+
+  protected function getDNSSECSignedExtraRegExp()
+  {
+    return "/keys:\n(.+)/i";
+  }
 }

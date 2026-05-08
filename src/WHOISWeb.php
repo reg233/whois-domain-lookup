@@ -133,7 +133,7 @@ class WHOISWeb
     $response = str_replace(["<<<", ">>>"], ["&lt;&lt;&lt;", "&gt;&gt;&gt;"], $response);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML('<?xml encoding="UTF-8"?>' . $response);
 
     $whois = "";
 

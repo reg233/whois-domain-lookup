@@ -21,6 +21,12 @@ class Parser
 
   public $domain = "";
 
+  public $registryWebsite = "";
+
+  public $registryWHOISServer = "";
+
+  public $registryRDAPServer = "";
+
   public $registrar = "";
 
   public $registrarURL = "";
@@ -97,6 +103,9 @@ class Parser
 
     $this->domain = $this->getDomain();
 
+    $this->registryWebsite = $this->getRegistryWebsite();
+    $this->registryWHOISServer = $this->getRegistryWHOISServer();
+
     $this->registrar = $this->getRegistrar();
     $this->registrarURL = $this->getRegistrarURL();
     $this->registrarIANAId = $this->getRegistrarIANAId();
@@ -123,7 +132,7 @@ class Parser
     $this->availableDateISO8601 = $this->getAvailableDateISO8601();
 
     $this->status = $this->getStatus();
-    $this->setStatusUrl();
+    $this->formatStatus();
 
     $this->nameServers = $this->getNameServers();
     $this->dnssecSigned = $this->getDNSSECSigned();
@@ -353,6 +362,54 @@ class Parser
     return "";
   }
 
+  private const REGISTRY_WEBSITE = [
+    // iana
+    "remarks:      registration information",
+  ];
+
+  protected function getRegistryWebsiteRegExp()
+  {
+    return $this->getBaseRegExp(implode("|", self::REGISTRY_WEBSITE));
+  }
+
+  protected function getRegistryWebsite()
+  {
+    if (preg_match($this->getRegistryWebsiteRegExp(), $this->data, $matches)) {
+      $url = strtolower(trim($matches[1]));
+
+      if ($url && !preg_match("#^https?://#i", $url)) {
+        return "http://$url";
+      }
+
+      return $url;
+    }
+
+    return "";
+  }
+
+  private const REGISTRY_WHOIS_SERVER = [
+    // bf, bi, cd, ps
+    "registry whois server",
+    // pl
+    "whois database responses",
+    // iana
+    "whois",
+  ];
+
+  protected function getRegistryWHOISServerRegExp()
+  {
+    return $this->getBaseRegExp(implode("|", self::REGISTRY_WHOIS_SERVER));
+  }
+
+  protected function getRegistryWHOISServer()
+  {
+    if (preg_match($this->getRegistryWHOISServerRegExp(), $this->data, $matches)) {
+      return trim($matches[1]);
+    }
+
+    return "";
+  }
+
   private const REGISTRAR_KEYWORDS = [
     // com, ac, ad, af, ag, ai, am, ar, as, at, ax, bb, bf, bh, bi, bj, bm, bn, bt, bw, by, bz, ca
     // cc, cd, ci, cm, co, cr, cv, cx, cz, dk, dm, do, dz, ec, et, fi, fj, fm, fo, fr, ga, gd, ge
@@ -425,7 +482,7 @@ class Parser
     if (preg_match($this->getRegistrarURLRegExp(), $this->data, $matches)) {
       $url = trim($matches[1]);
 
-      if (!empty($url) && !preg_match("#^https?://#i", $url)) {
+      if ($url && !preg_match("#^https?://#i", $url)) {
         return "http://$url";
       }
 
@@ -436,8 +493,12 @@ class Parser
   }
 
   private const REGISTRAR_IANA_ID_KEYWORDS = [
-    // com
+    // com, ac, af, ag, ai, bh, bm, bz, ca, cc, co, cx, dm, et, fm, fo, gd, gi, gl, gn, gs, gy, id
+    // ie, in, io, iq, ki, kw, ky, la, lc, me, mm, mn, mu, my, nf, om, pr, ps, pw, sb, sc, sd, sh
+    // so, sx, to, tv, us, vc, vg, vu, ws, za
     "registrar iana id",
+    // gh, sy
+    "sponsoring registrar iana id",
   ];
 
   protected function getRegistrarIANAIdRegExp()
@@ -467,14 +528,8 @@ class Parser
     // bd, gh, sl, sr, sy, tc, uz, ws
     // xn--ogbpf8fl
     "whois server",
-    // bf, bi, cd, ps
-    "registry whois server",
     // mx
     "whois tcp uri",
-    // pl
-    "whois database responses",
-    // iana
-    "whois",
   ];
 
   protected function getRegistrarWHOISServerRegExp()
@@ -831,30 +886,119 @@ class Parser
   ];
 
   protected const STATUS_MAP = [
-    "addperiod" => "addPeriod",
-    "autorenewperiod" => "autoRenewPeriod",
-    "inactive" => "inactive",
-    "ok" => "ok",
-    "active" => "ok",
-    "pendingcreate" => "pendingCreate",
-    "pendingdelete" => "pendingDelete",
-    "pendingrenew" => "pendingRenew",
-    "pendingrestore" => "pendingRestore",
-    "pendingtransfer" => "pendingTransfer",
-    "pendingupdate" => "pendingUpdate",
-    "redemptionperiod" => "redemptionPeriod",
-    "renewperiod" => "renewPeriod",
-    "serverdeleteprohibited" => "serverDeleteProhibited",
-    "serverhold" => "serverHold",
-    "serverrenewprohibited" => "serverRenewProhibited",
-    "servertransferprohibited" => "serverTransferProhibited",
-    "serverupdateprohibited" => "serverUpdateProhibited",
-    "transferperiod" => "transferPeriod",
-    "clientdeleteprohibited" => "clientDeleteProhibited",
-    "clienthold" => "clientHold",
-    "clientrenewprohibited" => "clientRenewProhibited",
-    "clienttransferprohibited" => "clientTransferProhibited",
-    "clientupdateprohibited" => "clientUpdateProhibited",
+    "Active" => [
+      "aliases" => [
+        "active",
+        "actif", // ga, sn
+        "activo", // pa
+        "activ&eacute;", // tg
+      ],
+      "fragment" => "ok",
+    ],
+    "Add Period" => [
+      "aliases" => ["addperiod"],
+      "fragment" => "addPeriod",
+    ],
+    "Auto Renew Period" => [
+      "aliases" => ["autorenewperiod"],
+      "fragment" => "autoRenewPeriod",
+    ],
+    "Client Delete Prohibited" => [
+      "aliases" => [
+        "clientdeleteprohibited",
+        "deleteprohibitedbyregistrar", // gg
+      ],
+      "fragment" => "clientDeleteProhibited",
+    ],
+    "Client Hold" => [
+      "aliases" => ["clienthold"],
+      "fragment" => "clientHold",
+    ],
+    "Client Renew Prohibited" => [
+      "aliases" => ["clientrenewprohibited"],
+      "fragment" => "clientRenewProhibited",
+    ],
+    "Client Transfer Prohibited" => [
+      "aliases" => [
+        "clienttransferprohibited",
+        "transferprohibitedbyregistrar", // gg
+      ],
+      "fragment" => "clientTransferProhibited",
+    ],
+    "Client Update Prohibited" => [
+      "aliases" => [
+        "clientupdateprohibited",
+        "updateprohibitedbyregistrar", // gg
+      ],
+      "fragment" => "clientUpdateProhibited",
+    ],
+    "Inactive" => [
+      "aliases" => ["inactive"],
+      "fragment" => "inactive",
+    ],
+    "OK" => [
+      "aliases" => [
+        "ok",
+        "ok(paidandinzone)", // ee
+      ],
+      "fragment" => "ok",
+    ],
+    "Pending Create" => [
+      "aliases" => ["pendingcreate"],
+      "fragment" => "pendingCreate",
+    ],
+    "Pending Delete" => [
+      "aliases" => ["pendingdelete"],
+      "fragment" => "pendingDelete",
+    ],
+    "Pending Renew" => [
+      "aliases" => ["pendingrenew"],
+      "fragment" => "pendingRenew",
+    ],
+    "Pending Restore" => [
+      "aliases" => ["pendingrestore"],
+      "fragment" => "pendingRestore",
+    ],
+    "Pending Transfer" => [
+      "aliases" => ["pendingtransfer"],
+      "fragment" => "pendingTransfer",
+    ],
+    "Pending Update" => [
+      "aliases" => ["pendingupdate"],
+      "fragment" => "pendingUpdate",
+    ],
+    "Redemption Period" => [
+      "aliases" => ["redemptionperiod"],
+      "fragment" => "redemptionPeriod",
+    ],
+    "Renew Period" => [
+      "aliases" => ["renewperiod"],
+      "fragment" => "renewPeriod",
+    ],
+    "Server Delete Prohibited" => [
+      "aliases" => ["serverdeleteprohibited"],
+      "fragment" => "serverDeleteProhibited",
+    ],
+    "Server Hold" => [
+      "aliases" => ["serverhold"],
+      "fragment" => "serverHold",
+    ],
+    "Server Renew Prohibited" => [
+      "aliases" => ["serverrenewprohibited"],
+      "fragment" => "serverRenewProhibited",
+    ],
+    "Server Transfer Prohibited" => [
+      "aliases" => ["servertransferprohibited"],
+      "fragment" => "serverTransferProhibited",
+    ],
+    "Server Update Prohibited" => [
+      "aliases" => ["serverupdateprohibited"],
+      "fragment" => "serverUpdateProhibited",
+    ],
+    "Transfer Period" => [
+      "aliases" => ["transferperiod"],
+      "fragment" => "transferPeriod",
+    ],
   ];
 
   protected function getStatusRegExp()
@@ -867,7 +1011,7 @@ class Parser
     if (preg_match_all($this->getStatusRegExp(), $subject ?? $this->data, $matches)) {
       return array_map(
         function ($item) {
-          $pattern = "#^([a-z]+)\s+(?:(https?://\S+)|\((https?://[^\s\)]+)\))#i";
+          $pattern = "#^(.+)\s+(?:(https?://\S+)|\((https?://[^\s\)]+)\))#i";
 
           if (preg_match($pattern, $item, $matches)) {
             return ["text" => $matches[1], "url" => $matches[2] ?: $matches[3]];
@@ -900,14 +1044,26 @@ class Parser
     return [];
   }
 
-  private function setStatusUrl()
+  protected function formatStatus()
   {
-    array_walk($this->status, function (&$item) {
-      $key = str_replace(" ", "", strtolower($item["text"]));
-      if (isset(self::STATUS_MAP[$key]) && (!$item["url"] || $key === "active")) {
-        $value = self::STATUS_MAP[$key];
-        $item["text"] = $value;
-        $item["url"] = "https://icann.org/epp#$value";
+    $statusMap = [];
+
+    foreach (self::STATUS_MAP as $key => $value) {
+      foreach ($value["aliases"] as $alias) {
+        $statusMap[$alias] = $key;
+      }
+    }
+
+    array_walk($this->status, function (&$item) use ($statusMap) {
+      $key = str_replace([" ", "_"], "", strtolower($item["text"]));
+
+      if (isset($statusMap[$key])) {
+        $text = $statusMap[$key];
+
+        $item["text"] = $text;
+        if (!$item["url"] || $item["url"] === "https://icann.org/epp#active") {
+          $item["url"] = "https://icann.org/epp#" . self::STATUS_MAP[$text]["fragment"];
+        }
       }
     });
   }
@@ -946,7 +1102,7 @@ class Parser
   {
     if (preg_match_all($this->getNameServersRegExp(), $subject ?? $this->data, $matches)) {
       return array_map(
-        fn($item) => strtolower(explode(" ", $item)[0]),
+        fn($item) => strtolower(preg_split("/[ \t]+/", $item, 2)[0]),
         array_values(array_unique(array_filter(array_map("trim", $matches[1])))),
       );
     }
@@ -970,32 +1126,53 @@ class Parser
   }
 
   private const DNSSEC_SIGNED_KEYWORDS = [
-    // com, ac, ad, ai, at, au, aw, bg, ca, cn, fi, gd, in, me, my, nl, pl, ro, vu, za, zm
+    // com, ac, ad, af, ag, ai, at, au, aw, bg, bi, bj, bw, ca, cc, ci, cn, co, cx, dk, dm, fi, fm, fo
+    // ga, gd, gl, gs, gy, hk, hn, ht, id, ie, il, in, io, is, ke, ki, kw, ky, la, lb, lc, mc, md
+    // me, mg, mm, mn, mr, mu, my, nf, nl, no, nu, nz, pg, pl, pr, pw, ro, sa, sb, sc, se, sg, sh
+    // sn, ss, sx, th, tl, tn, tv, us, vc, vn, vu, za, zm
+    // xn--2scrj9c
     "dnssec",
+    // gr
+    "delegation signed",
+    // it
+    "signed",
+    // rs
+    "dnssec signed",
   ];
 
   private const DNSSEC_SIGNED_EXTRA_KEYWORDS = [
     // br
     "dsrecord",
-    // cr
+    // cr, cz, de, ee, tz
     "dnskey",
     // fr, pm, re, tf, wf, yt
     "key1-tag",
-    // iana
+    // jp
+    "signing key",
+    // kg, ua, iana
     "ds-rdata",
+    // lt, si
+    "ds",
+    // mx
+    "ds record",
   ];
 
   private const DNSSEC_SIGNED_VALUES = [
-    // com, ac, ad, ai, au, ca, cn, gd, in, me, my, vu, za, zm
+    // com, ac, ad, af, ag, ai, au, bi, bj, bw, ca, cc, ci, cn, co, cx, dm, fm, fo, ga, gd, gl, gs, gy
+    // hk, hn, ht, ie, in, io, ke, ki, kw, ky, la, lb, lc, me, mg, mm, mn, mr, mu, my, nf, nz, pg
+    // pr, pw, sa, sb, sc, sg, sh, sn, ss, sx, th, tl, tv, us, vc, vn, vu, za, zm
+    // xn--2scrj9c
     "signeddelegation",
-    // at, pl, uk
+    // at, id, il, mc, no, pl, tn, uk
     "signed",
-    // bg, ro
-    "active",
-    // aw, nl,
+    // aw, it, nl, rs
     "yes",
-    // fi
+    // bg, md, ro
+    "active",
+    // dk, fi, is, nu, se
     "signed delegation",
+    // gr
+    "true",
   ];
 
   protected function getDNSSECSignedRegExp()
@@ -1025,19 +1202,17 @@ class Parser
 
   protected const GRACE_PERIOD_KEYWORDS = [
     // com
-    "autoRenewPeriod",
+    "Auto Renew Period",
   ];
 
   protected const REDEMPTION_PERIOD_KEYWORDS = [
     // com
-    "redemptionPeriod",
+    "Redemption Period",
   ];
 
   protected const PENDING_DELETE_KEYWORDS = [
     // com
-    "pendingDelete",
-    // si
-    "pending_delete",
+    "Pending Delete",
     // mk, tz
     // xn--d1alf
     "to be deleted",
@@ -1066,6 +1241,8 @@ class Parser
   private const EMPTY_VALUES = [
     // whois.bf
     "http://registrarurl",
+    // *.gov.il
+    "n/a",
     // lv, whois.nu
     "-",
     // nc, sr

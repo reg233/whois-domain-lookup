@@ -26,11 +26,13 @@ class ParserRDAP extends Parser
 
     $this->getDomain();
 
-    $this->getRegistrar();
-    $this->getRegistrarWHOISServer();
-    $this->getRegistrarRDAPServer();
+    $this->getLinks();
 
-    $this->getDate();
+    $this->getRegistryWHOISServer();
+
+    $this->getRegistrar();
+
+    $this->getDates();
 
     $this->getStatus();
 
@@ -103,6 +105,38 @@ class ParserRDAP extends Parser
     if (!empty($this->json["ldhName"])) {
       // The ldhName of et extension ends with a dot
       $this->domain = idn_to_utf8(strtolower(rtrim($this->json["ldhName"], ".")));
+    }
+  }
+
+  protected function getLinks()
+  {
+    if (!isset($this->json["links"])) {
+      return;
+    }
+
+    foreach ($this->json["links"] as $link) {
+      $href = $link["href"] ?? "";
+      $rel = $link["rel"] ?? "";
+      $title = $link["title"] ?? "";
+
+      if ($href && $rel) {
+        if ($this->extension === "iana") {
+          if ($rel === "related" && $title === "Registration URL") {
+            $this->registryWebsite = $href;
+          } else if ($rel === "alternate" && $title === "RDAP Server") {
+            $this->registryRDAPServer = $href;
+          }
+        } else if ($rel === "related") {
+          $this->registrarRDAPServer = explode("/domain/", $href)[0];
+        }
+      }
+    }
+  }
+
+  protected function getRegistryWHOISServer()
+  {
+    if (!empty($this->json["port43"])) {
+      $this->registryWHOISServer = $this->json["port43"];
     }
   }
 
@@ -193,35 +227,7 @@ class ParserRDAP extends Parser
     }
   }
 
-  protected function getRegistrarWHOISServer()
-  {
-    if (!empty($this->json["port43"])) {
-      $this->registrarWHOISServer = $this->json["port43"];
-    }
-  }
-
-  protected function getRegistrarRDAPServer()
-  {
-    if (!isset($this->json["links"])) {
-      return;
-    }
-
-    $rel = $this->extension === "iana" ? "alternate" : "related";
-
-    foreach ($this->json["links"] as $link) {
-      if (isset($link["rel"]) && $link["rel"] === $rel && !empty($link["href"])) {
-        $href = $link["href"];
-        if ($rel === "related") {
-          $this->registrarRDAPServer = explode("/domain/", $href)[0];
-        } else {
-          $this->registrarRDAPServer = $href;
-        }
-        return;
-      }
-    }
-  }
-
-  private function formatURL($url)
+  private function formatURL(string $url)
   {
     if ($url) {
       return preg_match("#^https?://#i", $url) ? $url : "http://" . $url;
@@ -239,7 +245,7 @@ class ParserRDAP extends Parser
     "record expires",
   ];
 
-  protected function getDate()
+  protected function getDates()
   {
     if (empty($this->json["events"])) {
       return;
@@ -269,19 +275,11 @@ class ParserRDAP extends Parser
     }
 
     $this->status = array_map(
-      function ($item) {
-        $key = str_replace(" ", "", strtolower($item));
-
-        if (isset(self::STATUS_MAP[$key])) {
-          $value = self::STATUS_MAP[$key];
-
-          return ["text" => $value, "url" => "https://icann.org/epp#$value"];
-        }
-
-        return ["text" => $item, "url" => ""];
-      },
+      fn($item) => ["text" => $item, "url" => ""],
       array_values(array_unique($this->json["status"])),
     );
+
+    $this->formatStatus();
   }
 
   protected function getNameServers($subject = null)
@@ -299,7 +297,8 @@ class ParserRDAP extends Parser
   protected function getDNSSECSigned()
   {
     if (isset($this->json["secureDNS"]["delegationSigned"])) {
-      $this->dnssecSigned = $this->json["secureDNS"]["delegationSigned"];
+      // The delegationSigned of kg extension is a bool string
+      $this->dnssecSigned = filter_var($this->json["secureDNS"]["delegationSigned"], FILTER_VALIDATE_BOOL);
     }
   }
 }

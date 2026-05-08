@@ -16,7 +16,7 @@ class ParserIT extends Parser
 
   protected function getRegistrarRegExp()
   {
-    return $this->getBaseRegExp("registrar\n.+\n  name");
+    return $this->getBaseRegExp("registrar\n  organization");
   }
 
   protected function getRegistrarURLRegExp()

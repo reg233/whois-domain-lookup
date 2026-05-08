@@ -89,23 +89,22 @@ function getDataSource()
   return $dataSource;
 }
 
-function generateRegistrarServerHref($dataSource, $server)
+function generateServerHref($path, $query, $dataSource, $server)
 {
-  $parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
-
-  parse_str($parsedUrl["query"] ?? "", $queryParams);
+  parse_str($query, $queryParams);
 
   $queryParams[$dataSource] = 1;
   $queryParams["$dataSource-server"] = $server;
 
-  return $parsedUrl["path"] . "?" . http_build_query($queryParams);
+  return $path . "?" . http_build_query($queryParams);
 }
 
 checkPassword();
 
 $domain = cleanDomain();
-
 $dataSource = [];
+
+$isIANA = false;
 $whoisData = null;
 $rdapData = null;
 $parser = new Parser("");
@@ -117,12 +116,13 @@ if ($domain) {
   try {
     $lookup = new Lookup($domain, $dataSource);
     $domain = $lookup->domain;
+    $isIANA = $lookup->extension === "iana";
     $whoisData = $lookup->whoisData;
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
   } catch (Exception $e) {
     if ($e instanceof SyntaxError || $e instanceof UnableToResolveDomain) {
-      $error = "'$domain' is not a valid domain";
+      $error = "'$domain' is not a valid domain.";
     } else {
       $error = $e->getMessage();
     }
@@ -151,29 +151,63 @@ if ($domain) {
   }
 }
 
+$protocol = (($_SERVER["HTTPS"] ?? "") && $_SERVER["HTTPS"] !== "off") ? "https://" : "http://";
+$origin = $protocol . $_SERVER["HTTP_HOST"];
+
+$parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
+
+$path = $parsedUrl["path"] ?? "";
+$query = $parsedUrl["query"] ?? "";
+
+$requestUri = $path;
 $manifestHref = "manifest";
-if ($_SERVER["QUERY_STRING"] ?? "") {
-  $manifestHref .= "?" . htmlspecialchars($_SERVER["QUERY_STRING"], ENT_QUOTES, "UTF-8");
+
+if ($query) {
+  parse_str($query, $queryParams);
+
+  $filteredParams = array_intersect_key(
+    $queryParams,
+    array_flip(["domain", "whois", "rdap", "whois-server", "rdap-server"]),
+  );
+
+  $query = http_build_query($filteredParams);
+
+  $requestUri .= "?$query";
+  $manifestHref .= "?$query";
 }
 
-if (CLASSIC_UI) {
-  require_once __DIR__ . "/classic/index.php";
-  die;
-}
+$title = ($domain ? "$domain | " : "") . SITE_TITLE;
+$ogUrl = $origin . $requestUri;
+$ogImage = $origin . BASE . "public/images/og.png";
 ?>
 
 <!doctype html>
 <html lang="en-US">
 
 <head>
-  <base href="<?= BASE; ?>">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="<?= BASE; ?>">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#eef6ff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#050a1a" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="<?= SITE_DESCRIPTION ?>">
-  <meta name="keywords" content="<?= SITE_KEYWORDS ?>">
+  <link rel="manifest" href="<?= htmlspecialchars($manifestHref, ENT_QUOTES, "UTF-8"); ?>">
+  <title><?= $title; ?></title>
+  <meta name="description" content="<?= SITE_DESCRIPTION; ?>">
+  <link rel="canonical" href="<?= htmlspecialchars($ogUrl, ENT_QUOTES, "UTF-8"); ?>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<?= htmlspecialchars($ogUrl, ENT_QUOTES, "UTF-8"); ?>">
+  <meta property="og:title" content="<?= $title; ?>">
+  <meta property="og:description" content="<?= SITE_DESCRIPTION; ?>">
+  <meta property="og:image" content="<?= $ogImage; ?>">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="<?= SITE_TITLE; ?>">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?= $title; ?>">
+  <meta name="twitter:description" content="<?= SITE_DESCRIPTION; ?>">
+  <meta name="twitter:image" content="<?= $ogImage; ?>">
   <link rel="shortcut icon" href="public/favicon.ico">
   <link rel="icon" href="public/images/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="public/images/apple-icon-180.png">
@@ -257,8 +291,6 @@ if (CLASSIC_UI) {
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2208-1242.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1334-750.jpg" media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1136-640.jpg" media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-  <link rel="manifest" href="<?= $manifestHref; ?>">
-  <title><?= ($domain ? "$domain | " : "") . SITE_TITLE ?></title>
   <link rel="stylesheet" href="public/css/global.css">
   <link rel="stylesheet" href="public/css/index.css">
   <?php if ($rdapData): ?>
@@ -267,7 +299,7 @@ if (CLASSIC_UI) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&family=JetBrains+Mono&display=swap">
-  <?= CUSTOM_HEAD ?>
+  <?= CUSTOM_HEAD; ?>
 </head>
 
 <body>
@@ -290,7 +322,7 @@ if (CLASSIC_UI) {
           </button>
         </div>
         <div class="toggles">
-          <button class="toggle" id="toggle-whois" type="button" aria-active="<?= in_array("whois", $dataSource, true) ? "true" : "false" ?>" data-target-input="input-whois">
+          <button class="toggle" id="toggle-whois" type="button" aria-active="<?= in_array("whois", $dataSource, true) ? "true" : "false"; ?>">
             <div class="toggle-indicator">
               <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
                 <path d="m382-354 339-339q12-12 28-12t28 12q12 12 12 28.5T777-636L410-268q-12 12-28 12t-28-12L182-440q-12-12-11.5-28.5T183-497q12-12 28.5-12t28.5 12l142 143Z" />
@@ -298,7 +330,7 @@ if (CLASSIC_UI) {
             </div>
             <span>WHOIS</span>
           </button>
-          <button class="toggle" id="toggle-rdap" type="button" aria-active="<?= in_array("rdap", $dataSource, true) ? "true" : "false" ?>" data-target-input="input-rdap">
+          <button class="toggle" id="toggle-rdap" type="button" aria-active="<?= in_array("rdap", $dataSource, true) ? "true" : "false"; ?>">
             <div class="toggle-indicator">
               <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
                 <path d="m382-354 339-339q12-12 28-12t28 12q12 12 12 28.5T777-636L410-268q-12 12-28 12t-28-12L182-440q-12-12-11.5-28.5T183-497q12-12 28.5-12t28.5 12l142 143Z" />
@@ -311,8 +343,8 @@ if (CLASSIC_UI) {
           <span class="primary-button-label">Search</span>
           <span class="primary-button-loader" aria-hidden="true"></span>
         </button>
-        <input id="input-whois" name="whois" type="hidden" value="<?= in_array("whois", $dataSource, true) ? "1" : "0" ?>">
-        <input id="input-rdap" name="rdap" type="hidden" value="<?= in_array("rdap", $dataSource, true) ? "1" : "0" ?>">
+        <input id="input-whois" name="whois" type="hidden" value="<?= in_array("whois", $dataSource, true) ? "1" : "0"; ?>">
+        <input id="input-rdap" name="rdap" type="hidden" value="<?= in_array("rdap", $dataSource, true) ? "1" : "0"; ?>">
       </form>
     </header>
     <?php if ($domain): ?>
@@ -346,7 +378,7 @@ if (CLASSIC_UI) {
               </svg>
             </span>
             <span>
-              <a href="<?= ($lookup->extension === "iana" ? "https://en.wikipedia.org/wiki/." : "http://") . $domain; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $domain; ?></a> is registered.
+              <a href="<?= ($isIANA ? "https://en.wikipedia.org/wiki/." : "http://") . $domain; ?>" rel="nofollow noopener noreferrer" target="_blank"><?= $domain; ?></a><?= $parser->domain ? "" : " ❓"; ?> is registered.
             </span>
             <?php if (
               ($parser->createdAgoSeconds && $parser->createdAgoSeconds < 7 * 24 * 60 * 60) ||
@@ -384,6 +416,57 @@ if (CLASSIC_UI) {
             <span>&#39;<?= $domain; ?>&#39; is unregistered.</span>
           <?php endif; ?>
         </section>
+        <?php if ($parser->registryWebsite || $parser->registryWHOISServer || $parser->registryRDAPServer): ?>
+          <section class="card">
+            <p class="card-title">Registry</p>
+            <div class="card-items">
+              <?php if ($parser->registryWebsite): ?>
+                <div class="card-item">
+                  <div class="card-item-label">Website</div>
+                  <div class="card-item-value">
+                    <a href="<?= $parser->registryWebsite; ?>" rel="nofollow noopener noreferrer" target="_blank">
+                      <?= $parser->registryWebsite; ?>
+                    </a>
+                  </div>
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->registryWHOISServer): ?>
+                <div class="card-item">
+                  <div class="card-item-label">WHOIS Server</div>
+                  <div class="card-item-value">
+                    <?php if ($isIANA): ?>
+                      <?= $parser->registryWHOISServer; ?>
+                    <?php elseif (preg_match("#^https?://#i", $parser->registryWHOISServer)): ?>
+                      <a href="<?= $parser->registryWHOISServer; ?>" rel="nofollow noopener noreferrer" target="_blank">
+                        <?= $parser->registryWHOISServer; ?>
+                      </a>
+                    <?php else: ?>
+                      <a href="<?= generateServerHref($path, $query, "whois", $parser->registryWHOISServer); ?>">
+                        <?= $parser->registryWHOISServer; ?>
+                      </a>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              <?php endif; ?>
+              <?php if ($parser->registryRDAPServer): ?>
+                <div class="card-item">
+                  <div class="card-item-label">RDAP Server</div>
+                  <div class="card-item-value">
+                    <?php if ($isIANA): ?>
+                      <a href="<?= $parser->registryRDAPServer; ?>" rel="nofollow noopener noreferrer" target="_blank">
+                        <?= $parser->registryRDAPServer; ?>
+                      </a>
+                    <?php else: ?>
+                      <a href="<?= generateServerHref($path, $query, "rdap", $parser->registryRDAPServer); ?>">
+                        <?= $parser->registryRDAPServer; ?>
+                      </a>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              <?php endif; ?>
+            </div>
+          </section>
+        <?php endif; ?>
         <?php if ($parser->registrar || $parser->registrarIANAId || $parser->registrarWHOISServer || $parser->registrarRDAPServer): ?>
           <section class="card">
             <p class="card-title">Registrar</p>
@@ -416,14 +499,12 @@ if (CLASSIC_UI) {
                 <div class="card-item">
                   <div class="card-item-label">WHOIS Server</div>
                   <div class="card-item-value">
-                    <?php if ($lookup->extension === "iana"): ?>
-                      <?= $parser->registrarWHOISServer; ?>
-                    <?php elseif (preg_match("#^https?://#i", $parser->registrarWHOISServer)): ?>
+                    <?php if (preg_match("#^https?://#i", $parser->registrarWHOISServer)): ?>
                       <a href="<?= $parser->registrarWHOISServer; ?>" rel="nofollow noopener noreferrer" target="_blank">
                         <?= $parser->registrarWHOISServer; ?>
                       </a>
                     <?php else: ?>
-                      <a href="<?= generateRegistrarServerHref("whois", $parser->registrarWHOISServer); ?>">
+                      <a href="<?= generateServerHref($path, $query, "whois", $parser->registrarWHOISServer); ?>">
                         <?= $parser->registrarWHOISServer; ?>
                       </a>
                     <?php endif; ?>
@@ -434,15 +515,9 @@ if (CLASSIC_UI) {
                 <div class="card-item">
                   <div class="card-item-label">RDAP Server</div>
                   <div class="card-item-value">
-                    <?php if ($lookup->extension === "iana"): ?>
-                      <a href="<?= $parser->registrarRDAPServer; ?>" rel="nofollow noopener noreferrer" target="_blank">
-                        <?= $parser->registrarRDAPServer; ?>
-                      </a>
-                    <?php else: ?>
-                      <a href="<?= generateRegistrarServerHref("rdap", $parser->registrarRDAPServer); ?>">
-                        <?= $parser->registrarRDAPServer; ?>
-                      </a>
-                    <?php endif; ?>
+                    <a href="<?= generateServerHref($path, $query, "rdap", $parser->registrarRDAPServer); ?>">
+                      <?= $parser->registrarRDAPServer; ?>
+                    </a>
                   </div>
                 </div>
               <?php endif; ?>
@@ -540,7 +615,7 @@ if (CLASSIC_UI) {
             </div>
           </section>
         <?php endif; ?>
-        <?php if ($parser->status || $parser->nameServers): ?>
+        <?php if ($parser->status || $parser->nameServers || $parser->dnssecSigned !== null): ?>
           <section class="card">
             <p class="card-title">Status and DNS</p>
             <div class="card-items">
@@ -647,8 +722,8 @@ if (CLASSIC_UI) {
 
           e.preventDefault();
 
+          domainElement.select();
           if (document.queryCommandSupported("insertText")) {
-            domainElement.select();
             document.execCommand("insertText", false, hostname);
           } else {
             const end = domainElement.value.length;
@@ -673,20 +748,21 @@ if (CLASSIC_UI) {
         }
       });
 
-      const toggles = [
-        document.getElementById("toggle-whois"),
-        document.getElementById("toggle-rdap"),
-      ];
+      const toggleWHOIS = document.getElementById("toggle-whois");
+      const toggleRDAP = document.getElementById("toggle-rdap");
+      const inputWHOIS = document.getElementById("input-whois");
+      const inputRDAP = document.getElementById("input-rdap");
 
-      toggles.forEach((toggle) => {
+      const toggles = [toggleWHOIS, toggleRDAP];
+      const inputs = [inputWHOIS, inputRDAP];
+
+      toggles.forEach((toggle, index) => {
         toggle.addEventListener("click", () => {
           const active = toggle.getAttribute("aria-active") === "true";
           const nextActive = `${!active}`;
 
           toggle.setAttribute("aria-active", nextActive);
-
-          const targetInput = document.getElementById(toggle.dataset.targetInput);
-          targetInput.value = nextActive === "true" ? "1" : "0";
+          inputs[index].value = nextActive === "true" ? "1" : "0";
         });
       });
 
@@ -700,23 +776,23 @@ if (CLASSIC_UI) {
         const whoisValue = localStorage.getItem("toggle-whois") || "0";
         const rdapValue = localStorage.getItem("toggle-rdap") || "0";
 
-        toggles.forEach((toggle) => {
-          const targetInput = document.getElementById(toggle.dataset.targetInput);
-
+        toggles.forEach((toggle, index) => {
           if (!+whoisValue && !+rdapValue) {
             toggle.setAttribute("aria-active", "true");
-            targetInput.value = "1";
+            inputs[index].value = "1";
           } else {
             const active = `${!!+localStorage.getItem(toggle.id)}`;
 
             toggle.setAttribute("aria-active", active);
-            targetInput.value = active === "true" ? "1" : "0";
+            inputs[index].value = active === "true" ? "1" : "0";
           }
         });
       }
 
       const form = document.getElementById("form");
       const searchButton = document.getElementById("search-button");
+
+      const oldFormData = Object.fromEntries(new FormData(form).entries());
 
       form.addEventListener("submit", () => {
         searchButton.disabled = true;
@@ -725,8 +801,54 @@ if (CLASSIC_UI) {
 
       window.addEventListener("pageshow", (e) => {
         if (e.persisted) {
-          searchButton.disabled = false;
-          searchButton.dataset.loading = "false";
+          const {
+            domain,
+            whois,
+            rdap
+          } = oldFormData;
+
+          if (domainElement.value !== domain) {
+            domainElement.focus();
+            domainElement.select();
+
+            if (domain) {
+              if (document.queryCommandSupported("insertText")) {
+                document.execCommand("insertText", false, domain);
+              } else {
+                const end = domainElement.value.length;
+                domainElement.setRangeText(domain, 0, end, "end");
+                domainElement.dispatchEvent(new Event("input", {
+                  bubbles: true,
+                }));
+              }
+            } else {
+              if (document.queryCommandSupported("delete")) {
+                document.execCommand("delete", false);
+              } else {
+                domainElement.setRangeText("");
+                domainElement.dispatchEvent(new Event("input", {
+                  bubbles: true,
+                }));
+              }
+            }
+
+            domainElement.blur();
+          }
+
+          if (inputWHOIS.value !== whois) {
+            toggleWHOIS.setAttribute("aria-active", `${whois === "1"}`);
+            inputWHOIS.value = whois;
+          }
+
+          if (inputRDAP.value !== rdap) {
+            toggleRDAP.setAttribute("aria-active", `${rdap === "1"}`);
+            inputRDAP.value = rdap;
+          }
+
+          if (searchButton.disabled === true) {
+            searchButton.disabled = false;
+            searchButton.dataset.loading = "false";
+          }
         }
       });
 
@@ -941,7 +1063,7 @@ if (CLASSIC_UI) {
               rel: "nofollow noopener noreferrer",
               target: "_blank",
               validate: {
-                url: (value) => /^https?:\/\//.test(value),
+                url: (value) => /^https?:\/\//i.test(value),
               },
             });
           }
@@ -957,7 +1079,7 @@ if (CLASSIC_UI) {
       });
     </script>
   <?php endif; ?>
-  <?= CUSTOM_SCRIPT ?>
+  <?= CUSTOM_SCRIPT; ?>
 </body>
 
 </html>
