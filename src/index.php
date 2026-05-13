@@ -1066,7 +1066,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
                 dataElement.innerHTML = innerHTML;
               }, Math.max(0, 500 - (Date.now() - startTime)));
             } catch (error) {
-              if (!error.name === "AbortError") {
+              if (error.name !== "AbortError") {
                 timeoutId = setTimeout(() => {
                   multiStatus.dataset.statusType = "error";
                 }, Math.max(0, 500 - (Date.now() - startTime)));
