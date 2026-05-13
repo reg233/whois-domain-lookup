@@ -31,7 +31,9 @@
   </tr>
 </table>
 
-[在线体验](https://whois.233333.best)
+[在线体验1](https://whois.233333.best)
+
+[在线体验2](https://whois1.233333.best)
 
 ## 特性
 
@@ -109,6 +111,10 @@ server {
 
   location = /manifest {
     rewrite ^ /src/manifest.php?$args last;
+  }
+
+  location = /dns-records {
+    rewrite ^ /src/dns-records.php?$args last;
   }
 
   location ~ \.php$ {

@@ -341,7 +341,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
         </div>
         <button class="primary-button" id="search-button" data-loading="false">
           <span class="primary-button-label">Search</span>
-          <span class="primary-button-loader" aria-hidden="true"></span>
+          <span class="loader primary-button-loader" aria-hidden="true"></span>
         </button>
         <input id="input-whois" name="whois" type="hidden" value="<?= in_array("whois", $dataSource, true) ? "1" : "0"; ?>">
         <input id="input-rdap" name="rdap" type="hidden" value="<?= in_array("rdap", $dataSource, true) ? "1" : "0"; ?>">
@@ -615,7 +615,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
             </div>
           </section>
         <?php endif; ?>
-        <?php if ($parser->status || $parser->nameServers || $parser->dnssecSigned !== null): ?>
+        <?php if ($parser->registered): ?>
           <section class="card">
             <p class="card-title">Status and DNS</p>
             <div class="card-items">
@@ -659,6 +659,12 @@ $ogImage = $origin . BASE . "public/images/og.png";
                   </div>
                 </div>
               <?php endif; ?>
+              <div class="card-item">
+                <div class="card-item-label">DNS Records</div>
+                <div class="card-item-value">
+                  <button class="link-button" id="dns-records-view">View</button>
+                </div>
+              </div>
             </div>
           </section>
         <?php endif; ?>
@@ -699,6 +705,27 @@ $ogImage = $origin . BASE . "public/images/og.png";
       <path d="M200-760q-17 0-28.5-11.5T160-800q0-17 11.5-28.5T200-840h560q17 0 28.5 11.5T800-800q0 17-11.5 28.5T760-760H200Zm280 640q-17 0-28.5-11.5T440-160v-368l-76 76q-11 11-28 11t-28-11q-11-11-11-28t11-28l144-144q6-6 13-8.5t15-2.5q8 0 15 2.5t13 8.5l144 144q11 11 11 28t-11 28q-11 11-28 11t-28-11l-76-76v368q0 17-11.5 28.5T480-120Z" />
     </svg>
   </button>
+  <dialog id="dns-records-dialog" aria-labelledby="dns-records-dialog-title">
+    <div class="dialog-head">
+      <h2 class="dialog-title" id="dns-records-dialog-title">DNS Records</h2>
+      <button class="dialog-close" aria-label="Close">
+        <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+          <path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z" />
+        </svg>
+      </button>
+    </div>
+    <div class="dialog-body multi-status" data-status-type="loading">
+      <div class="multi-status-container">
+        <div class="dns-records-data" id="dns-records-data"></div>
+      </div>
+      <div class="multi-status-empty">No DNS records found for &#39;<?= $domain; ?>&#39;.</div>
+      <div class="multi-status-error">Failed to fetch DNS records.</div>
+      <div class="multi-status-loading">
+        <span class="loader" aria-hidden="true"></span>
+        <span>Loading DNS records...</span>
+      </div>
+    </div>
+  </dialog>
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const domainElement = document.getElementById("domain");
@@ -947,6 +974,108 @@ $ogImage = $origin . BASE . "public/images/og.png";
         updateDaysElementText("expiresIn");
         updateDaysElementText("updatedAgo");
         updateDaysElementText("availableIn");
+
+        const setupDNSRecords = () => {
+          const view = document.getElementById("dns-records-view");
+          const dialog = document.getElementById("dns-records-dialog");
+          const dialogClose = dialog.querySelector(".dialog-close");
+          const multiStatus = dialog.querySelector(".multi-status");
+          const dataElement = document.getElementById("dns-records-data");
+
+          if (!view) {
+            return;
+          }
+
+          view.addEventListener("click", () => {
+            dialog.showModal();
+            getData();
+          });
+          dialog.addEventListener("close", () => {
+            controller.abort();
+            if (timeoutId) {
+              clearTimeout(timeoutId);
+              timeoutId = undefined;
+            }
+          });
+          dialogClose.addEventListener("click", () => {
+            dialog.close();
+          });
+
+          let controller = new AbortController();
+          let timeoutId;
+
+          const getData = async () => {
+            multiStatus.dataset.statusType = "loading";
+
+            if (controller.abort) {
+              controller = new AbortController();
+            }
+            if (timeoutId) {
+              clearTimeout(timeoutId);
+              timeoutId = undefined;
+            }
+
+            const startTime = Date.now();
+
+            try {
+              const response = await fetch("dns-records?domain=<?= $domain; ?>", {
+                signal: controller.signal
+              });
+
+              if (!response.ok) {
+                throw new Error();
+              }
+
+              const data = await response.json();
+
+              let innerHTML = "";
+
+              for (const type in data) {
+                const records = data[type];
+
+                innerHTML += `<p class="dns-records-type">${type}</p>`;
+
+                innerHTML += `<table class="dns-records-table" tabindex="0">`;
+
+                innerHTML += "<thead><tr><th>#</th>";
+                const keys = Object.keys(records[0]);
+                keys.forEach((key) => {
+                  innerHTML += `<th>${key}</th>`;
+                });
+                innerHTML += "</tr></thead>";
+
+                innerHTML += "<tbody>";
+                records.forEach((record, index) => {
+                  innerHTML += `<tr><td>${index + 1}</td>`;
+                  keys.forEach((key) => {
+                    let child = record[key];
+                    if ((type === "A" || type === "AAAA") && key === "value") {
+                      child = `<a href="https://ipinfo.io/${child}" rel="nofollow noopener noreferrer" target="_blank">${child}</a>`;
+                    }
+                    innerHTML += `<td>${child}</td>`;
+                  });
+                  innerHTML += `</tr>`;
+                });
+                innerHTML += "</tbody>";
+
+                innerHTML += "</table>";
+              }
+
+              timeoutId = setTimeout(() => {
+                multiStatus.dataset.statusType = innerHTML ? "" : "empty";
+                dataElement.innerHTML = innerHTML;
+              }, Math.max(0, 500 - (Date.now() - startTime)));
+            } catch (error) {
+              if (!error.name === "AbortError") {
+                timeoutId = setTimeout(() => {
+                  multiStatus.dataset.statusType = "error";
+                }, Math.max(0, 500 - (Date.now() - startTime)));
+              }
+            }
+          };
+        };
+
+        setupDNSRecords();
 
         const cardRawData = document.getElementById("card-raw-data");
         const rawDataHead = document.getElementById("raw-data-head");

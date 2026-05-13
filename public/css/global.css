@@ -3,6 +3,7 @@
   --border-back-to-top: #86b8f0;
   --border-card: #007fff26;
   --border-input: #007fff33;
+  --border-table: #cce5ff;
   --brand-primary: #007fff;
   --elevation-back-to-top: 0 10px 24px #b5cde8;
   --elevation-card: 0 12px 30px #1d3b6b1a;
@@ -45,12 +46,17 @@
     #0079f2 0%,
     #49a9f2 100%
   );
+  --surface-primary-button-disabled: linear-gradient(
+    135deg,
+    #60afff 0%,
+    #90cfff 100%
+  );
   --surface-primary-button-hover: linear-gradient(
     135deg,
     #0086ff 0%,
     #50bbff 100%
   );
-  --surface-raw-data-head: #f2f8ff;
+  --surface-raw-data-head: #eef6ff;
   --surface-toggle-active: #007fff2e;
   --surface-toggle-hover: #007fff1a;
   --surface-toggle-indicator: #007fff26;
@@ -72,6 +78,7 @@
     --border-back-to-top: #5f89c1;
     --border-card: #7fb0ff42;
     --border-input: #7fb0ff59;
+    --border-table: #344b78;
     --brand-primary: #007fff;
     --elevation-back-to-top: 0 10px 24px #020918;
     --elevation-card: 0 14px 36px #00000052;
@@ -114,12 +121,17 @@
       #0079f2 0%,
       #61a9f2 100%
     );
+    --surface-primary-button-disabled: linear-gradient(
+      135deg,
+      #004f9f 0%,
+      #406f9f 100%
+    );
     --surface-primary-button-hover: linear-gradient(
       135deg,
       #0086ff 0%,
       #6bbcff 100%
     );
-    --surface-raw-data-head: #070e20;
+    --surface-raw-data-head: #050a1a;
     --surface-toggle-active: #66b2ff36;
     --surface-toggle-hover: #66b2ff24;
     --surface-toggle-indicator: #66b2ff38;
@@ -138,6 +150,20 @@
 
 * {
   box-sizing: border-box;
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+}
+
+*:focus {
+  outline-color: var(--focus-ring);
+}
+
+*:focus:not(:focus-visible) {
+  outline-color: transparent;
+}
+
+*:focus-visible {
+  outline-color: var(--focus-ring);
 }
 
 html {
@@ -186,8 +212,6 @@ h1 {
 
 a {
   color: var(--text-link);
-  outline: 3px solid transparent;
-  outline-offset: 3px;
   text-decoration: underline;
   text-decoration-color: var(--text-link-underline);
   text-underline-offset: 0.25rem;
@@ -200,18 +224,6 @@ a:hover {
   text-decoration-color: var(--text-link-underline-hover);
 }
 
-a:focus {
-  outline-color: var(--focus-ring);
-}
-
-a:focus:not(:focus-visible) {
-  outline-color: transparent;
-}
-
-a:focus-visible {
-  outline-color: var(--focus-ring);
-}
-
 button {
   align-items: center;
   background-color: transparent;
@@ -221,22 +233,8 @@ button {
   display: inline-flex;
   font: inherit;
   justify-content: center;
-  outline: 3px solid transparent;
-  outline-offset: 3px;
   padding: 0;
   transition: all 233ms ease;
-}
-
-button:focus {
-  outline-color: var(--focus-ring);
-}
-
-button:focus:not(:focus-visible) {
-  outline-color: transparent;
-}
-
-button:focus-visible {
-  outline-color: var(--focus-ring);
 }
 
 footer {
@@ -256,8 +254,6 @@ footer {
   border-radius: 999px;
   color: inherit;
   font: inherit;
-  outline: 3px solid transparent;
-  outline-offset: 3px;
   padding: 0.75rem 2.5rem 0.75rem 1.5rem;
   transition: all 233ms ease;
   width: 100%;
@@ -265,18 +261,6 @@ footer {
 
 .input::placeholder {
   color: var(--text-muted);
-}
-
-.input:focus {
-  outline-color: var(--focus-ring);
-}
-
-.input:focus:not(:focus-visible) {
-  outline-color: transparent;
-}
-
-.input:focus-visible {
-  outline-color: var(--focus-ring);
 }
 
 .input-clear {
@@ -309,27 +293,24 @@ footer {
 }
 
 .primary-button:disabled {
+  background: var(--surface-primary-button-disabled);
   cursor: not-allowed;
 }
 
 .primary-button-label {
-  opacity: 1;
   visibility: visible;
 }
 
-.primary-button-loader {
-  animation: primary-button-rotation 1s linear infinite;
-  border: 2.5px solid var(--text-primary-button);
-  border-bottom-color: transparent;
+.loader {
+  animation: loader-rotation 1s linear infinite;
+  border: 2.5px solid var(--brand-primary);
+  border-bottom-color: transparent !important;
   border-radius: 50%;
-  height: 1.25rem;
-  opacity: 0;
-  position: absolute;
-  visibility: hidden;
-  width: 1.25rem;
+  height: 1.25em;
+  width: 1.25em;
 }
 
-@keyframes primary-button-rotation {
+@keyframes loader-rotation {
   0% {
     transform: rotate(0deg);
   }
@@ -339,13 +320,17 @@ footer {
   }
 }
 
+.primary-button-loader {
+  border-color: var(--text-primary-button);
+  position: absolute;
+  visibility: hidden;
+}
+
 .primary-button[data-loading="true"] .primary-button-label {
-  opacity: 0;
   visibility: hidden;
 }
 
 .primary-button[data-loading="true"] .primary-button-loader {
-  opacity: 1;
   visibility: visible;
 }
 

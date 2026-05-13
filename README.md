@@ -31,7 +31,9 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
   </tr>
 </table>
 
-[Live Demo](https://whois.233333.best)
+[Live Demo 1](https://whois.233333.best)
+
+[Live Demo 2](https://whois1.233333.best)
 
 ## Features
 
@@ -109,6 +111,10 @@ server {
 
   location = /manifest {
     rewrite ^ /src/manifest.php?$args last;
+  }
+
+  location = /dns-records {
+    rewrite ^ /src/dns-records.php?$args last;
   }
 
   location ~ \.php$ {

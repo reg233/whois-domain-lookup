@@ -390,6 +390,8 @@ class Parser
   private const REGISTRY_WHOIS_SERVER = [
     // bf, bi, cd, ps
     "registry whois server",
+    // lu
+    "whois-web",
     // pl
     "whois database responses",
     // iana
