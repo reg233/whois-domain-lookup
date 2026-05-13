@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);
