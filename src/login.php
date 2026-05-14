@@ -56,6 +56,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="<?= BASE; ?>">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#eef6ff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#050a1a" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="manifest">
@@ -185,7 +186,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
         </div>
         <button class="primary-button" id="sign-in-button" type="submit" data-loading="false">
           <span class="primary-button-label">Sign in</span>
-          <span class="primary-button-loader" aria-hidden="true"></span>
+          <span class="loader primary-button-loader" aria-hidden="true"></span>
         </button>
       </form>
     </main>
@@ -226,7 +227,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
       });
 
       window.addEventListener("pageshow", (e) => {
-        if (e.persisted) {
+        if (e.persisted && signInButton.disabled === true) {
           signInButton.disabled = false;
           signInButton.dataset.loading = "false";
         }

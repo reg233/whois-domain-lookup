@@ -189,6 +189,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="<?= BASE; ?>">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#eef6ff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#050a1a" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="<?= htmlspecialchars($manifestHref, ENT_QUOTES, "UTF-8"); ?>">
@@ -339,7 +340,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
             <span>RDAP</span>
           </button>
         </div>
-        <button class="primary-button" id="search-button" data-loading="false">
+        <button class="primary-button" id="search-button" type="submit" data-loading="false">
           <span class="primary-button-label">Search</span>
           <span class="loader primary-button-loader" aria-hidden="true"></span>
         </button>
