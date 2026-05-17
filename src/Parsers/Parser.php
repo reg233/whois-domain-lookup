@@ -388,7 +388,7 @@ class Parser
   }
 
   private const REGISTRY_WHOIS_SERVER = [
-    // bf, bi, cd, ps
+    // bf, bi, cd, gh, ps
     "registry whois server",
     // lu
     "whois-web",
@@ -415,11 +415,11 @@ class Parser
   private const REGISTRAR_KEYWORDS = [
     // com, ac, ad, af, ag, ai, am, ar, as, at, ax, bb, bf, bh, bi, bj, bm, bn, bt, bw, by, bz, ca
     // cc, cd, ci, cm, co, cr, cv, cx, cz, dk, dm, do, dz, ec, et, fi, fj, fm, fo, fr, ga, gd, ge
-    // gg, gi, gl, gm, gn, gs, gy, hm, hn, hr, ht, hu, id, ie, in, io, iq, je, ke, ki, kn, kw, ky
-    // la, lb, lc, ls, lt, ly, ma, mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my, mz, nc
-    // nf, nu, nz, om, pg, ph, pm, pr, ps, pw, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh, si, sn
-    // so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn, vu, wf
-    // ws, ye, yt, za, zm
+    // gg, gh, gi, gl, gm, gn, gs, gy, hm, hn, hr, ht, hu, id, ie, in, io, iq, je, ke, ki, kn, kw
+    // ky, la, lb, lc, ls, lt, ly, ma, mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my, mz
+    // nc, nf, nu, nz, om, pg, ph, pm, pr, ps, pw, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh, si
+    // sn, so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn, vu
+    // wf, ws, ye, yt, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90a3ac, xn--90ais
     // xn--clchc0ea0b2g2a9gcd, xn--d1alf, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
     // xn--h2brj9c8c, xn--j1amh, xn--lgbbat1ad8j, xn--mgb9awbf, xn--mgbbh1a, xn--mgbbh1a71e
@@ -429,7 +429,7 @@ class Parser
     // ae, au, cl, hk, il, qa
     // xn--4dbrk0ce, xn--j6w193g, xn--mgbaam7a8h, xn--wgbl6a
     "registrar name",
-    // cn, gh, pe, sl, sr, sy, tc
+    // cn, pe, sl, sr, sy, tc
     // xn--fiqs8s, xn--fiqz9s, xn--ogbpf8fl
     "sponsoring registrar",
     // lu
@@ -463,12 +463,12 @@ class Parser
     // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
     // xn--xkc2dl3a5ee0h
     "registrar url",
-    // gh, sr, tc
-    "sponsoring registrar url",
     // lt
     "registrar website",
     // lu, si
     "registrar-url",
+    // sr, tc
+    "sponsoring registrar url",
     // tw
     // xn--kprw13d, xn--kpry57d
     "registration service url",
@@ -499,7 +499,7 @@ class Parser
     // ie, in, io, iq, ki, kw, ky, la, lc, me, mm, mn, mu, my, nf, om, pr, ps, pw, sb, sc, sd, sh
     // so, sx, to, tv, us, vc, vg, vu, ws, za
     "registrar iana id",
-    // gh, sy
+    // sy
     "sponsoring registrar iana id",
   ];
 
@@ -527,7 +527,7 @@ class Parser
     // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--mgb9awbf, xn--mgbtx2b
     // xn--q7ce6a
     "registrar whois server",
-    // bd, gh, sl, sr, sy, tc, uz, ws
+    // bd, sl, sr, sy, tc, uz, ws
     // xn--ogbpf8fl
     "whois server",
     // mx

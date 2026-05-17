@@ -1,0 +1,35 @@
+[data-tippy-root] {
+  max-width: calc(100vw - 1rem);
+}
+
+.tippy-box {
+  background-color: #333;
+  border-radius: 0.25rem;
+  color: #fff;
+  font-size: 0.875rem;
+  outline: none;
+  transition-property: opacity, transform, visibility;
+  white-space: normal;
+}
+
+.tippy-box[data-theme~="dropdown"] {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-card);
+  border-radius: 0.5rem;
+  box-shadow: var(--elevation-card);
+  color: inherit;
+  font-size: inherit;
+}
+
+.tippy-box[data-animation="fade"][data-state="hidden"] {
+  opacity: 0;
+}
+
+.tippy-content {
+  padding: 0.25rem 0.5rem;
+  position: relative;
+}
+
+.tippy-box[data-theme~="dropdown"] .tippy-content {
+  padding: 0.25rem 0.25rem;
+}

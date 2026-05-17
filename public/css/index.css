@@ -1,6 +1,9 @@
 .root {
   max-width: 67rem;
-  padding: 4rem 1.5rem;
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom));
+  padding-left: calc(1.5rem + env(safe-area-inset-left));
+  padding-right: calc(1.5rem + env(safe-area-inset-right));
+  padding-top: calc(1rem + env(safe-area-inset-top));
 }
 
 header {
@@ -253,13 +256,22 @@ main {
   text-decoration-color: var(--text-link-underline-hover);
 }
 
+.link-button:active {
+  text-decoration-style: dashed;
+}
+
 dialog {
   background-color: var(--surface-card);
   border: 1px solid var(--border-card);
   border-radius: 1rem;
   box-shadow: var(--elevation-card);
-  max-height: calc(100% - 8rem);
-  width: min(48rem, calc(100% - 3rem));
+  max-height: calc(
+    100% - 6rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+  );
+  width: min(
+    48rem,
+    calc(100% - 3rem - env(safe-area-inset-left) - env(safe-area-inset-right))
+  );
   padding: 0;
 }
 
@@ -269,7 +281,7 @@ dialog[open] {
 }
 
 dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #00000080;
 }
 
 .dialog-head {
@@ -292,7 +304,6 @@ dialog::backdrop {
 }
 
 .dialog-body {
-  outline-offset: -3px;
   overflow: auto;
   padding: 1rem;
 }
@@ -304,6 +315,20 @@ dialog::backdrop {
   display: none;
 }
 
+.multi-status .multi-status-empty,
+.multi-status .multi-status-error,
+.multi-status .multi-status-loading {
+  align-items: center;
+  color: var(--text-secondary);
+  gap: 0.5rem;
+  justify-content: center;
+  min-height: 10rem;
+}
+
+.multi-status .multi-status-error {
+  color: var(--feedback-error-fg);
+}
+
 .multi-status[data-status-type=""] .multi-status-container {
   display: block;
 }
@@ -311,12 +336,7 @@ dialog::backdrop {
 .multi-status[data-status-type="empty"] .multi-status-empty,
 .multi-status[data-status-type="error"] .multi-status-error,
 .multi-status[data-status-type="loading"] .multi-status-loading {
-  align-items: center;
-  color: var(--text-secondary);
   display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  min-height: 10rem;
 }
 
 .dns-records-data {
@@ -479,14 +499,14 @@ code {
   background-color: var(--surface-back-to-top);
   border: 1px solid var(--border-back-to-top);
   border-radius: 50%;
-  bottom: 3rem;
+  bottom: calc(3rem + env(safe-area-inset-bottom));
   box-shadow: var(--elevation-back-to-top);
   color: var(--text-secondary);
   font-size: 1.5rem;
   opacity: 0;
   padding: 0.5rem;
   position: fixed;
-  right: 1.5rem;
+  right: calc(1.5rem + env(safe-area-inset-right));
   visibility: hidden;
   z-index: 999;
 }
@@ -501,10 +521,6 @@ code {
 }
 
 @media (max-width: 36rem) {
-  .root {
-    padding: 3rem 1.5rem;
-  }
-
   h1 {
     text-align: center;
   }
@@ -516,10 +532,6 @@ code {
 
   .input-box {
     grid-column: auto;
-  }
-
-  dialog {
-    max-height: calc(100% - 6rem);
   }
 }
 

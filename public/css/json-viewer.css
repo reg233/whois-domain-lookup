@@ -1,4 +1,4 @@
-:root {
+html {
   --syntax-punctuation: #6282ab;
   --syntax-property: #1f3d68;
   --syntax-boolean: #945f00;
@@ -7,15 +7,13 @@
   --syntax-string: #007a63;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --syntax-punctuation: #9ab4d8;
-    --syntax-property: #d6e4ff;
-    --syntax-boolean: #ffd98d;
-    --syntax-null: #9dd0ff;
-    --syntax-number: #ff9bb2;
-    --syntax-string: #7cf0d0;
-  }
+html[data-theme="dark"] {
+  --syntax-punctuation: #9ab4d8;
+  --syntax-property: #d6e4ff;
+  --syntax-boolean: #ffd98d;
+  --syntax-null: #9dd0ff;
+  --syntax-number: #ff9bb2;
+  --syntax-string: #7cf0d0;
 }
 
 .json-viewer .collapser {
