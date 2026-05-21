@@ -35,7 +35,7 @@ html {
   --surface-copy-hover: #bddbff;
   --surface-input: #f9fbff;
   --surface-link-hover: #007fff14;
-  --surface-page: linear-gradient(160deg, var(--surface-page-start), #fdf4ea);
+  --surface-page-end: #fdf4ea;
   --surface-page-start: #eef6ff;
   --surface-primary-button: linear-gradient(
     135deg,
@@ -98,7 +98,7 @@ html[data-theme="dark"] {
   --surface-copy-hover: #1a3765;
   --surface-input: #070d21;
   --surface-link-hover: #66b2ff1a;
-  --surface-page: linear-gradient(170deg, var(--surface-page-start), #0b1230);
+  --surface-page-end: #0b1230;
   --surface-page-start: #050a1a;
   --surface-primary-button: linear-gradient(
     135deg,
@@ -151,6 +151,7 @@ html {
 }
 
 body {
+  background-color: var(--surface-page-end);
   color: var(--text-primary);
   font-family:
     "-apple-system", BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
@@ -160,7 +161,11 @@ body {
 }
 
 body::before {
-  background: var(--surface-page);
+  background: linear-gradient(
+    to bottom,
+    var(--surface-page-start),
+    var(--surface-page-end)
+  );
   bottom: 0;
   content: "";
   left: 0;

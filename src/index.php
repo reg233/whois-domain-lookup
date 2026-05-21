@@ -19,7 +19,7 @@ spl_autoload_register(function ($class) {
 use Pdp\SyntaxError;
 use Pdp\UnableToResolveDomain;
 
-function checkPassword(bool $echoJSON)
+function checkPassword($echoJSON)
 {
   if (!SITE_PASSWORD) {
     return;
