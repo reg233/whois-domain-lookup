@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-04-18T17:52:34Z",
+  "publication": "2026-05-20T18:00:01Z",
   "services": [
     [
       [
@@ -118,6 +118,14 @@
       ],
       [
         "https://rdap-merck.dns.business/rdap/"
+      ]
+    ],
+    [
+      [
+        "alibaba"
+      ],
+      [
+        "https://rdap.aliregistry.cn/rdap/"
       ]
     ],
     [
@@ -1028,7 +1036,6 @@
         "airbus",
         "airforce",
         "akdn",
-        "alibaba",
         "alipay",
         "allstate",
         "aol",
