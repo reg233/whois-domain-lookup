@@ -167,10 +167,10 @@ main {
   color: var(--feedback-warning-fg);
 }
 
-.tag-blue {
-  background-color: var(--feedback-info-bg);
-  border-color: var(--feedback-info-border);
-  color: var(--feedback-info-fg);
+.tag-gray {
+  background-color: var(--feedback-neutral-bg);
+  border-color: var(--feedback-neutral-border);
+  color: var(--feedback-neutral-fg);
 }
 
 .card {
@@ -265,6 +265,7 @@ dialog {
   border: 1px solid var(--border-card);
   border-radius: 1rem;
   box-shadow: var(--elevation-card);
+  color: inherit;
   max-height: calc(
     100% - 6rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)
   );
@@ -308,6 +309,49 @@ dialog::backdrop {
   padding: 1rem;
 }
 
+.subdomain-input-box {
+  border: 1px solid var(--border-card);
+  border-radius: 999px;
+  cursor: text;
+  display: flex;
+  min-width: 0;
+  padding: 0.75rem 1.5rem;
+  transition: all 233ms ease;
+}
+
+.subdomain-input-box:focus-within {
+  outline-color: var(--focus-ring);
+}
+
+.subdomain-input-box input {
+  background-color: transparent;
+  border: none;
+  color: inherit;
+  flex: 1;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+  text-align: end;
+}
+
+.subdomain-input-box span {
+  color: var(--text-secondary);
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subdomain-input-box span::before {
+  content: ".";
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+#dns-records-dialog form + .multi-status {
+  margin-top: 1rem;
+}
+
 .multi-status .multi-status-container,
 .multi-status .multi-status-empty,
 .multi-status .multi-status-error,
@@ -320,9 +364,9 @@ dialog::backdrop {
 .multi-status .multi-status-loading {
   align-items: center;
   color: var(--text-secondary);
-  gap: 0.5rem;
   justify-content: center;
   min-height: 10rem;
+  text-align: center;
 }
 
 .multi-status .multi-status-error {
@@ -339,25 +383,30 @@ dialog::backdrop {
   display: flex;
 }
 
-.dns-records-data {
+.dns-records-result {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.dns-records-type {
+.dns-records-result-title {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.dns-records-result-type {
   font-size: 0.875rem;
   font-weight: 700;
   margin: 0;
 }
 
-.dns-records-table {
+.dns-records-result-table {
   border-collapse: collapse;
   display: block;
   overflow-x: auto;
 }
 
-.dns-records-table th {
+.dns-records-result-table th {
   color: var(--text-muted);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
@@ -365,12 +414,12 @@ dialog::backdrop {
   text-transform: uppercase;
 }
 
-.dns-records-table td {
+.dns-records-result-table td {
   color: var(--text-secondary);
 }
 
-.dns-records-table th,
-.dns-records-table td {
+.dns-records-result-table th,
+.dns-records-result-table td {
   border: 1px solid var(--border-table);
   padding: 0.5rem 1rem;
   white-space: nowrap;
@@ -535,7 +584,7 @@ code {
   }
 }
 
-@media not screen and (hover: none) and (pointer: coarse) {
+@media (hover: hover) and (pointer: fine) {
   html,
   body {
     height: 100%;

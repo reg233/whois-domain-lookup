@@ -11,9 +11,9 @@ html {
   --feedback-error-border: #ff5c7a45;
   --feedback-error-fg: #b4234d;
   --feedback-info-bg: #007fff1c;
-  --feedback-info-border: #007fff40;
   --feedback-info-fg: #005fcc;
   --feedback-neutral-bg: #5f7fa31f;
+  --feedback-neutral-border: #5f7fa345;
   --feedback-neutral-fg: #4f6c8d;
   --feedback-success-bg: #00b8941f;
   --feedback-success-border: #00b89445;
@@ -74,9 +74,9 @@ html[data-theme="dark"] {
   --feedback-error-border: #ff6f9150;
   --feedback-error-fg: #ff9bb2;
   --feedback-info-bg: #66b2ff2b;
-  --feedback-info-border: #66b2ff52;
   --feedback-info-fg: #9dd0ff;
   --feedback-neutral-bg: #9ab4d82b;
+  --feedback-neutral-border: #9ab4d852;
   --feedback-neutral-fg: #b7cae5;
   --feedback-success-bg: #3dd7b02b;
   --feedback-success-border: #3dd7b052;

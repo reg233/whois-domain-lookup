@@ -208,6 +208,8 @@ class Lookup
       "gracePeriod",
       "redemptionPeriod",
       "pendingDelete",
+      "hold",
+      "inactive",
     ];
 
     foreach ($properties as $property) {
@@ -252,16 +254,19 @@ class Lookup
       }
 
       while (($row = fgetcsv($stream, 0, ",", '"', "\\")) !== false) {
-        $ianaId = trim($row[1]);
-        $registrar = trim($row[0]);
+        $ianaId = trim($row[0]);
+        $registrar = strtolower(trim($row[1]));
 
         if (
           ($this->parser->registrarIANAId && $ianaId === $this->parser->registrarIANAId) ||
-          ($this->parser->registrar && $registrar === $this->parser->registrar)
+          ($this->parser->registrar && $registrar === strtolower($this->parser->registrar))
         ) {
           $this->parser->registrarIANAId = $ianaId;
           if (!$this->parser->registrarURL) {
-            $this->parser->registrarURL = trim($row[4]);
+            $this->parser->registrarURL = trim($row[2]);
+          }
+          if (!$this->parser->registrarRDAPServer) {
+            $this->parser->registrarRDAPServer = trim($row[3]);
           }
 
           return;

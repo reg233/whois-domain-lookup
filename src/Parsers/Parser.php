@@ -81,6 +81,10 @@ class Parser
 
   public $pendingDelete = false;
 
+  public $hold = false;
+
+  public $inactive = false;
+
   public function __construct($data)
   {
     $this->data = $data;
@@ -146,9 +150,11 @@ class Parser
     $this->availableIn = $this->getDateDiffText("now", $this->availableDateISO8601);
     $this->availableInSeconds = $this->getDateDiffSeconds("now", $this->availableDateISO8601);
 
-    $this->gracePeriod = $this->hasKeywordInStatus(self::GRACE_PERIOD_KEYWORDS);
-    $this->redemptionPeriod = $this->hasKeywordInStatus(self::REDEMPTION_PERIOD_KEYWORDS);
-    $this->pendingDelete = $this->hasKeywordInStatus(self::PENDING_DELETE_KEYWORDS);
+    $this->gracePeriod = $this->hasAnyStatusText(self::GRACE_PERIOD_STATUS_TEXTS);
+    $this->redemptionPeriod = $this->hasAnyStatusText(self::REDEMPTION_PERIOD_STATUS_TEXTS);
+    $this->pendingDelete = $this->hasAnyStatusText(self::PENDING_DELETE_STATUS_TEXTS);
+    $this->hold = $this->hasAnyStatusText(self::HOLD_STATUS_TEXTS);
+    $this->inactive = $this->hasAnyStatusText(self::INACTIVE_STATUS_TEXTS);
 
     $this->removeEmptyValues();
 
@@ -924,6 +930,7 @@ class Parser
       "aliases" => [
         "clienttransferprohibited",
         "transferprohibitedbyregistrar", // gg
+        "registranttransferprohibited", // ro
       ],
       "fragment" => "clientTransferProhibited",
     ],
@@ -935,7 +942,10 @@ class Parser
       "fragment" => "clientUpdateProhibited",
     ],
     "Inactive" => [
-      "aliases" => ["inactive"],
+      "aliases" => [
+        "inactive",
+        "deactivated", // dk
+      ],
       "fragment" => "inactive",
     ],
     "OK" => [
@@ -950,7 +960,10 @@ class Parser
       "fragment" => "pendingCreate",
     ],
     "Pending Delete" => [
-      "aliases" => ["pendingdelete"],
+      "aliases" => [
+        "pendingdelete",
+        "tobedeleted", // ls, mk, tz, xn--d1alf
+      ],
       "fragment" => "pendingDelete",
     ],
     "Pending Renew" => [
@@ -970,7 +983,10 @@ class Parser
       "fragment" => "pendingUpdate",
     ],
     "Redemption Period" => [
-      "aliases" => ["redemptionperiod"],
+      "aliases" => [
+        "redemptionperiod",
+        "rédemption", // sn
+      ],
       "fragment" => "redemptionPeriod",
     ],
     "Renew Period" => [
@@ -982,19 +998,38 @@ class Parser
       "fragment" => "serverDeleteProhibited",
     ],
     "Server Hold" => [
-      "aliases" => ["serverhold"],
+      "aliases" => [
+        "serverhold",
+        "onhold", // am
+        "suspended", // ge, jp, tr
+        "dnshold", // it
+        "hold", // ro
+        "***thisregistrationhasbeensuspended.***", // uk
+      ],
       "fragment" => "serverHold",
     ],
     "Server Renew Prohibited" => [
-      "aliases" => ["serverrenewprohibited"],
+      "aliases" => [
+        "serverrenewprohibited",
+        "renewprohibited", // ro
+      ],
       "fragment" => "serverRenewProhibited",
     ],
     "Server Transfer Prohibited" => [
-      "aliases" => ["servertransferprohibited"],
+      "aliases" => [
+        "servertransferprohibited",
+        "transferprohibitedbyregistry", // gg
+        "transferlocked", // il
+        "transferprohibited", // ro
+      ],
       "fragment" => "serverTransferProhibited",
     ],
     "Server Update Prohibited" => [
-      "aliases" => ["serverupdateprohibited"],
+      "aliases" => [
+        "serverupdateprohibited",
+        "updateprohibitedbyregistry", // gg
+        "updateprohibited", // ro
+      ],
       "fragment" => "serverUpdateProhibited",
     ],
     "Transfer Period" => [
@@ -1202,30 +1237,32 @@ class Parser
     return null;
   }
 
-  protected const GRACE_PERIOD_KEYWORDS = [
-    // com
+  protected const GRACE_PERIOD_STATUS_TEXTS = [
     "Auto Renew Period",
   ];
 
-  protected const REDEMPTION_PERIOD_KEYWORDS = [
-    // com
+  protected const REDEMPTION_PERIOD_STATUS_TEXTS = [
     "Redemption Period",
   ];
 
-  protected const PENDING_DELETE_KEYWORDS = [
-    // com
+  protected const PENDING_DELETE_STATUS_TEXTS = [
     "Pending Delete",
-    // mk, tz
-    // xn--d1alf
-    "to be deleted",
   ];
 
-  protected function hasKeywordInStatus($keywords)
-  {
-    $texts = array_map("strtolower", array_column($this->status, "text"));
-    $keywords = array_map("strtolower", $keywords);
+  protected const HOLD_STATUS_TEXTS = [
+    "Client Hold",
+    "Server Hold",
+  ];
 
-    return !!array_intersect($texts, $keywords);
+  protected const INACTIVE_STATUS_TEXTS = [
+    "Inactive",
+  ];
+
+  protected function hasAnyStatusText($statusTexts)
+  {
+    $texts = array_column($this->status, "text");
+
+    return !!array_intersect($texts, $statusTexts);
   }
 
   private const EMPTY_PROPERTIES = [

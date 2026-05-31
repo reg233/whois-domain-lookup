@@ -9,10 +9,17 @@ if ($_SERVER["REQUEST_METHOD"] !== "GET") {
 }
 
 $domain = $_GET["domain"] ?? "";
+$subdomain = trim($_GET["subdomain"] ?? "");
 
 if (!$domain) {
   http_response_code(400);
   die;
+}
+
+if ($subdomain) {
+  $subdomain = htmlspecialchars($subdomain, ENT_QUOTES, "UTF-8");
+  $subdomain = trim(preg_replace(["/\s+/", "/\.{2,}/"], ["", "."], $subdomain), ".");
+  $domain = "$subdomain.$domain";
 }
 
 function checkPassword()
@@ -102,4 +109,8 @@ foreach ($types as $type => $value) {
 }
 
 header("Content-Type: application/json");
-echo json_encode($dnsRecords);
+
+echo json_encode([
+  "domain" => $domain,
+  "data" => $dnsRecords ?: new stdClass(),
+]);

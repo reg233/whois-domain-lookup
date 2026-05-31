@@ -46,9 +46,11 @@ class ParserRDAP extends Parser
     $this->updatedAgo = $this->getDateDiffText($this->updatedDateISO8601, "now");
     $this->updatedAgoSeconds = $this->getDateDiffSeconds($this->updatedDateISO8601, "now");
 
-    $this->gracePeriod = $this->hasKeywordInStatus(self::GRACE_PERIOD_KEYWORDS);
-    $this->redemptionPeriod = $this->hasKeywordInStatus(self::REDEMPTION_PERIOD_KEYWORDS);
-    $this->pendingDelete = $this->hasKeywordInStatus(self::PENDING_DELETE_KEYWORDS);
+    $this->gracePeriod = $this->hasAnyStatusText(self::GRACE_PERIOD_STATUS_TEXTS);
+    $this->redemptionPeriod = $this->hasAnyStatusText(self::REDEMPTION_PERIOD_STATUS_TEXTS);
+    $this->pendingDelete = $this->hasAnyStatusText(self::PENDING_DELETE_STATUS_TEXTS);
+    $this->hold = $this->hasAnyStatusText(self::HOLD_STATUS_TEXTS);
+    $this->inactive = $this->hasAnyStatusText(self::INACTIVE_STATUS_TEXTS);
 
     $this->unknown = $this->getUnknown();
     if ($this->unknown) {

@@ -431,7 +431,9 @@ $ogImage = $origin . BASE . "public/images/og.png";
               $parser->pendingDelete ||
               $parser->expiresInSeconds < 0 ||
               $parser->gracePeriod ||
-              $parser->redemptionPeriod
+              $parser->redemptionPeriod ||
+              $parser->hold ||
+              $parser->inactive
             ): ?>
               <div class="message-tags">
                 <?php if ($parser->createdAgoSeconds && $parser->createdAgoSeconds < 7 * 24 * 60 * 60): ?>
@@ -448,7 +450,13 @@ $ogImage = $origin . BASE . "public/images/og.png";
                 <?php if ($parser->gracePeriod): ?>
                   <span class="tag tag-yellow">Grace Period</span>
                 <?php elseif ($parser->redemptionPeriod): ?>
-                  <span class="tag tag-blue">Redemption Period</span>
+                  <span class="tag tag-red">Redemption Period</span>
+                <?php endif; ?>
+                <?php if ($parser->hold): ?>
+                  <span class="tag tag-gray">Hold</span>
+                <?php endif; ?>
+                <?php if ($parser->inactive): ?>
+                  <span class="tag tag-gray">Inactive</span>
                 <?php endif; ?>
               </div>
             <?php endif; ?>
@@ -759,15 +767,24 @@ $ogImage = $origin . BASE . "public/images/og.png";
         </svg>
       </button>
     </div>
-    <div class="dialog-body multi-status" tabindex="-1" data-status-type="loading">
-      <div class="multi-status-container">
-        <div class="dns-records-data" id="dns-records-data"></div>
-      </div>
-      <div class="multi-status-empty">No DNS records found for &#39;<?= $domain; ?>&#39;.</div>
-      <div class="multi-status-error">Failed to fetch DNS records.</div>
-      <div class="multi-status-loading">
-        <span class="loader" aria-hidden="true"></span>
-        <span>Loading DNS records...</span>
+    <div class="dialog-body">
+      <form>
+        <div class="subdomain-input-box" dir="auto">
+          <input autocapitalize="off" autocomplete="subdomain" autocorrect="off" name="subdomain" type="text">
+          <span><?= $domain; ?></span>
+        </div>
+        <button class="primary-button" type="submit" data-loading="false">
+          <span class="primary-button-label">Query</span>
+          <span class="loader primary-button-loader" aria-hidden="true"></span>
+        </button>
+      </form>
+      <div class="multi-status" data-status-type="loading">
+        <div class="multi-status-container">
+          <div class="dns-records-result"></div>
+        </div>
+        <div class="multi-status-empty">Not found.</div>
+        <div class="multi-status-error">Query failed!</div>
+        <div class="multi-status-loading">Querying…</div>
       </div>
     </div>
   </dialog>
@@ -1026,8 +1043,12 @@ $ogImage = $origin . BASE . "public/images/og.png";
           const view = document.getElementById("dns-records-view");
           const dialog = document.getElementById("dns-records-dialog");
           const dialogClose = dialog.querySelector(".dialog-close");
+          const form = dialog.querySelector("form");
+          const inputBox = form.querySelector(".subdomain-input-box");
+          const input = form.querySelector("input");
+          const queryButton = form.querySelector("button");
           const multiStatus = dialog.querySelector(".multi-status");
-          const dataElement = document.getElementById("dns-records-data");
+          const result = dialog.querySelector(".dns-records-result");
 
           if (!view) {
             return;
@@ -1043,6 +1064,10 @@ $ogImage = $origin . BASE . "public/images/og.png";
             }
           });
           dialog.addEventListener("close", () => {
+            input.value = "";
+            queryButton.disabled = false;
+            queryButton.dataset.loading = "false";
+
             controller.abort();
             if (timeoutId) {
               clearTimeout(timeoutId);
@@ -1052,11 +1077,21 @@ $ogImage = $origin . BASE . "public/images/og.png";
           dialogClose.addEventListener("click", () => {
             dialog.close();
           });
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            getData(new FormData(form).get("subdomain"));
+          });
+          inputBox.addEventListener("click", () => {
+            input.focus();
+          });
 
           let controller = new AbortController();
           let timeoutId;
 
-          const getData = async () => {
+          const getData = async (subdomain) => {
+            queryButton.disabled = true;
+            queryButton.dataset.loading = true;
             multiStatus.dataset.statusType = "loading";
 
             if (controller.abort) {
@@ -1070,7 +1105,13 @@ $ogImage = $origin . BASE . "public/images/og.png";
             const startTime = Date.now();
 
             try {
-              const response = await fetch("dns-records?domain=<?= $domain; ?>", {
+              const params = new URLSearchParams();
+              params.append("domain", <?= json_encode($domain); ?>);
+              if (subdomain) {
+                params.append("subdomain", subdomain);
+              }
+
+              const response = await fetch(`dns-records?${params.toString()}`, {
                 signal: controller.signal
               });
 
@@ -1078,16 +1119,19 @@ $ogImage = $origin . BASE . "public/images/og.png";
                 throw new Error();
               }
 
-              const data = await response.json();
+              const {
+                domain,
+                data,
+              } = await response.json();
 
               let innerHTML = "";
 
               for (const type in data) {
                 const records = data[type];
 
-                innerHTML += `<p class="dns-records-type">${type}</p>`;
+                innerHTML += `<p class="dns-records-result-type">${type}</p>`;
 
-                innerHTML += `<table class="dns-records-table" tabindex="0">`;
+                innerHTML += `<table class="dns-records-result-table">`;
 
                 innerHTML += "<thead><tr><th>#</th>";
                 const keys = Object.keys(records[0]);
@@ -1113,13 +1157,21 @@ $ogImage = $origin . BASE . "public/images/og.png";
                 innerHTML += "</table>";
               }
 
+              if (innerHTML) {
+                innerHTML = `<span class="dns-records-result-title">DNS records for ${domain}</span>${innerHTML}`;
+              }
+
               timeoutId = setTimeout(() => {
+                queryButton.disabled = false;
+                queryButton.dataset.loading = "false";
                 multiStatus.dataset.statusType = innerHTML ? "" : "empty";
-                dataElement.innerHTML = innerHTML;
+                result.innerHTML = innerHTML;
               }, Math.max(0, 500 - (Date.now() - startTime)));
             } catch (error) {
               if (error.name !== "AbortError") {
                 timeoutId = setTimeout(() => {
+                  queryButton.disabled = false;
+                  queryButton.dataset.loading = "false";
                   multiStatus.dataset.statusType = "error";
                 }, Math.max(0, 500 - (Date.now() - startTime)));
               }
