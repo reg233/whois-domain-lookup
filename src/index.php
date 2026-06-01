@@ -303,16 +303,16 @@ $ogImage = $origin . BASE . "public/images/og.png";
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2208-1242.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1334-750.jpg" media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1136-640.jpg" media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-  <link rel="stylesheet" href="public/css/global.css">
-  <link rel="stylesheet" href="public/css/tippy.css">
-  <link rel="stylesheet" href="public/css/index.css">
+  <link rel="stylesheet" href="public/css/global.css?v=<?= VERSION; ?>">
+  <link rel="stylesheet" href="public/css/tippy.css?v=<?= VERSION; ?>">
+  <link rel="stylesheet" href="public/css/index.css?v=<?= VERSION; ?>">
   <?php if ($rdapData): ?>
-    <link rel="stylesheet" href="public/css/json-viewer.css">
+    <link rel="stylesheet" href="public/css/json-viewer.css?v=<?= VERSION; ?>">
   <?php endif; ?>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&family=JetBrains+Mono&display=swap">
-  <script src="public/js/theme.js"></script>
+  <script src="public/js/theme.js?v=<?= VERSION; ?>"></script>
   <?= CUSTOM_HEAD; ?>
 </head>
 
@@ -788,9 +788,9 @@ $ogImage = $origin . BASE . "public/images/og.png";
       </div>
     </div>
   </dialog>
-  <script src="public/js/popper.min.js" defer></script>
-  <script src="public/js/tippy.min.js" defer></script>
-  <script src="public/js/theme-switcher.js" defer></script>
+  <script src="public/js/popper.min.js?v=<?= VERSION; ?>" defer></script>
+  <script src="public/js/tippy.min.js?v=<?= VERSION; ?>" defer></script>
+  <script src="public/js/theme-switcher.js?v=<?= VERSION; ?>" defer></script>
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const domainElement = document.getElementById("domain");
@@ -972,10 +972,10 @@ $ogImage = $origin . BASE . "public/images/og.png";
   </script>
   <?php if ($whoisData || $rdapData): ?>
     <?php if ($rdapData): ?>
-      <script src="public/js/json-viewer.js" defer></script>
+      <script src="public/js/json-viewer.js?v=<?= VERSION; ?>" defer></script>
     <?php endif; ?>
-    <script src="public/js/linkify.min.js" defer></script>
-    <script src="public/js/linkify-html.min.js" defer></script>
+    <script src="public/js/linkify.min.js?v=<?= VERSION; ?>" defer></script>
+    <script src="public/js/linkify-html.min.js?v=<?= VERSION; ?>" defer></script>
     <script>
       window.addEventListener("DOMContentLoaded", () => {
         const updateDateElementText = (elementId) => {

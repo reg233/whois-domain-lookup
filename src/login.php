@@ -157,13 +157,13 @@ $ogImage = $origin . BASE . "public/images/og.png";
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-2208-1242.jpg" media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1334-750.jpg" media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-dark-1136-640.jpg" media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-  <link rel="stylesheet" href="public/css/global.css">
-  <link rel="stylesheet" href="public/css/tippy.css">
-  <link rel="stylesheet" href="public/css/login.css">
+  <link rel="stylesheet" href="public/css/global.css?v=<?= VERSION; ?>">
+  <link rel="stylesheet" href="public/css/tippy.css?v=<?= VERSION; ?>">
+  <link rel="stylesheet" href="public/css/login.css?v=<?= VERSION; ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@72,600,50,1&display=swap">
-  <script src="public/js/theme.js"></script>
+  <script src="public/js/theme.js?v=<?= VERSION; ?>"></script>
   <?= CUSTOM_HEAD_LOGIN; ?>
 </head>
 
@@ -223,9 +223,9 @@ $ogImage = $origin . BASE . "public/images/og.png";
     </main>
     <?php require_once __DIR__ . "/footer.php"; ?>
   </div>
-  <script src="public/js/popper.min.js" defer></script>
-  <script src="public/js/tippy.min.js" defer></script>
-  <script src="public/js/theme-switcher.js" defer></script>
+  <script src="public/js/popper.min.js?v=<?= VERSION; ?>" defer></script>
+  <script src="public/js/tippy.min.js?v=<?= VERSION; ?>" defer></script>
+  <script src="public/js/theme-switcher.js?v=<?= VERSION; ?>" defer></script>
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const passwordElement = document.getElementById("password");

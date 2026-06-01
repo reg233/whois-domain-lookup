@@ -310,7 +310,8 @@ dialog::backdrop {
 }
 
 .subdomain-input-box {
-  border: 1px solid var(--border-card);
+  background-color: var(--surface-input);
+  border: 1px solid var(--border-input);
   border-radius: 999px;
   cursor: text;
   display: flex;

@@ -40,8 +40,8 @@ jobs:
               ((i++))
             done
 
-            sed -i "2s/.*/define(\"VERSION\", \"${tag}\");/" src/footer.php
-            git add src/footer.php
+            sed -i "2s/.*/define(\"VERSION\", \"${tag}\");/" config/config.php
+            git add config/config.php
 
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
