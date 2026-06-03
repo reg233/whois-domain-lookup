@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-05-20T18:00:01Z",
+  "publication": "2026-06-02T21:00:01Z",
   "services": [
     [
       [
@@ -16,14 +16,6 @@
       ],
       [
         "http://rdap.nic.mg/"
-      ]
-    ],
-    [
-      [
-        "ng"
-      ],
-      [
-        "http://rdap.nic.net.ng/"
       ]
     ],
     [
@@ -2981,6 +2973,14 @@
       ],
       [
         "https://rdap.nic.nba/"
+      ]
+    ],
+    [
+      [
+        "ng"
+      ],
+      [
+        "https://rdap.nic.net.ng/"
       ]
     ],
     [
