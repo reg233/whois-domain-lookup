@@ -723,6 +723,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
         <?php endif; ?>
         <?php if ($whoisData || $rdapData): ?>
           <section class="card card-raw-data" id="card-raw-data">
+            <div class="raw-data-sentinel" id="raw-data-sentinel"></div>
             <div class="raw-data-head" id="raw-data-head">
               <?php if ($whoisData && $rdapData): ?>
                 <div class="raw-data-tabs">
@@ -958,13 +959,13 @@ $ogImage = $origin . BASE . "public/images/og.png";
       const messageElement = document.getElementById("message");
       if (messageElement) {
         const observer = new IntersectionObserver(([e]) => {
-          if (e.boundingClientRect.top < 0) {
-            backToTop.classList.add("visible");
-          } else {
+          if (e.isIntersecting) {
             backToTop.classList.remove("visible");
+          } else {
+            backToTop.classList.add("visible");
           }
         }, {
-          threshold: [1],
+          threshold: 1,
         });
         observer.observe(messageElement);
       }
@@ -1182,23 +1183,26 @@ $ogImage = $origin . BASE . "public/images/og.png";
         setupDNSRecords();
 
         const cardRawData = document.getElementById("card-raw-data");
+        const rawDataSentinel = document.getElementById("raw-data-sentinel");
         const rawDataHead = document.getElementById("raw-data-head");
         const rawDataTabWHOIS = document.getElementById("raw-data-tab-whois");
         const rawDataTabRDAP = document.getElementById("raw-data-tab-rdap");
         const rawDataWHOIS = document.getElementById("raw-data-whois");
         const rawDataRDAP = document.getElementById("raw-data-rdap");
 
-        if (rawDataHead) {
+        if (rawDataSentinel && rawDataHead) {
           const observer = new IntersectionObserver(([e]) => {
-            if (e.boundingClientRect.top < 0) {
-              rawDataHead.style.borderRadius = "0";
-            } else {
+            if (e.isIntersecting) {
+              cardRawData.style.borderRadius = null;
               rawDataHead.style.borderRadius = null;
+            } else {
+              cardRawData.style.borderRadius = "0 0 1rem 1rem";
+              rawDataHead.style.borderRadius = "0";
             }
           }, {
-            threshold: [1],
+            threshold: 1,
           });
-          observer.observe(rawDataHead);
+          observer.observe(rawDataSentinel);
         }
 
         if (rawDataTabWHOIS && rawDataTabRDAP) {
@@ -1210,7 +1214,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
               rawDataRDAP.style.display = "none";
             }
 
-            cardRawData.scrollIntoView({
+            rawDataSentinel.scrollIntoView({
               behavior: "smooth"
             });
           });
@@ -1222,7 +1226,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
               rawDataRDAP.style.display = "block";
             }
 
-            cardRawData.scrollIntoView({
+            rawDataSentinel.scrollIntoView({
               behavior: "smooth"
             });
           });

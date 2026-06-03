@@ -239,10 +239,6 @@ main {
   background-color: var(--surface-chip-hover);
 }
 
-.card-raw-data {
-  padding: 0;
-}
-
 .link-button {
   color: var(--text-link);
   text-decoration: underline;
@@ -426,6 +422,21 @@ dialog::backdrop {
   white-space: nowrap;
 }
 
+.card-raw-data {
+  padding: 0;
+  position: relative;
+  transition: border-radius 233ms ease;
+}
+
+.raw-data-sentinel {
+  left: 0;
+  height: 1px;
+  position: absolute;
+  right: 0;
+  scroll-margin-top: -1px;
+  top: -1px;
+}
+
 .raw-data-head {
   align-items: center;
   border-radius: calc(1rem - 1px) calc(1rem - 1px) 0 0;
@@ -435,7 +446,7 @@ dialog::backdrop {
   gap: 0.5rem;
   overflow: hidden;
   position: sticky;
-  top: -1px;
+  top: 0;
   transition: border-radius 233ms ease;
   z-index: 99;
 }
