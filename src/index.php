@@ -7,6 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "GET") {
 
 require_once __DIR__ . "/../config/config.php";
 require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/utils.php";
 
 spl_autoload_register(function ($class) {
   if (str_starts_with($class, "Parser")) {
@@ -164,8 +165,7 @@ if ($domain) {
   die;
 }
 
-$protocol = (($_SERVER["HTTPS"] ?? "") && $_SERVER["HTTPS"] !== "off") ? "https://" : "http://";
-$origin = $protocol . $_SERVER["HTTP_HOST"];
+$origin = getProtocol() . $_SERVER["HTTP_HOST"];
 
 $parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
 
@@ -212,6 +212,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
   <meta property="og:title" content="<?= $title; ?>">
   <meta property="og:description" content="<?= SITE_DESCRIPTION; ?>">
   <meta property="og:image" content="<?= $ogImage; ?>">
+  <meta property="og:image:alt" content="<?= SITE_TITLE; ?>">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="<?= SITE_TITLE; ?>">

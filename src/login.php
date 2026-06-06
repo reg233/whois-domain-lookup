@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/utils.php";
 
 function redirect()
 {
@@ -40,8 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
   }
 }
 
-$protocol = (($_SERVER["HTTPS"] ?? "") && $_SERVER["HTTPS"] !== "off") ? "https://" : "http://";
-$origin = $protocol . $_SERVER["HTTP_HOST"];
+$origin = getProtocol() . $_SERVER["HTTP_HOST"];
 
 $title = "Sign in | " . SITE_TITLE;
 $ogUrl = $origin . BASE . "login";
@@ -66,6 +66,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
   <meta property="og:title" content="<?= $title; ?>">
   <meta property="og:description" content="<?= SITE_DESCRIPTION; ?>">
   <meta property="og:image" content="<?= $ogImage; ?>">
+  <meta property="og:image:alt" content="<?= SITE_TITLE; ?>">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="<?= SITE_TITLE; ?>">
