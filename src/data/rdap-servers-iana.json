@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-06-02T21:00:01Z",
+  "publication": "2026-06-08T19:00:02Z",
   "services": [
     [
       [
@@ -4952,6 +4952,14 @@
     ],
     [
       [
+        "tz"
+      ],
+      [
+        "https://rdap.tznic.or.tz/"
+      ]
+    ],
+    [
+      [
         "com"
       ],
       [
@@ -5327,14 +5335,6 @@
       ],
       [
         "https://whois.sr/rdap/"
-      ]
-    ],
-    [
-      [
-        "tz"
-      ],
-      [
-        "https://whois.tznic.or.tz/rdap/"
       ]
     ],
     [
