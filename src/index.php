@@ -960,7 +960,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
       const messageElement = document.getElementById("message");
       if (messageElement) {
         const observer = new IntersectionObserver(([e]) => {
-          if (e.isIntersecting) {
+          if (e.isIntersecting || e.boundingClientRect.top > 0) {
             backToTop.classList.remove("visible");
           } else {
             backToTop.classList.add("visible");
