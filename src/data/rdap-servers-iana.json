@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-06-08T19:00:02Z",
+  "publication": "2026-06-09T22:00:01Z",
   "services": [
     [
       [
@@ -4771,6 +4771,14 @@
     ],
     [
       [
+        "gift"
+      ],
+      [
+        "https://rdap.registry.gift/rdap/"
+      ]
+    ],
+    [
+      [
         "gy"
       ],
       [
@@ -4928,7 +4936,6 @@
         "country",
         "diy",
         "food",
-        "gift",
         "hiv",
         "lifestyle",
         "link",
