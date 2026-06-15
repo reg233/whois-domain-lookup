@@ -70,7 +70,9 @@ form {
   color: transparent;
   display: inline-flex;
   font-size: 1.125rem;
-  transition: all 233ms ease;
+  transition-duration: 233ms;
+  transition-property: background-color, color;
+  transition-timing-function: ease;
 }
 
 .toggle[aria-active="true"] .toggle-indicator {
@@ -313,7 +315,7 @@ dialog::backdrop {
   display: flex;
   min-width: 0;
   padding: 0.75rem 1.5rem;
-  transition: all 233ms ease;
+  transition: outline-color 233ms ease;
 }
 
 .subdomain-input-box:focus-within {
@@ -428,6 +430,10 @@ dialog::backdrop {
   transition: border-radius 233ms ease;
 }
 
+.card-raw-data.is-sticky {
+  border-radius: 0 0 1rem 1rem;
+}
+
 .raw-data-sentinel {
   left: 0;
   height: 1px;
@@ -439,16 +445,18 @@ dialog::backdrop {
 
 .raw-data-head {
   align-items: center;
-  border-radius: calc(1rem - 1px) calc(1rem - 1px) 0 0;
   background-color: var(--surface-raw-data-head);
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  overflow: hidden;
   position: sticky;
   top: 0;
   transition: border-radius 233ms ease;
   z-index: 99;
+}
+
+.card-raw-data:not(.is-sticky) .raw-data-head {
+  border-radius: calc(1rem - 1px) calc(1rem - 1px) 0 0;
 }
 
 .raw-data-tabs {
@@ -461,6 +469,7 @@ dialog::backdrop {
   font-weight: 600;
   outline-offset: -3px;
   padding: 0.75rem 1rem;
+  transition: border-radius 233ms ease;
 }
 
 .raw-data-tab:hover {
@@ -471,44 +480,66 @@ dialog::backdrop {
   color: var(--text-primary);
 }
 
-.raw-data-tab-active {
+.raw-data-tab.raw-data-tab-active {
   background-color: var(--surface-card);
   color: var(--text-primary);
 }
 
-.raw-data-head-title {
+.raw-data-title {
   background-color: var(--surface-card);
   font-size: 0.875rem;
   font-weight: 600;
   padding: 0.75rem 1rem;
+  transition: border-radius 233ms ease;
 }
 
-.copy-button {
-  background-color: var(--surface-copy);
+.card-raw-data:not(.is-sticky) .raw-data-tab:first-of-type,
+.card-raw-data:not(.is-sticky) .raw-data-title {
+  border-top-left-radius: calc(1rem - 1px);
+}
+
+.raw-data-buttons {
+  display: flex;
+  gap: 0.25rem;
+  margin-right: 0.625rem;
+}
+
+.raw-data-buttons button {
   border-radius: 0.5rem;
   color: var(--text-secondary);
   font-size: 1.25rem;
-  margin-right: 0.625rem;
   padding: 0.25rem;
-  position: relative;
 }
 
-.copy-button:hover {
-  background-color: var(--surface-copy-hover);
+.raw-data-buttons button:hover {
+  background-color: var(--surface-raw-data-button-hover);
   color: var(--text-primary);
 }
 
-.copy-button:active {
-  background-color: var(--surface-copy-active);
+.raw-data-buttons button:active {
+  background-color: var(--surface-raw-data-button-active);
+}
+
+.copy-button {
+  position: relative;
+}
+
+.raw-data-buttons-only-copy .expand-all-button,
+.raw-data-buttons-only-copy .collapse-all-button {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.raw-data-buttons-only-copy .copy-button {
+  background-color: var(--surface-raw-data-button);
 }
 
 .copy-button-icon-copy {
   opacity: 1;
   transform: scale(1);
-  transition:
-    opacity 233ms ease,
-    transform 233ms ease,
-    visibility 233ms ease;
+  transition-duration: 233ms;
+  transition-property: opacity, transform, visibility;
+  transition-timing-function: ease;
   visibility: visible;
 }
 
@@ -517,10 +548,9 @@ dialog::backdrop {
   opacity: 0;
   position: absolute;
   transform: scale(0.8);
-  transition:
-    opacity 233ms ease,
-    transform 233ms ease,
-    visibility 233ms ease;
+  transition-duration: 233ms;
+  transition-property: opacity, transform, visibility;
+  transition-timing-function: ease;
   visibility: hidden;
 }
 
@@ -573,8 +603,8 @@ code {
 }
 
 .back-to-top:hover {
-  color: var(--text-primary);
   background-color: var(--surface-back-to-top-hover);
+  color: var(--text-primary);
 }
 
 .back-to-top:active {

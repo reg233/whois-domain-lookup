@@ -1,4 +1,9 @@
-const setupJSONViewer = (element, data) => {
+const setupJSONViewer = (
+  element,
+  expandAllElement,
+  collapseAllElement,
+  data,
+) => {
   const valueToHtml = (value, firstLevel) => {
     const valueType = typeof value;
 
@@ -123,5 +128,35 @@ const setupJSONViewer = (element, data) => {
         e.target.setAttribute("aria-label", "expand");
       }
     }
+  });
+
+  expandAllElement.addEventListener("click", () => {
+    element.querySelectorAll(".collapsible").forEach((collapsible, index) => {
+      if (index > 0) {
+        const parent = collapsible.parentElement;
+        if (parent.classList.contains("collapsed")) {
+          parent.classList.remove("collapsed");
+
+          const collapser = parent.querySelector(".collapser");
+          collapser.innerHTML = caretDown;
+          collapser.setAttribute("aria-label", "collapse");
+        }
+      }
+    });
+  });
+
+  collapseAllElement.addEventListener("click", () => {
+    element.querySelectorAll(".collapsible").forEach((collapsible, index) => {
+      if (index > 0) {
+        const parent = collapsible.parentElement;
+        if (!parent.classList.contains("collapsed")) {
+          parent.classList.add("collapsed");
+
+          const collapser = parent.querySelector(".collapser");
+          collapser.innerHTML = caretRight;
+          collapser.setAttribute("aria-label", "expand");
+        }
+      }
+    });
   });
 };

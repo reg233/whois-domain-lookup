@@ -3,9 +3,9 @@
 }
 
 .tippy-box {
-  background-color: #333;
+  background-color: var(--surface-tooltip);
   border-radius: 0.25rem;
-  color: #fff;
+  color: var(--text-tooltip);
   font-size: 0.875rem;
   outline: none;
   transition-property: opacity, transform, visibility;

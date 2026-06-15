@@ -30,9 +30,6 @@ html {
   --surface-card: #ffffff;
   --surface-chip: #007fff12;
   --surface-chip-hover: #007fff2b;
-  --surface-copy: #cfe6ff;
-  --surface-copy-active: #a9cdff;
-  --surface-copy-hover: #bddbff;
   --surface-input: #f9fbff;
   --surface-link-hover: #007fff14;
   --surface-page-end: #fdf4ea;
@@ -45,11 +42,15 @@ html {
   --surface-primary-button-active: linear-gradient(135deg, #0079f2, #49a9f2);
   --surface-primary-button-disabled: linear-gradient(135deg, #60afff, #90cfff);
   --surface-primary-button-hover: linear-gradient(135deg, #0086ff, #50bbff);
+  --surface-raw-data-button: #cfe6ff;
+  --surface-raw-data-button-active: #a9cdff;
+  --surface-raw-data-button-hover: #bddbff;
   --surface-raw-data-head: var(--surface-page-start);
   --surface-toggle-active: #007fff2e;
   --surface-toggle-hover: #007fff1a;
   --surface-toggle-indicator: #007fff26;
   --surface-toggle-indicator-active: #007fff40;
+  --surface-tooltip: #173a66;
   --text-link: #005fcc;
   --text-link-hover: #00469e;
   --text-link-underline: #007fff7a;
@@ -59,6 +60,7 @@ html {
   --text-primary-button: #f8fbff;
   --text-secondary: #2b466f;
   --text-toggle-active: #005fcc;
+  --text-tooltip: #f8fbff;
 }
 
 html[data-theme="dark"] {
@@ -93,9 +95,6 @@ html[data-theme="dark"] {
   --surface-card: #0c1530;
   --surface-chip: #66b2ff1a;
   --surface-chip-hover: #66b2ff36;
-  --surface-copy: #13244a;
-  --surface-copy-active: #24508a;
-  --surface-copy-hover: #1a3765;
   --surface-input: #070d21;
   --surface-link-hover: #66b2ff1a;
   --surface-page-end: #0b1230;
@@ -108,11 +107,15 @@ html[data-theme="dark"] {
   --surface-primary-button-active: linear-gradient(135deg, #0079f2, #61a9f2);
   --surface-primary-button-disabled: linear-gradient(135deg, #004f9f, #406f9f);
   --surface-primary-button-hover: linear-gradient(135deg, #0086ff, #6bbcff);
+  --surface-raw-data-button: #13244a;
+  --surface-raw-data-button-active: #24508a;
+  --surface-raw-data-button-hover: #1a3765;
   --surface-raw-data-head: var(--surface-page-start);
   --surface-toggle-active: #66b2ff36;
   --surface-toggle-hover: #66b2ff24;
   --surface-toggle-indicator: #66b2ff38;
   --surface-toggle-indicator-active: #66b2ff52;
+  --surface-tooltip: #dce9ff;
   --text-link: #79bfff;
   --text-link-hover: #d8ecff;
   --text-link-underline: #66b2ff8c;
@@ -122,6 +125,7 @@ html[data-theme="dark"] {
   --text-primary-button: #f8fbff;
   --text-secondary: #ccdaf3;
   --text-toggle-active: #79bfff;
+  --text-tooltip: #0c1530;
 }
 
 * {
@@ -261,7 +265,10 @@ a {
   text-decoration: underline;
   text-decoration-color: var(--text-link-underline);
   text-underline-offset: 0.25rem;
-  transition: all 233ms ease;
+  transition-duration: 233ms;
+  transition-property:
+    background-color, color, outline-color, text-decoration-color;
+  transition-timing-function: ease;
 }
 
 a:hover {
@@ -283,8 +290,13 @@ button {
   display: inline-flex;
   font: inherit;
   justify-content: center;
+  margin: 0;
   padding: 0;
-  transition: all 233ms ease;
+  transition-duration: 233ms;
+  transition-property:
+    background-color, color, opacity, outline-color, text-decoration-color,
+    visibility;
+  transition-timing-function: ease;
 }
 
 footer {
@@ -304,8 +316,9 @@ footer {
   border-radius: 999px;
   color: inherit;
   font: inherit;
+  margin: 0;
   padding: 0.75rem 2.5rem 0.75rem 1.5rem;
-  transition: all 233ms ease;
+  transition: outline-color 233ms ease;
   width: 100%;
 }
 

@@ -732,16 +732,28 @@ $ogImage = $origin . BASE . "public/images/og.png";
                   <button class="raw-data-tab" id="raw-data-tab-rdap">RDAP</button>
                 </div>
               <?php else: ?>
-                <div class="raw-data-head-title"><?= $whoisData ? "WHOIS" : "RDAP"; ?></div>
+                <div class="raw-data-title"><?= $whoisData ? "WHOIS" : "RDAP"; ?></div>
               <?php endif; ?>
-              <button class="copy-button" id="copy-button" aria-label="Copy raw data">
-                <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" class="copy-button-icon-copy" aria-hidden="true">
-                  <path d="M360-240q-29.7 0-50.85-21.15Q288-282.3 288-312v-480q0-29.7 21.15-50.85Q330.3-864 360-864h384q29.7 0 50.85 21.15Q816-821.7 816-792v480q0 29.7-21.15 50.85Q773.7-240 744-240H360Zm0-72h384v-480H360v480ZM216-96q-29.7 0-50.85-21.15Q144-138.3 144-168v-516q0-15.3 10.29-25.65Q164.58-720 179.79-720t25.71 10.35Q216-699.3 216-684v516h420q15.3 0 25.65 10.29Q672-147.42 672-132.21t-10.35 25.71Q651.3-96 636-96H216Zm144-216v-480 480Z" />
-                </svg>
-                <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" class="copy-button-icon-check" aria-hidden="true">
-                  <path d="m389-369 299-299q10.91-11 25.45-11Q728-679 739-668t11 25.58q0 14.58-10.61 25.19L415-292q-10.91 11-25.45 11Q375-281 364-292L221-435q-11-11-11-25.5t11-25.5q11-11 25.67-11 14.66 0 25.33 11l117 117Z" />
-                </svg>
-              </button>
+              <div class="raw-data-buttons<?= $whoisData ? " raw-data-buttons-only-copy" : ""; ?>" id="raw-data-buttons">
+                <button class="expand-all-button" id="expand-all-button" data-tippy-content="Expand All">
+                  <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                    <path d="m480-198 152-152q11-11 25.5-11t25.5 11q11 11 11 25.5T683-299L531-147q-21 21-51 21t-51-21L277-299q-11-11-10.5-25.5T278-350q11-11 25.5-11t25.5 11l151 152Zm0-564L328-610q-11 11-25.5 11T277-610q-11-11-11-25.5t11-25.5l152-152q21-21 51-21t51 21l152 152q11 11 11 25t-11 25q-11 11-25.5 11T632-611L480-762Z" />
+                  </svg>
+                </button>
+                <button class="collapse-all-button" id="collapse-all-button" data-tippy-content="Collapse All">
+                  <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                    <path d="M480-285 314-120q-11 11-25 11t-25-11q-11-11-11-25t11-25l165-166q21-21 51-21t51 21l165 166q11 11 11 25t-11 25q-11 11-25 11t-25-11L480-285Zm0-390 166-165q11-11 25-11t25 11q11 11 11 25t-11 25L531-624q-21 21-51 21t-51-21L264-790q-11-11-11-25t11-25q11-11 25-11t25 11l166 165Z" />
+                  </svg>
+                </button>
+                <button class="copy-button" id="copy-button" data-tippy-content="Copy raw data">
+                  <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" class="copy-button-icon-copy" aria-hidden="true">
+                    <path d="M360-240q-29.7 0-50.85-21.15Q288-282.3 288-312v-480q0-29.7 21.15-50.85Q330.3-864 360-864h384q29.7 0 50.85 21.15Q816-821.7 816-792v480q0 29.7-21.15 50.85Q773.7-240 744-240H360Zm0-72h384v-480H360v480ZM216-96q-29.7 0-50.85-21.15Q144-138.3 144-168v-516q0-15.3 10.29-25.65Q164.58-720 179.79-720t25.71 10.35Q216-699.3 216-684v516h420q15.3 0 25.65 10.29Q672-147.42 672-132.21t-10.35 25.71Q651.3-96 636-96H216Zm144-216v-480 480Z" />
+                  </svg>
+                  <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" class="copy-button-icon-check" aria-hidden="true">
+                    <path d="m389-369 299-299q10.91-11 25.45-11Q728-679 739-668t11 25.58q0 14.58-10.61 25.19L415-292q-10.91 11-25.45 11Q375-281 364-292L221-435q-11-11-11-25.5t11-25.5q11-11 25.67-11 14.66 0 25.33 11l117 117Z" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <?php if ($whoisData): ?>
               <pre class="raw-data-whois" id="raw-data-whois"><code><?= htmlspecialchars($whoisData, ENT_QUOTES, "UTF-8"); ?></code></pre>
@@ -1188,18 +1200,16 @@ $ogImage = $origin . BASE . "public/images/og.png";
         const rawDataHead = document.getElementById("raw-data-head");
         const rawDataTabWHOIS = document.getElementById("raw-data-tab-whois");
         const rawDataTabRDAP = document.getElementById("raw-data-tab-rdap");
+        const rawDataButtons = document.getElementById("raw-data-buttons");
+        const expandAllButton = document.getElementById("expand-all-button");
+        const collapseAllButton = document.getElementById("collapse-all-button");
+        const copyButton = document.getElementById("copy-button");
         const rawDataWHOIS = document.getElementById("raw-data-whois");
         const rawDataRDAP = document.getElementById("raw-data-rdap");
 
         if (rawDataSentinel && rawDataHead) {
           const observer = new IntersectionObserver(([e]) => {
-            if (e.isIntersecting) {
-              cardRawData.style.borderRadius = null;
-              rawDataHead.style.borderRadius = null;
-            } else {
-              cardRawData.style.borderRadius = "0 0 1rem 1rem";
-              rawDataHead.style.borderRadius = "0";
-            }
+            cardRawData.classList.toggle("is-sticky", !e.isIntersecting);
           }, {
             threshold: 1,
           });
@@ -1209,6 +1219,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
         if (rawDataTabWHOIS && rawDataTabRDAP) {
           rawDataTabWHOIS.addEventListener("click", () => {
             if (!rawDataTabWHOIS.classList.contains("raw-data-tab-active")) {
+              rawDataButtons.classList.add("raw-data-buttons-only-copy");
               rawDataTabWHOIS.classList.add("raw-data-tab-active");
               rawDataWHOIS.style.display = "block";
               rawDataTabRDAP.classList.remove("raw-data-tab-active");
@@ -1221,6 +1232,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
           });
           rawDataTabRDAP.addEventListener("click", () => {
             if (!rawDataTabRDAP.classList.contains("raw-data-tab-active")) {
+              rawDataButtons.classList.remove("raw-data-buttons-only-copy");
               rawDataTabWHOIS.classList.remove("raw-data-tab-active");
               rawDataWHOIS.style.display = "none";
               rawDataTabRDAP.classList.add("raw-data-tab-active");
@@ -1263,7 +1275,6 @@ $ogImage = $origin . BASE . "public/images/og.png";
           }
         };
 
-        const copyButton = document.getElementById("copy-button");
         if (copyButton) {
           let timeoutId;
 
@@ -1311,9 +1322,18 @@ $ogImage = $origin . BASE . "public/images/og.png";
           linkifyRawData(rawDataWHOIS);
         }
         if (rawDataRDAP) {
-          setupJSONViewer(rawDataRDAP, rdapData);
+          setupJSONViewer(rawDataRDAP, expandAllButton, collapseAllButton, rdapData);
           linkifyRawData(rawDataRDAP);
         }
+
+        tippy.createSingleton(tippy("#raw-data-buttons button"), {
+          appendTo: "parent",
+          arrow: false,
+          hideOnClick: false,
+          offset: [0, 8],
+          placement: "bottom",
+          moveTransition: "transform 233ms ease",
+        });
       });
     </script>
   <?php endif; ?>

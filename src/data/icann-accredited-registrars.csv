@@ -78,7 +78,7 @@
 437,"SiteName Ltd.",http://www.sitename.com,https://rdap.communigal.net/rdap/
 440,"Wild West Domains, LLC",http://www.wildwestdomains.com,https://rdap.wildwestdomains.com/v1/
 444,"Inames Co., Ltd.",http://www.inames.co.kr,https://rdap.inames.io.kr/rdap/
-447,"SafeNames Ltd.",http://www.safenames.net,https://rdap.safenames.legal/rdap/
+447,"Safenames Ltd",http://www.safenames.net,https://rdap.safenames.legal/rdap/
 448,"Universal Registration Services, Inc. dba NewDentity.com",http://www.newdentity.com,https://rdap.snapnames.com/rdap/
 450,"DomainName.com, Inc.",https://domainnamecom.xyz,https://rdap.namecheap.com/
 452,"Name105, Inc.",http://www.name.com,https://namerdap.systems/
@@ -2746,7 +2746,7 @@
 4310,"Gname 297 Inc",http://www.gname.com,https://rdap.gname.com/
 4311,"Gname 298 Inc",http://www.gname.com,https://rdap.gname.com/
 4312,"Gname 299 Inc",http://www.gname.com,https://rdap.gname.com/
-4313,"GLOBAL ASSET DOMAINS INC.",http://www.gname.com,https://rdap.gname.com/
+4313,"GLOBAL ASSET DOMAINS INC.",https://www.gadomains.com/,https://rdap.gname.com/
 4314,"Hostyaga FZE LLC",http://ignorre.com,https://rdap.ignorre.com/
 4315,"Nametrust Inc.",https://nametrust.com,https://rdap.nametrust.com/
 4316,"Amazon Domain Registrar US LLC",https://domains.amazon,https://rdap.domains.amazon/
