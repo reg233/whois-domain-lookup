@@ -93,7 +93,7 @@ class WHOIS
     $socket = @stream_socket_client("tcp://$host:43", $errno, $errstr, 10);
 
     if (!$socket) {
-      throw new RuntimeException($errstr);
+      throw new RuntimeException("WHOIS request failed for '$this->domain': $errstr.");
     }
 
     stream_set_timeout($socket, 10);
@@ -113,7 +113,7 @@ class WHOIS
     $metaData = stream_get_meta_data($socket);
     if ($metaData["timed_out"]) {
       fclose($socket);
-      throw new RuntimeException("Operation timed out.");
+      throw new RuntimeException("WHOIS request timed out for '$this->domain'.");
     }
 
     fclose($socket);

@@ -156,7 +156,7 @@ class Lookup
     }
 
     if ($this->whoisError && $this->rdapError) {
-      throw new RuntimeException("A temporary error has occurred.");
+      throw new RuntimeException("WHOIS and RDAP requests failed for '$this->domain'.");
     }
 
     if ($this->whoisParser && $this->rdapParser) {
@@ -166,7 +166,7 @@ class Lookup
     } else if ($this->rdapParser) {
       $this->parser = $this->rdapParser;
     } else {
-      throw new RuntimeException("A temporary error has occurred.");
+      throw new RuntimeException("No WHOIS or RDAP parser result is available for '$this->domain'.");
     }
   }
 

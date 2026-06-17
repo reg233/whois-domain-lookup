@@ -99,13 +99,17 @@ class RDAP
     if ($response === false) {
       $error = curl_error($curl);
       curl_close($curl);
-      throw new RuntimeException($error);
+      throw new RuntimeException("RDAP request failed for '$this->domain': $error.");
     }
 
     $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 
     curl_close($curl);
+
+    if ($code >= 400 && $code !== 404) {
+      throw new RuntimeException("RDAP request failed for '$this->domain': HTTP $code.");
+    }
 
     if (!preg_match("/^application\/(rdap\+)?json/i", $contentType)) {
       $response = "";
