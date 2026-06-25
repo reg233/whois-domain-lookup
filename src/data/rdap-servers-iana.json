@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-06-16T21:00:01Z",
+  "publication": "2026-06-16T22:00:01Z",
   "services": [
     [
       [
@@ -4734,14 +4734,21 @@
     ],
     [
       [
+        "click",
+        "country",
         "diy",
         "feedback",
         "food",
         "forum",
+        "hiv",
+        "lifestyle",
         "living",
         "observer",
         "pid",
+        "property",
         "realty",
+        "sexy",
+        "trust",
         "vana"
       ],
       [
@@ -4936,14 +4943,7 @@
     ],
     [
       [
-        "click",
-        "country",
-        "hiv",
-        "lifestyle",
-        "link",
-        "property",
-        "sexy",
-        "trust"
+        "link"
       ],
       [
         "https://rdap.tucowsregistry.net/rdap/"
