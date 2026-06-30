@@ -1000,7 +1000,7 @@ class Parser
     "Server Hold" => [
       "aliases" => [
         "serverhold",
-        "onhold", // am
+        "onhold", // am, kg
         "suspended", // ge, jp, tr
         "dnshold", // it
         "hold", // ro

@@ -5,7 +5,7 @@ class ParserKG extends Parser
 
   protected function getDomainRegExp()
   {
-    return "/^domain (.+) \(.+\)$/im";
+    return "/^domain (.+) (?:\(.+\))?$/im";
   }
 
   protected function getStatusRegExp()

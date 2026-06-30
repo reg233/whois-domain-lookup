@@ -43,7 +43,7 @@
 134,"BB-Online UK Limited",http://www.nominate.com,https://rdap.bb-online.com/
 140,"Acens Technologies, S.L.U.",http://www.acens.com,https://rdap.acens.net/
 141,"Cronon GmbH",http://www.cronon.net,https://rdap.cronon.net/
-143,"Omnis Network, LLC",http://www.omnis.com,https://rdap.omnis.com/
+143,"Quantum Names LLC",https://www.quantumnames.com,https://rdap.quantumnames.com/
 144,"Alldomains, LLC",http://www.alldomains.com,https://rdap.snapnames.com/rdap/
 146,"GoDaddy.com, LLC",http://www.godaddy.com,https://rdap.godaddy.com/v1/
 151,"InterNetX GmbH",https://www.internetx.com,https://rdap.registrar.internetx.com/
@@ -107,7 +107,6 @@
 619,"Domainducks, LLC",http://www.personalnames.com,https://rdap.snapnames.com/rdap/
 620,"Fiducia LLC, Latvijas Parstavnieciba",http://www.fiducia.com,https://rdap.fiducia.com/
 625,"Name.com, Inc.",http://www.name.com,https://namerdap.systems/
-626,"Globis LLC",http://www.neonic.com,https://rdap.neonic.com/
 634,"NetTuner Corp. dba Webmasters.com",http://www.webmasters.com,https://rdap.webmasters.com/
 635,"SNAPNAMES 72, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 636,"BRANDON GRAY INTERNET SERVICES INC. (dba ""NameJuice.com"")",http://www.namejuice.com,https://namejuice.com/rdap/
@@ -151,7 +150,6 @@
 708,"SNAPNAMES 1, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 709,"DomainAllies.com, Inc.",http://www.domainallies.com,https://rdap.domainallies.com/rdap/
 719,"NamePal.com #8001, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
-731,"Domus Enterprises LLC dba DOMUS",http://www.domus-llc.com,https://rdap.domus.com/
 734,"NamePal.com #8004, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 735,"Rebel.ca Corp.",http://www.rebel.ca,https://rdap.rebel.com/
 743,"NamePal.com #8002, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
@@ -729,7 +727,7 @@
 1670,"AtlanticDomains, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 1671,"MidWestDomains, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 1672,"PacificDomains, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
-1673,"BDL Systemes SAS dba SYSTONIC",https://www.adista.fr/,https://rdap.systonic.fr/
+1673,"inherent SAS",https://www.adista.fr/,https://rdap.systonic.fr/
 1675,"CV. Rumahweb Indonesia",http://www.rumahweb.com,https://rdap.rumahweb.com/
 1677,"AcquiredNames LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
 1678,"BlastDomains LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
@@ -1729,7 +1727,6 @@
 2910,"Beijing Brandma International Networking Technology Ltd.",https://brandcloud.cn,https://rdap.brandcloud.cn/rdap/
 2913,"Dominion Domains, LLC",http://dominion.domains,https://rdapserver.net/
 2918,"NetZone AG",http://www.netzone.ch,https://rdap.netzone.ch/
-3221,"Overcasts Limited",http://mayiwww.com,https://rdap.mayiwww.com/rdap/
 3222,"Domainipr Limited",https://www.domainipr.net,https://rdap.domainipr.net/rdap/
 3224,"Registrator Domenov LLC",http://mastername.ru,https://rdap.mastername.ru/
 3225,"Knet Registrar Co., Ltd.",http://knetreg.cn,https://rdap.knetreg.cn/
@@ -2316,10 +2313,9 @@
 3861,"Purple IT Ltd",http://www.purpleit.com,https://rdapserver.net/
 3862,"Spaceship, Inc.",http://www.spaceship.com,https://rdap.spaceship.com/
 3863,"Namemart Limited",https://www.namemart.com,https://rdap.namemart.com/rdap/
-3864,"Wanyuhulian Technology Limited",http://www.wanyuhulian.com,https://rdap.wanyuhulian.com/rdap/
 3865,"Community Advice s.r.o.",http://communityadvice.cz,https://rdapserver.net/
 3866,"Active.Domains Limited Liability Company",https://active.domains/,https://rdap.active.domains/
-3867,"Yelles AB",https://www.inleed.se,https://inleed.com/rdap/
+3867,"Yelles AB",https://www.inleed.se,https://rdap.ispcomfort.net/
 3869,"Vantage of Convergence (Chengdu) Technology Co., Ltd.",https://www.kh86.cn/,https://rdap.domain.iwanshang.com/
 3870,"DotWee Limited",https://dotwee.com/,https://rdap.dotwee.com/
 3871,"ODTÜ Geliştirme Vakfi Bilgi Teknolojileri Sanayi Ve Ticaret Anonim Şirketi",http://metunic.com.tr,https://rdap.metunic.com.tr/
@@ -2746,7 +2742,7 @@
 4310,"Gname 297 Inc",http://www.gname.com,https://rdap.gname.com/
 4311,"Gname 298 Inc",http://www.gname.com,https://rdap.gname.com/
 4312,"Gname 299 Inc",http://www.gname.com,https://rdap.gname.com/
-4313,"GLOBAL ASSET DOMAINS INC.",https://www.gadomains.com/,https://rdap.gname.com/
+4313,"GLOBAL ASSET DOMAINS INC.",https://www.gadomains.com/,https://rdap.gadomains.com/
 4314,"Hostyaga FZE LLC",http://ignorre.com,https://rdap.ignorre.com/
 4315,"Nametrust Inc.",https://nametrust.com,https://rdap.nametrust.com/
 4316,"Amazon Domain Registrar US LLC",https://domains.amazon,https://rdap.domains.amazon/
@@ -2976,7 +2972,7 @@
 4540,"Gname 498 Inc",http://www.gname.com,https://rdap.gname.com/
 4541,"Gname 499 Inc",http://www.gname.com,https://rdap.gname.com/
 4542,"Gname 500 Inc",http://www.gname.com,https://rdap.gname.com/
-4543,"Kenpai International Technology Limited",http://www.kenpai.net,https://rdap.kphk.rdapwhois.cn/
+4543,"BF Internet Limited",http://www.kenpai.net,https://rdap.kphk.rdapwhois.cn/
 4544,"Doruk Bilisim Teknolojileri Ltd",https://doruk.net.tr/,https://rdapserver.net/
 4545,"Sollutium EU sp. z o.o.",https://vsys.name,https://rdap.vsys.name/
 4546,"NameSaller LLC",https://namesaller.com,https://rdap.namesaller.com/
