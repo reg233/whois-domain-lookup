@@ -9,7 +9,7 @@
 49,"GMO Internet Group, Inc. d/b/a Onamae.com",https://internet.gmo/,https://rdap.gmo-onamae.com/rdap/v1/
 52,"Hostopia Canada Corp",http://www.aplus.net,https://rdap.names4ever.com/rdap/
 57,"Advanced Internet Technologies, Inc. (AIT)",http://www.ait.com,https://rdap.ait.com/rdap/
-64,"Domain Registration Services, Inc. dba dotEarth.com",http://www.dotearth.com,https://rdap.iviewer.com/
+64,"Domain Registration Services, Inc. dba dotEarth.com",http://www.dotearth.com,https://secure.iviewer.com/rdap-server/
 65,"DomainPeople, Inc.",http://www.domainpeople.com,https://domainpeople.rdap.tucows.com/
 66,"Enameco, LLC",http://www.enameco.com,https://rdap.snapnames.com/rdap/
 68,"NordNet SA",http://www.nordnet.net,https://rdap.nordnet.fr/rdap/
@@ -3002,16 +3002,16 @@
 4570,"SevenX LLC",https://www.rayname.com,https://rdap.rayname.com/
 4571,"DCGRP OÜ",https://cloudys.com/,https://rdap.cloudys.net/
 4572,"Iaaxin Tech Labs (India) Private Limited",http://www.nowdigitaleasy.com,https://rdap.nowdigitaleasy.com/
-4573,"UnstoppableUS1 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4574,"UnstoppableUS2 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4575,"UnstoppableUS3 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4576,"UnstoppableUS4 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4577,"UnstoppableUS5 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4578,"UnstoppableUS6 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4579,"UnstoppableUS7 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4580,"UnstoppableUS8 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4581,"UnstoppableUS9 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
-4582,"UnstoppableUS10 LLC",http://unstoppabledomains.com ,https://api.unstoppabledomains.com/rdap/
+4573,"UnstoppableUS1 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4574,"UnstoppableUS2 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4575,"UnstoppableUS3 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4576,"UnstoppableUS4 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4577,"UnstoppableUS5 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4578,"UnstoppableUS6 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4579,"UnstoppableUS7 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4580,"UnstoppableUS8 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4581,"UnstoppableUS9 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
+4582,"UnstoppableUS10 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
 4583,"Knet Registrar (Beijing) Co., Ltd.",http://www.瑞吉思.网址,https://rdap.knetreg.cn/
 4584,"Xiamen Lingmao Digital Technology Co., Ltd.",https://www.lmkj.com/,
 4585,"Servytec Networks, S.L. (Funcionalia)",https://rdap.funcionalia.com/,https://rdap.funcionalia.com/rdap/
@@ -3019,5 +3019,6 @@
 4587,"Nameslink (Hong Kong) Private Limited",https://www.nameslink.com/,https://nameslink.com/rdap/
 4588,"DreamFusion - IT Services, Lda (WebTuga)",https://www.webtuga.pt,https://rdap.webtuga.pt/
 4589,"Sampling Line – Serviços e Internet Lda",https://registrar.pt/,https://rdap.registrar.pt/
+4890,"Kenpai Technology Co., Ltd.",http://www.kenpai.com,
 9995,"Pre-Delegation Testing Registrar #1",,
 10007,"Domain The Net Technologies Ltd.",http://www.domainthenet.com,https://rdap.domainthenet.com/rdap/
