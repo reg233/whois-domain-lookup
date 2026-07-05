@@ -284,6 +284,7 @@ dialog::backdrop {
 }
 
 .dialog-head {
+  align-items: center;
   border-bottom: 1px solid var(--border-card);
   display: flex;
   gap: 0.5rem;
@@ -298,6 +299,7 @@ dialog::backdrop {
 }
 
 .dialog-close {
+  border-radius: 50%;
   color: var(--text-secondary);
   font-size: 1.5rem;
 }
