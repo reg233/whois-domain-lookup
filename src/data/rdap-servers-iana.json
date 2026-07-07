@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-06-26T18:00:02Z",
+  "publication": "2026-07-06T17:00:03Z",
   "services": [
     [
       [
@@ -882,15 +882,6 @@
     ],
     [
       [
-        "xn--55qw42g",
-        "xn--zfr164b"
-      ],
-      [
-        "https://rdap.conac.cn/"
-      ]
-    ],
-    [
-      [
         "crown"
       ],
       [
@@ -1358,7 +1349,6 @@
         "shoes",
         "shopping",
         "show",
-        "sina",
         "singles",
         "ski",
         "soccer",
@@ -1431,7 +1421,6 @@
         "watch",
         "watches",
         "weber",
-        "weibo",
         "weir",
         "wine",
         "works",
@@ -1442,7 +1431,6 @@
         "xn--5su34j936bgsg",
         "xn--5tzm5g",
         "xn--6frz82g",
-        "xn--9krt00a",
         "xn--b4w605ferd",
         "xn--bck1b9a5dre4c",
         "xn--cck2b3b",
@@ -1525,6 +1513,18 @@
       ],
       [
         "https://rdap.mobile-registry.com/rdap/"
+      ]
+    ],
+    [
+      [
+        "sina",
+        "weibo",
+        "xn--55qw42g",
+        "xn--9krt00a",
+        "xn--zfr164b"
+      ],
+      [
+        "https://rdap.ngtld.cn/"
       ]
     ],
     [
