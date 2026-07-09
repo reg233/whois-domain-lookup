@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-07-06T17:00:03Z",
+  "publication": "2026-07-09T01:00:03Z",
   "services": [
     [
       [
@@ -1332,6 +1332,7 @@
         "rogers",
         "run",
         "rwe",
+        "safety",
         "sale",
         "salon",
         "sanofi",
@@ -1520,7 +1521,9 @@
         "sina",
         "weibo",
         "xn--55qw42g",
+        "xn--55qx5d",
         "xn--9krt00a",
+        "xn--io0a7i",
         "xn--zfr164b"
       ],
       [
@@ -3277,14 +3280,6 @@
       ],
       [
         "https://rdap.nic.rugby/"
-      ]
-    ],
-    [
-      [
-        "safety"
-      ],
-      [
-        "https://rdap.nic.safety/"
       ]
     ],
     [
@@ -5176,8 +5171,6 @@
     [
       [
         "xn--1qqw23a",
-        "xn--55qx5d",
-        "xn--io0a7i",
         "xn--xhq521b"
       ],
       [
