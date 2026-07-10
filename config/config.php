@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "v2026.7.9");
+define("VERSION", "v2026.7.10");
 
 define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
