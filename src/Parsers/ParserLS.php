@@ -1,5 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserLS extends ParserCR
 {
-  protected $timezone = "Africa/Maseru";
+  protected string $timezone = "Africa/Maseru";
 }

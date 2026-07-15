@@ -1,5 +1,6 @@
 {
   "require": {
+    "php": "^8.1",
     "jeremykendall/php-domain-parser": "^6.0",
     "symfony/polyfill-intl-idn": "^1.32"
   }

@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserGW extends Parser
 {
-  protected $dateFormat = "d/m/Y";
+  protected ?string $dateFormat = "d/m/Y";
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return $this->getBaseRegExp("nameserver \(hostname\)");
   }

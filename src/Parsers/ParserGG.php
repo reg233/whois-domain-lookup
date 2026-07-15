@@ -1,31 +1,34 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserGG extends Parser
 {
-  protected $dateFormat = 'jS F Y \a\t H:i:s.u';
+  protected ?string $dateFormat = 'jS F Y \a\t H:i:s.u';
 
-  protected $timezone = "Europe/Guernsey";
+  protected string $timezone = "Europe/Guernsey";
 
-  protected function getBaseRegExp($pattern)
+  protected function getBaseRegExp(string $pattern): string
   {
     return "/(?:$pattern):(.+?)(?=\n\n)/is";
   }
 
-  protected function getCreationDateRegExp()
+  protected function getCreationDateRegExp(): string
   {
     return "/registered on (.+)/i";
   }
 
-  protected function getStatus($subject = null)
+  protected function getStatus(?string $subject = null): array
   {
     return $this->getStatusFromExplode("\n");
   }
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return $this->getBaseRegExp("name servers");
   }
 
-  protected function getNameServers($subject = null)
+  protected function getNameServers(?string $subject = null): array
   {
     return $this->getNameServersFromExplode("\n");
   }

@@ -1,5 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserMQ extends Parser
 {
-  protected $timezone = "America/Martinique";
+  protected string $timezone = "America/Martinique";
 }

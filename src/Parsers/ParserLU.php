@@ -1,18 +1,21 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserLU extends Parser
 {
-  protected function getReservedRegExp()
+  protected function getReservedRegExp(): string
   {
     // lu.lu
     return "/domaintype: {5}reserved/i";
   }
 
-  protected function getStatusRegExp()
+  protected function getStatusRegExp(): string
   {
     return $this->getBaseRegExp("domaintype");
   }
 
-  protected function getStatus($subject = null)
+  protected function getStatus(?string $subject = null): array
   {
     $result = [];
 

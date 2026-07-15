@@ -1,7 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserIM extends Parser
 {
-  protected $dateFormat = "d/m/Y H:i:s";
+  protected ?string $dateFormat = "d/m/Y H:i:s";
 
-  protected $timezone = "Europe/Isle_of_Man";
+  protected string $timezone = "Europe/Isle_of_Man";
 }

@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserAR extends Parser
 {
-  protected $timezone = "America/Argentina/Buenos_Aires";
+  protected string $timezone = "America/Argentina/Buenos_Aires";
 
-  protected function getUnregisteredRegExp()
+  protected function getUnregisteredRegExp(): string
   {
     return "/no se encuentra registrado/i";
   }

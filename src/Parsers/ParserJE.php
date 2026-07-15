@@ -1,5 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserJE extends ParserGG
 {
-  protected $timezone = "Europe/Jersey";
+  protected string $timezone = "Europe/Jersey";
 }

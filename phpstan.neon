@@ -1,0 +1,32 @@
+parameters:
+  level: 8
+  paths:
+    - api
+    - config
+    - src
+  ignoreErrors:
+    -
+      rawMessages:
+        - 'Offset 2 might not exist on list{0: non-falsy-string, 1: non-empty-string, 2?: string, 3?: non-falsy-string}.'
+        - "Offset 3 might not exist on array{0: non-falsy-string, 1: non-empty-string, 2: ''|'0', 3?: non-falsy-string}."
+      path: src/Parsers/Parser.php
+    -
+      rawMessages:
+        - 'Access to an undefined property DOMNameSpaceNode|DOMNode::$attributes.'
+        - 'Access to an undefined property DOMNameSpaceNode|DOMNode::$childNodes.'
+        - 'Access to an undefined property DOMNameSpaceNode|DOMNode::$textContent.'
+        - 'Argument of an invalid type DOMNodeList<DOMNameSpaceNode|DOMNode>|false supplied for foreach, only iterables are supported.'
+        - 'Cannot access property $attributes on DOMElement|null.'
+        - 'Cannot access property $childNodes on DOMElement|null.'
+        - 'Cannot access property $childNodes on DOMNameSpaceNode|DOMNode|null.'
+        - 'Cannot access property $childNodes on DOMNode|null.'
+        - 'Cannot access property $length on DOMNodeList<DOMNameSpaceNode|DOMNode>|false.'
+        - 'Cannot access property $nodeName on DOMNode|null.'
+        - 'Cannot access property $textContent on DOMElement|null.'
+        - 'Cannot access property $textContent on DOMNameSpaceNode|DOMNode|null.'
+        - 'Cannot access property $textContent on DOMNode|null.'
+        - 'Cannot call method item() on DOMNodeList<DOMNameSpaceNode|DOMNode>|false.'
+        - 'Parameter #2 $contextNode of method DOMXPath::query() expects DOMNode|null, DOMNameSpaceNode|DOMNode given.'
+        - 'Parameter #2 $contextNode of method DOMXPath::query() expects DOMNode|null, DOMNameSpaceNode|DOMNode|null given.'
+        - 'Using nullsafe property access "?->textContent" on left side of ?? is unnecessary. Use -> instead.'
+      path: src/WHOISWeb.php

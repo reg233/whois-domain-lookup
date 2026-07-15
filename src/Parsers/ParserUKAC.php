@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class ParserUKAC
  * 
@@ -7,27 +9,27 @@
  */
 class ParserUKAC extends Parser
 {
-  protected function getBaseRegExp($pattern)
+  protected function getBaseRegExp(string $pattern): string
   {
     return "/(?:$pattern):\n(.+)/i";
   }
 
-  protected function getRegistrarRegExp()
+  protected function getRegistrarRegExp(): string
   {
     return $this->getBaseRegExp("registered by");
   }
 
-  protected function getExpirationDateRegExp()
+  protected function getExpirationDateRegExp(): string
   {
     return $this->getBaseRegExp("renewal date");
   }
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return "/servers:(.+?)(?=\n\n)/is";
   }
 
-  protected function getNameServers($subject = null)
+  protected function getNameServers(?string $subject = null): array
   {
     return $this->getNameServersFromExplode("\n", "\t");
   }

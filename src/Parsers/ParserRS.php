@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserRS extends Parser
 {
-  protected $timezone = "Europe/Belgrade";
+  protected string $timezone = "Europe/Belgrade";
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return $this->getBaseRegExp("dns");
   }

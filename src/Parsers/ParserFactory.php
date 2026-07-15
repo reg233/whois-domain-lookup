@@ -1,7 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserFactory
 {
-  private static $extensionToClassSuffix = [
+  /** @var array<string, list<string>> */
+  private static array $extensionToClassSuffix = [
     "am" => ["am", "հայ"],
     "ar" => ["ar"],
     "at" => ["at"],
@@ -85,11 +89,20 @@ class ParserFactory
     "ve" => ["ve"],
   ];
 
-  public static function create($extension, $data): Parser
+  public static function create(string $extension, string $data): Parser
   {
     foreach (self::$extensionToClassSuffix as $classSuffix => $extensions) {
-      if (in_array(strtolower($extension), $extensions)) {
+      if (in_array(strtolower($extension), $extensions, true)) {
         $class = "Parser" . strtoupper($classSuffix);
+
+        if (!class_exists($class)) {
+          throw new RuntimeException("Parser class $class does not exist.");
+        }
+
+        if (!is_subclass_of($class, Parser::class)) {
+          throw new RuntimeException("Parser class $class must extend Parser.");
+        }
+
         return new $class($data);
       }
     }

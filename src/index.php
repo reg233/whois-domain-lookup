@@ -1,79 +1,32 @@
 <?php
+
+declare(strict_types=1);
+
+use Pdp\SyntaxError;
+use Pdp\UnableToResolveDomain;
+
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);
   header("Allow: GET");
-  die;
+  exit;
 }
 
 require_once __DIR__ . "/../config/config.php";
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/utils.php";
 
-spl_autoload_register(function ($class) {
-  if (str_starts_with($class, "Parser")) {
-    require_once __DIR__ . "/Parsers/$class.php";
-  } else {
-    require_once __DIR__ . "/$class.php";
+spl_autoload_register(function (string $class) {
+  $filename = str_starts_with($class, "Parser")
+    ? __DIR__ . "/Parsers/$class.php"
+    : __DIR__ . "/$class.php";
+
+  if (is_file($filename)) {
+    require_once $filename;
   }
 });
 
-use Pdp\SyntaxError;
-use Pdp\UnableToResolveDomain;
-
-function checkPassword($echoJSON)
-{
-  if (!SITE_PASSWORD) {
-    return;
-  }
-
-  $password = $_COOKIE["password"] ?? null;
-  if ($password === hash("sha256", SITE_PASSWORD)) {
-    return;
-  }
-
-  $authorization = $_SERVER["HTTP_AUTHORIZATION"] ?? null;
-  $bearerPrefix = "Bearer ";
-  if ($authorization && str_starts_with($authorization, $bearerPrefix)) {
-    $hash = substr($authorization, strlen($bearerPrefix));
-    if ($hash === hash("sha256", SITE_PASSWORD)) {
-      return;
-    }
-  }
-
-  if ($echoJSON) {
-    echo json_encode(["code" => 1, "msg" => "Incorrect password.", "data" => null]);
-  } else {
-    $requestUri = $_SERVER["REQUEST_URI"];
-    if ($requestUri === BASE) {
-      header("Location: " . BASE . "login");
-    } else {
-      header("Location: " . BASE . "login?redirect=" . urlencode($requestUri));
-    }
-  }
-
-  die;
-}
-
-function cleanDomain()
-{
-  $domain = trim($_GET["domain"] ?? "");
-
-  if (!$domain) {
-    return "";
-  }
-
-  $domain = htmlspecialchars($domain, ENT_QUOTES, "UTF-8");
-  $domain = trim(preg_replace(["/\s+/", "/\.{2,}/"], ["", "."], $domain), ".");
-
-  $parsedUrl = parse_url($domain);
-  if ($parsedUrl["host"] ?? "") {
-    $domain = $parsedUrl["host"];
-  }
-
-  return $domain;
-}
-
-function getDataSource()
+/** @return list<'whois'|'rdap'> */
+function getDataSource(): array
 {
   $whois = filter_var($_GET["whois"] ?? 0, FILTER_VALIDATE_BOOL);
   $rdap = filter_var($_GET["rdap"] ?? 0, FILTER_VALIDATE_BOOL);
@@ -94,7 +47,7 @@ function getDataSource()
   return $dataSource;
 }
 
-function generateServerHref($path, $query, $dataSource, $server)
+function generateServerHref(string $path, string $query, string $dataSource, string $server): string
 {
   parse_str($query, $queryParams);
 
@@ -110,9 +63,22 @@ if ($echoJSON) {
   header("Content-Type: application/json");
 }
 
-checkPassword($echoJSON);
+if (!isPasswordValid()) {
+  if ($echoJSON) {
+    echo json_encode(["code" => 1, "msg" => "Incorrect password.", "data" => null]);
+  } else {
+    $requestUri = $_SERVER["REQUEST_URI"];
+    if ($requestUri === BASE) {
+      header("Location: " . BASE . "login");
+    } else {
+      header("Location: " . BASE . "login?redirect=" . urlencode($requestUri));
+    }
+  }
 
-$domain = cleanDomain();
+  exit;
+}
+
+$domain = cleanDomain($_GET["domain"] ?? "");
 $dataSource = [];
 
 $isIANA = false;
@@ -131,7 +97,7 @@ if ($domain) {
     $whoisData = $lookup->whoisData;
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
-  } catch (Exception $e) {
+  } catch (Throwable $e) {
     if ($e instanceof SyntaxError || $e instanceof UnableToResolveDomain) {
       $error = "'$domain' is not a valid domain.";
     } else {
@@ -155,14 +121,21 @@ if ($domain) {
       echo $json;
     }
 
-    die;
+    exit;
   }
 } else if ($echoJSON) {
   echo json_encode(
     ["code" => 1, "msg" => "The 'domain' parameter is required.", "data" => null],
     JSON_UNESCAPED_UNICODE,
   );
-  die;
+  exit;
+}
+
+if ($domain) {
+  $domain = htmlspecialchars($domain, ENT_QUOTES, "UTF-8");
+}
+if ($error) {
+  $error = htmlspecialchars($error, ENT_QUOTES, "UTF-8");
 }
 
 $origin = getProtocol() . $_SERVER["HTTP_HOST"];
@@ -759,7 +732,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
               <pre class="raw-data-whois" id="raw-data-whois"><code><?= htmlspecialchars($whoisData, ENT_QUOTES, "UTF-8"); ?></code></pre>
             <?php endif; ?>
             <?php if ($rdapData): ?>
-              <pre class="raw-data-rdap" id="raw-data-rdap"><code><?= $rdapData; ?></code></pre>
+              <pre class="raw-data-rdap" id="raw-data-rdap"><code><?= htmlspecialchars($rdapData, ENT_QUOTES, "UTF-8"); ?></code></pre>
             <?php endif; ?>
           </section>
         <?php endif; ?>
@@ -805,537 +778,14 @@ $ogImage = $origin . BASE . "public/images/og.png";
   <script src="public/js/popper.min.js?v=<?= VERSION; ?>" defer></script>
   <script src="public/js/tippy.min.js?v=<?= VERSION; ?>" defer></script>
   <script src="public/js/theme-switcher.js?v=<?= VERSION; ?>" defer></script>
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const domainElement = document.getElementById("domain");
-      const domainClearElement = document.getElementById("domain-clear");
-
-      if (domainElement.value) {
-        domainClearElement.classList.add("visible");
-      }
-
-      domainElement.addEventListener("input", (e) => {
-        if (e.target.value) {
-          domainClearElement.classList.add("visible");
-        } else {
-          domainClearElement.classList.remove("visible");
-        }
-      });
-      domainElement.addEventListener("paste", (e) => {
-        try {
-          const pasteData = e.clipboardData.getData("text");
-          const hostname = new URL(pasteData).hostname;
-
-          e.preventDefault();
-
-          domainElement.select();
-          if (document.queryCommandSupported("insertText")) {
-            document.execCommand("insertText", false, hostname);
-          } else {
-            const end = domainElement.value.length;
-            domainElement.setRangeText(hostname, 0, end, "end");
-            domainElement.dispatchEvent(new Event("input", {
-              bubbles: true,
-            }));
-          }
-        } catch {}
-      });
-
-      domainClearElement.addEventListener("click", () => {
-        domainElement.focus();
-        domainElement.select();
-        if (document.queryCommandSupported("delete")) {
-          document.execCommand("delete", false);
-        } else {
-          domainElement.setRangeText("");
-          domainElement.dispatchEvent(new Event("input", {
-            bubbles: true,
-          }));
-        }
-      });
-
-      const toggleWHOIS = document.getElementById("toggle-whois");
-      const toggleRDAP = document.getElementById("toggle-rdap");
-      const inputWHOIS = document.getElementById("input-whois");
-      const inputRDAP = document.getElementById("input-rdap");
-
-      const toggles = [toggleWHOIS, toggleRDAP];
-      const inputs = [inputWHOIS, inputRDAP];
-
-      toggles.forEach((toggle, index) => {
-        toggle.addEventListener("click", () => {
-          const active = toggle.getAttribute("aria-active") === "true";
-          const nextActive = `${!active}`;
-
-          toggle.setAttribute("aria-active", nextActive);
-          inputs[index].value = nextActive === "true" ? "1" : "0";
-        });
-      });
-
-      if (<?= json_encode($domain); ?>) {
-        toggles.forEach((toggle) => {
-          const active = toggle.getAttribute("aria-active") === "true";
-          localStorage.setItem(toggle.id, `${+active}`);
-        });
-      } else {
-        const whoisValue = localStorage.getItem("toggle-whois") || "0";
-        const rdapValue = localStorage.getItem("toggle-rdap") || "0";
-
-        toggles.forEach((toggle, index) => {
-          if (!+whoisValue && !+rdapValue) {
-            toggle.setAttribute("aria-active", "true");
-            inputs[index].value = "1";
-          } else {
-            const active = `${!!+localStorage.getItem(toggle.id)}`;
-
-            toggle.setAttribute("aria-active", active);
-            inputs[index].value = active === "true" ? "1" : "0";
-          }
-        });
-      }
-
-      const form = document.getElementById("form");
-      const searchButton = document.getElementById("search-button");
-
-      const oldFormData = Object.fromEntries(new FormData(form).entries());
-
-      form.addEventListener("submit", () => {
-        searchButton.disabled = true;
-        searchButton.dataset.loading = "true";
-      });
-
-      window.addEventListener("pageshow", (e) => {
-        if (e.persisted) {
-          const {
-            domain,
-            whois,
-            rdap
-          } = oldFormData;
-
-          if (domainElement.value !== domain) {
-            domainElement.focus();
-            domainElement.select();
-
-            if (domain) {
-              if (document.queryCommandSupported("insertText")) {
-                document.execCommand("insertText", false, domain);
-              } else {
-                const end = domainElement.value.length;
-                domainElement.setRangeText(domain, 0, end, "end");
-                domainElement.dispatchEvent(new Event("input", {
-                  bubbles: true,
-                }));
-              }
-            } else {
-              if (document.queryCommandSupported("delete")) {
-                document.execCommand("delete", false);
-              } else {
-                domainElement.setRangeText("");
-                domainElement.dispatchEvent(new Event("input", {
-                  bubbles: true,
-                }));
-              }
-            }
-
-            domainElement.blur();
-          }
-
-          if (inputWHOIS.value !== whois) {
-            toggleWHOIS.setAttribute("aria-active", `${whois === "1"}`);
-            inputWHOIS.value = whois;
-          }
-
-          if (inputRDAP.value !== rdap) {
-            toggleRDAP.setAttribute("aria-active", `${rdap === "1"}`);
-            inputRDAP.value = rdap;
-          }
-
-          if (searchButton.disabled === true) {
-            searchButton.disabled = false;
-            searchButton.dataset.loading = "false";
-          }
-        }
-      });
-
-      const backToTop = document.getElementById("back-to-top");
-      backToTop.addEventListener("click", () => {
-        const body = document.body;
-        const bodyStyle = window.getComputedStyle(body);
-        const scrollElement = bodyStyle.overflow === "auto" ? body : window;
-
-        scrollElement.scrollTo({
-          behavior: "smooth",
-          top: 0,
-        });
-      });
-
-      const messageElement = document.getElementById("message");
-      if (messageElement) {
-        const observer = new IntersectionObserver(([e]) => {
-          if (e.isIntersecting || e.boundingClientRect.top > 0) {
-            backToTop.classList.remove("visible");
-          } else {
-            backToTop.classList.add("visible");
-          }
-        }, {
-          threshold: 1,
-        });
-        observer.observe(messageElement);
-      }
-    });
-  </script>
+  <script src="public/js/index.js?v=<?= VERSION; ?>" defer></script>
   <?php if ($whoisData || $rdapData): ?>
     <?php if ($rdapData): ?>
       <script src="public/js/json-viewer.js?v=<?= VERSION; ?>" defer></script>
     <?php endif; ?>
     <script src="public/js/linkify.min.js?v=<?= VERSION; ?>" defer></script>
     <script src="public/js/linkify-html.min.js?v=<?= VERSION; ?>" defer></script>
-    <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const updateDateElementText = (elementId) => {
-          const element = document.getElementById(elementId);
-          if (element) {
-            const iso8601 = element.dataset.iso8601;
-            if (iso8601) {
-              if (iso8601.endsWith("Z")) {
-                const date = new Date(iso8601);
-
-                const year = date.getFullYear();
-                const month = `${date.getMonth() + 1}`.padStart(2, "0");
-                const day = `${date.getDate()}`.padStart(2, "0");
-                const hours = `${date.getHours()}`.padStart(2, "0");
-                const minutes = `${date.getMinutes()}`.padStart(2, "0");
-                const seconds = `${date.getSeconds()}`.padStart(2, "0");
-
-                element.innerText = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-                const timezoneOffset = date.getTimezoneOffset();
-
-                const offsetHours = -Math.trunc(timezoneOffset / 60);
-                const sign = offsetHours >= 0 ? "+" : "-";
-                const offsetMinutes = Math.abs(timezoneOffset % 60);
-                const minutesStr = offsetMinutes ? `:${offsetMinutes}` : "";
-
-                const timezoneElement = document.createElement("span");
-                timezoneElement.className = "card-item-value-secondary";
-                timezoneElement.innerText = `UTC${sign}${Math.abs(offsetHours)}${minutesStr}`;
-
-                element.parentElement.appendChild(timezoneElement);
-              } else {
-                element.innerText = iso8601;
-              }
-            }
-          }
-        };
-
-        updateDateElementText("creation-date");
-        updateDateElementText("expiration-date");
-        updateDateElementText("updated-date");
-        updateDateElementText("available-date");
-
-        const updateDaysElementText = (elementId) => {
-          const element = document.getElementById(elementId);
-          if (element) {
-            const seconds = element.dataset.seconds;
-            if (seconds) {
-              let days = Math.trunc(seconds / 24 / 60 / 60);
-              if (seconds < 0 && days === 0) {
-                days = "-0";
-              }
-
-              element.innerText = `${element.innerText} (${days} days)`;
-            }
-          }
-        }
-
-        updateDaysElementText("createdAgo");
-        updateDaysElementText("expiresIn");
-        updateDaysElementText("updatedAgo");
-        updateDaysElementText("availableIn");
-
-        const setupDNSRecords = () => {
-          const view = document.getElementById("dns-records-view");
-          const dialog = document.getElementById("dns-records-dialog");
-          const dialogClose = dialog.querySelector(".dialog-close");
-          const form = dialog.querySelector("form");
-          const inputBox = form.querySelector(".subdomain-input-box");
-          const input = form.querySelector("input");
-          const queryButton = form.querySelector("button");
-          const multiStatus = dialog.querySelector(".multi-status");
-          const result = dialog.querySelector(".dns-records-result");
-
-          if (!view) {
-            return;
-          }
-
-          view.addEventListener("click", () => {
-            dialog.showModal();
-            getData();
-          });
-          dialog.addEventListener("click", (e) => {
-            if (e.target === dialog) {
-              dialog.close();
-            }
-          });
-          dialog.addEventListener("close", () => {
-            input.value = "";
-            queryButton.disabled = false;
-            queryButton.dataset.loading = "false";
-
-            controller.abort();
-            if (timeoutId) {
-              clearTimeout(timeoutId);
-              timeoutId = undefined;
-            }
-          });
-          dialogClose.addEventListener("click", () => {
-            dialog.close();
-          });
-          form.addEventListener("submit", (e) => {
-            e.preventDefault();
-
-            getData(new FormData(form).get("subdomain"));
-          });
-          inputBox.addEventListener("click", () => {
-            input.focus();
-          });
-
-          let controller = new AbortController();
-          let timeoutId;
-
-          const getData = async (subdomain) => {
-            queryButton.disabled = true;
-            queryButton.dataset.loading = true;
-            multiStatus.dataset.statusType = "loading";
-
-            if (controller.abort) {
-              controller = new AbortController();
-            }
-            if (timeoutId) {
-              clearTimeout(timeoutId);
-              timeoutId = undefined;
-            }
-
-            const startTime = Date.now();
-
-            try {
-              const params = new URLSearchParams();
-              params.append("domain", <?= json_encode($domain); ?>);
-              if (subdomain) {
-                params.append("subdomain", subdomain);
-              }
-
-              const response = await fetch(`dns-records?${params.toString()}`, {
-                signal: controller.signal
-              });
-
-              if (!response.ok) {
-                throw new Error();
-              }
-
-              const {
-                domain,
-                data,
-              } = await response.json();
-
-              let innerHTML = "";
-
-              for (const type in data) {
-                const records = data[type];
-
-                innerHTML += `<p class="dns-records-result-type">${type}</p>`;
-
-                innerHTML += `<table class="dns-records-result-table">`;
-
-                innerHTML += "<thead><tr><th>#</th>";
-                const keys = Object.keys(records[0]);
-                keys.forEach((key) => {
-                  innerHTML += `<th>${key}</th>`;
-                });
-                innerHTML += "</tr></thead>";
-
-                innerHTML += "<tbody>";
-                records.forEach((record, index) => {
-                  innerHTML += `<tr><td>${index + 1}</td>`;
-                  keys.forEach((key) => {
-                    let child = record[key];
-                    if ((type === "A" || type === "AAAA") && key === "value") {
-                      child = `<a href="https://ipinfo.io/${child}" rel="nofollow noopener noreferrer" target="_blank">${child}</a>`;
-                    }
-                    innerHTML += `<td>${child}</td>`;
-                  });
-                  innerHTML += `</tr>`;
-                });
-                innerHTML += "</tbody>";
-
-                innerHTML += "</table>";
-              }
-
-              if (innerHTML) {
-                innerHTML = `<span class="dns-records-result-title">DNS records for ${domain}</span>${innerHTML}`;
-              }
-
-              timeoutId = setTimeout(() => {
-                queryButton.disabled = false;
-                queryButton.dataset.loading = "false";
-                multiStatus.dataset.statusType = innerHTML ? "" : "empty";
-                result.innerHTML = innerHTML;
-              }, Math.max(0, 500 - (Date.now() - startTime)));
-            } catch (error) {
-              if (error.name !== "AbortError") {
-                timeoutId = setTimeout(() => {
-                  queryButton.disabled = false;
-                  queryButton.dataset.loading = "false";
-                  multiStatus.dataset.statusType = "error";
-                }, Math.max(0, 500 - (Date.now() - startTime)));
-              }
-            }
-          };
-        };
-
-        setupDNSRecords();
-
-        const cardRawData = document.getElementById("card-raw-data");
-        const rawDataSentinel = document.getElementById("raw-data-sentinel");
-        const rawDataHead = document.getElementById("raw-data-head");
-        const rawDataTabWHOIS = document.getElementById("raw-data-tab-whois");
-        const rawDataTabRDAP = document.getElementById("raw-data-tab-rdap");
-        const rawDataButtons = document.getElementById("raw-data-buttons");
-        const expandAllButton = document.getElementById("expand-all-button");
-        const collapseAllButton = document.getElementById("collapse-all-button");
-        const copyButton = document.getElementById("copy-button");
-        const rawDataWHOIS = document.getElementById("raw-data-whois");
-        const rawDataRDAP = document.getElementById("raw-data-rdap");
-
-        if (rawDataSentinel && rawDataHead) {
-          const observer = new IntersectionObserver(([e]) => {
-            cardRawData.classList.toggle("is-sticky", !e.isIntersecting);
-          }, {
-            threshold: 1,
-          });
-          observer.observe(rawDataSentinel);
-        }
-
-        if (rawDataTabWHOIS && rawDataTabRDAP) {
-          rawDataTabWHOIS.addEventListener("click", () => {
-            if (!rawDataTabWHOIS.classList.contains("raw-data-tab-active")) {
-              rawDataButtons.classList.add("raw-data-buttons-only-copy");
-              rawDataTabWHOIS.classList.add("raw-data-tab-active");
-              rawDataWHOIS.style.display = "block";
-              rawDataTabRDAP.classList.remove("raw-data-tab-active");
-              rawDataRDAP.style.display = "none";
-            }
-
-            rawDataSentinel.scrollIntoView({
-              behavior: "smooth"
-            });
-          });
-          rawDataTabRDAP.addEventListener("click", () => {
-            if (!rawDataTabRDAP.classList.contains("raw-data-tab-active")) {
-              rawDataButtons.classList.remove("raw-data-buttons-only-copy");
-              rawDataTabWHOIS.classList.remove("raw-data-tab-active");
-              rawDataWHOIS.style.display = "none";
-              rawDataTabRDAP.classList.add("raw-data-tab-active");
-              rawDataRDAP.style.display = "block";
-            }
-
-            rawDataSentinel.scrollIntoView({
-              behavior: "smooth"
-            });
-          });
-        }
-
-        const copyToClipboard = (data) => {
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(data);
-          } else {
-            const fakeElement = document.createElement("textarea");
-            fakeElement.style.border = "0";
-            fakeElement.style.fontSize = "12pt";
-            fakeElement.style.margin = "0";
-            fakeElement.style.padding = "0";
-            fakeElement.style.position = "absolute";
-
-            const isRTL = document.documentElement.getAttribute("dir") === "rtl";
-            fakeElement.style[isRTL ? "right" : "left"] = "-9999px";
-            const yPosition = window.pageYOffset || document.documentElement.scrollTop;
-            fakeElement.style.top = `${yPosition}px`;
-
-            fakeElement.setAttribute("readonly", "");
-            fakeElement.value = data;
-
-            document.body.appendChild(fakeElement);
-
-            fakeElement.select();
-            fakeElement.setSelectionRange(0, fakeElement.value.length);
-
-            document.execCommand("copy");
-
-            fakeElement.remove();
-          }
-        };
-
-        if (copyButton) {
-          let timeoutId;
-
-          copyButton.addEventListener("click", () => {
-            let data;
-
-            if (rawDataWHOIS && getComputedStyle(rawDataWHOIS).display === "block") {
-              data = rawDataWHOIS.innerText;
-            } else if (rawDataRDAP && getComputedStyle(rawDataRDAP).display === "block") {
-              data = JSON.stringify(JSON.parse(rdapData), null, 2);
-            }
-
-            if (!data) {
-              return;
-            }
-
-            if (timeoutId) {
-              clearTimeout(timeoutId);
-              timeoutId = null;
-            }
-
-            copyToClipboard(data);
-            copyButton.dataset.copied = "true";
-            timeoutId = setTimeout(() => {
-              copyButton.dataset.copied = "false";
-            }, 2333);
-          });
-        }
-
-        const rdapData = <?= json_encode($rdapData); ?>;
-
-        const linkifyRawData = (element) => {
-          if (element) {
-            element.innerHTML = linkifyHtml(element.innerHTML, {
-              rel: "nofollow noopener noreferrer",
-              target: "_blank",
-              validate: {
-                url: (value) => /^https?:\/\//i.test(value),
-              },
-            });
-          }
-        };
-
-        if (rawDataWHOIS) {
-          linkifyRawData(rawDataWHOIS);
-        }
-        if (rawDataRDAP) {
-          setupJSONViewer(rawDataRDAP, expandAllButton, collapseAllButton, rdapData);
-          linkifyRawData(rawDataRDAP);
-        }
-
-        tippy.createSingleton(tippy("#raw-data-buttons button"), {
-          appendTo: "parent",
-          arrow: false,
-          hideOnClick: false,
-          offset: [0, 8],
-          placement: "bottom",
-          moveTransition: "transform 233ms ease",
-        });
-      });
-    </script>
+    <script src="public/js/index-result.js?v=<?= VERSION; ?>" defer></script>
   <?php endif; ?>
   <?= CUSTOM_SCRIPT; ?>
 </body>

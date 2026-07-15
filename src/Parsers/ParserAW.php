@@ -1,22 +1,25 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserAW extends Parser
 {
-  protected function getUnregisteredRegExp()
+  protected function getUnregisteredRegExp(): string
   {
     return "/is free/i";
   }
 
-  protected function getRegistrarRegExp()
+  protected function getRegistrarRegExp(): string
   {
     return "/registrar:\r\n(.+)/i";
   }
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return "/nameservers:(.+?)(?=\r\n\r\n)/is";
   }
 
-  protected function getNameServers($subject = null)
+  protected function getNameServers(?string $subject = null): array
   {
     return $this->getNameServersFromExplode("\r\n");
   }

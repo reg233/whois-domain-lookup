@@ -1,5 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserCZ extends ParserCR
 {
-  protected $timezone = "Europe/Prague";
+  protected string $timezone = "Europe/Prague";
 }

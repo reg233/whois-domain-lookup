@@ -40,7 +40,7 @@ jobs:
               ((i++))
             done
 
-            sed -i "2s/.*/define(\"VERSION\", \"${tag}\");/" config/config.php
+            sed -i "5s/.*/define(\"VERSION\", \"${tag}\");/" config/config.php
             git add config/config.php
 
             git config user.name "github-actions[bot]"

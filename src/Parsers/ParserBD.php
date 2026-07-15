@@ -1,19 +1,22 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserBD extends Parser
 {
-  protected $dateFormat = "d/m/Y";
+  protected ?string $dateFormat = "d/m/Y";
 
-  protected function getUpdatedDate($subject = null)
+  protected function getUpdatedDate(?string $subject = null): string
   {
     return "";
   }
 
-  protected function getStatusRegExp()
+  protected function getStatusRegExp(): string
   {
     return $this->getBaseRegExp("domain status");
   }
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return $this->getBaseRegExp("(?:primary|secondary) dns");
   }

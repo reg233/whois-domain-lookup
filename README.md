@@ -142,11 +142,14 @@ server {
 | `CUSTOM_SCRIPT` | Custom content to insert before `</body>` on the home page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
 | `CUSTOM_HEAD_LOGIN` | Custom content to insert before `</head>` on the login page (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT_LOGIN` | Custom content to insert before `</body>` on the login page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
+| `USER_AGENT` | HTTP User-Agent header for WHOISWeb/RDAP lookups. | `Mozilla/5.0` | `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36` |
 
 If you deploy using `web hosting`, you should modify the `config/config.php` file, like this:
 
 ```php
 <?php
+...
+
 define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
 ...

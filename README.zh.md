@@ -142,11 +142,14 @@ server {
 | `CUSTOM_SCRIPT` | 插入到首页中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
 | `CUSTOM_HEAD_LOGIN` | 插入到登录页中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT_LOGIN` | 插入到登录页中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
+| `USER_AGENT` | WHOISWeb/RDAP 查询使用的 HTTP User-Agent 请求头 | `Mozilla/5.0` | `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36` |
 
 如果您使用 `网站托管` 部署，您需要修改 `config/config.php` 文件，如下所示：
 
 ```php
 <?php
+...
+
 define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
 ...

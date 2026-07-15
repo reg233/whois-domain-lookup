@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserHM extends Parser
 {
-  protected $dateFormat = "d/m/Y";
+  protected ?string $dateFormat = "d/m/Y";
 
-  protected function getRegistrarURLRegExp()
+  protected function getRegistrarURLRegExp(): string
   {
     return $this->getBaseRegExp("referral url");
   }

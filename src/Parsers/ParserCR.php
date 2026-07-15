@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserCR extends Parser
 {
-  protected $timezone = "America/Costa_Rica";
+  protected string $timezone = "America/Costa_Rica";
 
-  protected function getUpdatedDate($subject = null)
+  protected function getUpdatedDate(?string $subject = null): string
   {
     // Some domain names do not have an updated date, such as decathlon.cr.
     // In such cases, the retrieved update date is incorrect,

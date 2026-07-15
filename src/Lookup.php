@@ -1,89 +1,93 @@
 <?php
 
+declare(strict_types=1);
+
 use Pdp\Domain;
 use Pdp\Rules;
 
 class Lookup
 {
-  public $domain;
+  public string $domain;
 
-  public $extension;
+  public string $extension;
 
-  private $extensionTop;
+  private ?string $extensionTop = null;
 
-  private $dataSource = [];
+  /** @var list<'whois'|'rdap'> */
+  private array $dataSource = [];
 
-  public $whoisData;
+  public ?string $whoisData = null;
 
-  private $whoisParser;
+  private ?Parser $whoisParser = null;
 
-  private $whoisUnknown;
+  private string $whoisUnknown = "";
 
-  private $whoisError;
+  private string $whoisError = "";
 
-  public $rdapData;
+  public ?string $rdapData = null;
 
-  private $rdapParser;
+  private ?ParserRDAP $rdapParser = null;
 
-  private $rdapUnknown;
+  private string $rdapUnknown = "";
 
-  private $rdapError;
+  private string $rdapError = "";
 
-  public $parser;
+  public Parser $parser;
 
-  public function __construct($domain, $dataSource)
+  /** @param list<'whois'|'rdap'> $dataSource */
+  public function __construct(string $domain, array $dataSource)
   {
     $this->parseDomain($domain);
     $this->dataSource = $dataSource;
 
-    if (in_array("whois", $dataSource, true)) {
+    $useWHOIS = in_array("whois", $dataSource, true);
+    $useRDAP = in_array("rdap", $dataSource, true);
+
+    if ($useWHOIS) {
       $this->getWHOIS();
     }
-    if (in_array("rdap", $dataSource, true)) {
+    if ($useRDAP) {
       $this->getRDAP();
     }
-    if (in_array("whois", $dataSource, true) && in_array("rdap", $dataSource, true)) {
+    if ($useWHOIS && $useRDAP) {
       $this->merge();
     }
 
     if ($this->parser->registrarIANAId || $this->parser->registrar) {
-      $this->getRegistrarURL();
+      $this->setRegistrarInfoFromICANN();
     }
   }
 
-  private function parseDomain($domain)
+  private function parseDomain(string $domain): void
   {
     $publicSuffixList = Rules::fromPath(__DIR__ . "/data/public-suffix-list.dat");
-    $domain = Domain::fromIDNA2008(idn_to_utf8($domain));
+    $domain = Domain::fromIDNA2008($domain)->toUnicode();
 
     try {
       $domainName = $publicSuffixList->getPrivateDomain($domain);
       $this->domain = $domainName->registrableDomain()->toString();
       $this->extension = $domainName->suffix()->toString();
-    } catch (Throwable $t) {
+    } catch (Throwable) {
       try {
         $domainName = $publicSuffixList->getICANNDomain($domain);
         $this->domain = $domainName->registrableDomain()->toString();
         $this->extension = $domainName->suffix()->toString();
         $this->extensionTop = $domainName->domain()->label(0);
-      } catch (Throwable $t) {
-        if ($t->getMessage() === "The domain \"{$domain->toString()}\" can not contain a public suffix.") {
+      } catch (Throwable $e) {
+        if ($e->getMessage() === "The domain \"{$domain->toString()}\" can not contain a public suffix.") {
           $this->domain = $domain->toString();
           $this->extension = "iana";
-        } else if (
-          $t->getMessage() === "The public suffix and the domain name are identical `{$domain->toString()}`." &&
-          count($domain->labels()) > 1
-        ) {
+        } else if ($e->getMessage() === "The public suffix and the domain name are identical `{$domain->toString()}`.") {
           $this->domain = $domain->toString();
-          $this->extension = $domain->label(0);
+          $this->extension = $domain->label(0) ?? throw $e;
         } else {
-          throw $t;
+          throw $e;
         }
       }
     }
   }
 
-  private function getWHOIS()
+  private function getWHOIS(): void
   {
     try {
       $whois = new WHOIS($this->domain, $this->extension, $this->extensionTop);
@@ -101,12 +105,12 @@ class Lookup
       } else {
         $this->whoisParser = $parser;
       }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
       if ($this->dataSource === ["whois"]) {
         throw $e;
       }
 
-      if ($e->getMessage() === "No WHOIS server found for '$this->domain'.") {
+      if ($e->getMessage() === "No WHOIS server found for '{$this->domain}'.") {
         $this->whoisUnknown = $e->getMessage();
       } else {
         $this->whoisError = $e->getMessage();
@@ -114,7 +118,7 @@ class Lookup
     }
   }
 
-  private function getRDAP()
+  private function getRDAP(): void
   {
     try {
       $rdap = new RDAP($this->domain, $this->extension, $this->extensionTop);
@@ -132,12 +136,12 @@ class Lookup
       } else {
         $this->rdapParser = $parser;
       }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
       if ($this->dataSource === ["rdap"]) {
         throw $e;
       }
 
-      if ($e->getMessage() === "No RDAP server found for '$this->domain'.") {
+      if ($e->getMessage() === "No RDAP server found for '{$this->domain}'.") {
         $this->rdapUnknown = $e->getMessage();
       } else {
         $this->rdapError = $e->getMessage();
@@ -145,42 +149,65 @@ class Lookup
     }
   }
 
-  private function merge()
+  private function merge(): void
   {
     if ($this->whoisUnknown && $this->rdapUnknown) {
-      throw new RuntimeException("No WHOIS or RDAP server found for '$this->domain'.");
-    }
-
-    if (($this->whoisError && $this->rdapUnknown) || ($this->whoisUnknown && $this->rdapError)) {
-      throw new RuntimeException($this->whoisError ?: $this->rdapError);
+      throw new RuntimeException("No WHOIS or RDAP server found for '{$this->domain}'.");
     }
 
     if ($this->whoisError && $this->rdapError) {
-      throw new RuntimeException("WHOIS and RDAP requests failed for '$this->domain'.");
+      throw new RuntimeException("WHOIS and RDAP lookups failed for '{$this->domain}'.");
+    }
+
+    if ($this->whoisError && $this->rdapUnknown) {
+      throw new RuntimeException($this->whoisError);
+    }
+
+    if ($this->whoisUnknown && $this->rdapError) {
+      throw new RuntimeException($this->rdapError);
     }
 
     if ($this->whoisParser && $this->rdapParser) {
-      $this->mergeParser();
+      $this->mergeParser($this->whoisParser, $this->rdapParser);
     } else if ($this->whoisParser) {
       $this->parser = $this->whoisParser;
     } else if ($this->rdapParser) {
       $this->parser = $this->rdapParser;
     } else {
-      throw new RuntimeException("No WHOIS or RDAP parser result is available for '$this->domain'.");
+      throw new RuntimeException("No WHOIS or RDAP parser is available for '{$this->domain}'.");
     }
   }
 
-  private function mergeParser()
+  private function mergeParser(Parser $whoisParser, ParserRDAP $rdapParser): void
   {
-    $this->parser = $this->whoisParser;
-    $this->parser->rdapData = $this->rdapParser->rdapData;
+    $this->parser = $whoisParser;
+    $this->parser->rdapData = $rdapParser->rdapData;
 
-    if (!$this->rdapParser->registered) {
+    if ($rdapParser->reserved) {
+      $this->parser->unknown = false;
+      $this->parser->reserved = true;
+      $this->parser->registered = false;
       return;
     }
 
-    $properties = [
+    if (!$rdapParser->registered || $rdapParser->unknown) {
+      return;
+    }
+
+    $boolProperties = [
       "registered",
+      "gracePeriod",
+      "redemptionPeriod",
+      "pendingDelete",
+      "hold",
+      "inactive",
+    ];
+
+    foreach ($boolProperties as $property) {
+      $this->parser->$property = $rdapParser->$property;
+    }
+
+    $stringProperties = [
       "domain",
       "registryWebsite",
       "registryWHOISServer",
@@ -191,43 +218,56 @@ class Lookup
       "registrarWHOISServer",
       "registrarRDAPServer",
       "creationDate",
-      "creationDateISO8601",
       "expirationDate",
-      "expirationDateISO8601",
       "updatedDate",
-      "updatedDateISO8601",
       "availableDate",
-      "availableDateISO8601",
-      "status",
-      "nameServers",
-      "dnssecSigned",
       "createdAgo",
       "expiresIn",
       "updatedAgo",
       "availableIn",
-      "gracePeriod",
-      "redemptionPeriod",
-      "pendingDelete",
-      "hold",
-      "inactive",
     ];
 
-    foreach ($properties as $property) {
-      if (is_bool($this->rdapParser->$property) || $this->rdapParser->$property) {
-        $this->parser->$property = $this->rdapParser->$property;
+    foreach ($stringProperties as $property) {
+      if ($rdapParser->$property !== "") {
+        $this->parser->$property = $rdapParser->$property;
       }
     }
 
-    $secondsProperties = [
+    $nullableStringProperties = [
+      "creationDateISO8601",
+      "expirationDateISO8601",
+      "updatedDateISO8601",
+      "availableDateISO8601",
+    ];
+
+    foreach ($nullableStringProperties as $property) {
+      if ($rdapParser->$property !== null && $rdapParser->$property !== "") {
+        $this->parser->$property = $rdapParser->$property;
+      }
+    }
+
+    if ($rdapParser->status) {
+      $this->parser->status = $rdapParser->status;
+    }
+
+    if ($rdapParser->nameServers) {
+      $this->parser->nameServers = $rdapParser->nameServers;
+    }
+
+    if ($rdapParser->dnssecSigned !== null) {
+      $this->parser->dnssecSigned = $rdapParser->dnssecSigned;
+    }
+
+    $nullableIntProperties = [
       "createdAgoSeconds",
       "expiresInSeconds",
       "updatedAgoSeconds",
       "availableInSeconds",
     ];
 
-    foreach ($secondsProperties as $property) {
-      if ($this->rdapParser->$property !== null) {
-        $this->parser->$property = $this->rdapParser->$property;
+    foreach ($nullableIntProperties as $property) {
+      if ($rdapParser->$property !== null) {
+        $this->parser->$property = $rdapParser->$property;
       }
     }
 
@@ -237,7 +277,7 @@ class Lookup
     }
   }
 
-  private function getRegistrarURL()
+  private function setRegistrarInfoFromICANN(): void
   {
     $filename = __DIR__ . "/data/icann-accredited-registrars.csv";
     if (!file_exists($filename)) {
@@ -254,8 +294,8 @@ class Lookup
       }
 
       while (($row = fgetcsv($stream, 0, ",", '"', "\\")) !== false) {
-        $ianaId = trim($row[0]);
-        $registrar = strtolower(trim($row[1]));
+        $ianaId = trim($row[0] ?? "");
+        $registrar = strtolower(trim($row[1] ?? ""));
 
         if (
           ($this->parser->registrarIANAId && $ianaId === $this->parser->registrarIANAId) ||
@@ -263,10 +303,10 @@ class Lookup
         ) {
           $this->parser->registrarIANAId = $ianaId;
           if (!$this->parser->registrarURL) {
-            $this->parser->registrarURL = trim($row[2]);
+            $this->parser->registrarURL = trim($row[2] ?? "");
           }
           if (!$this->parser->registrarRDAPServer) {
-            $this->parser->registrarRDAPServer = trim($row[3]);
+            $this->parser->registrarRDAPServer = trim($row[3] ?? "");
           }
 
           return;

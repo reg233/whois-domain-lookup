@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class ParserCOMHK
  * 
@@ -7,7 +9,7 @@
  */
 class ParserCOMHK extends Parser
 {
-  protected function getAvailableDate()
+  protected function getAvailableDate(): string
   {
     return "";
   }

@@ -1,91 +1,98 @@
 <?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . "/../utils.php";
+
 class Parser
 {
-  protected $extension = null;
+  protected ?string $extension = null;
 
-  protected $dateFormat = null;
+  protected ?string $dateFormat = null;
 
-  protected $timezone = "UTC";
+  protected string $timezone = "UTC";
 
-  protected $data = "";
+  protected string $data = "";
 
-  public $whoisData = "";
+  public string $whoisData = "";
 
-  public $rdapData = "";
+  public string $rdapData = "";
 
-  public $unknown = false;
+  public bool $unknown = false;
 
-  public $reserved = false;
+  public bool $reserved = false;
 
-  public $registered = false;
+  public bool $registered = false;
 
-  public $domain = "";
+  public string $domain = "";
 
-  public $registryWebsite = "";
+  public string $registryWebsite = "";
 
-  public $registryWHOISServer = "";
+  public string $registryWHOISServer = "";
 
-  public $registryRDAPServer = "";
+  public string $registryRDAPServer = "";
 
-  public $registrar = "";
+  public string $registrar = "";
 
-  public $registrarURL = "";
+  public string $registrarURL = "";
 
-  public $registrarIANAId = "";
+  public string $registrarIANAId = "";
 
-  public $registrarWHOISServer = "";
+  public string $registrarWHOISServer = "";
 
-  public $registrarRDAPServer = "";
+  public string $registrarRDAPServer = "";
 
-  public $creationDate = "";
+  public string $creationDate = "";
 
-  public $creationDateISO8601 = null;
+  public ?string $creationDateISO8601 = null;
 
-  public $expirationDate = "";
+  public string $expirationDate = "";
 
-  public $expirationDateISO8601 = null;
+  public ?string $expirationDateISO8601 = null;
 
-  public $updatedDate = "";
+  public string $updatedDate = "";
 
-  public $updatedDateISO8601 = null;
+  public ?string $updatedDateISO8601 = null;
 
-  public $availableDate = "";
+  public string $availableDate = "";
 
-  public $availableDateISO8601 = null;
+  public ?string $availableDateISO8601 = null;
 
-  public $status = [];
+  /** @var list<array{text:string, url:string}> */
+  public array $status = [];
 
-  public $nameServers = [];
+  /** @var list<string> */
+  public array $nameServers = [];
 
-  public $dnssecSigned = null;
+  public ?bool $dnssecSigned = null;
 
-  public $createdAgo = "";
+  public string $createdAgo = "";
 
-  public $createdAgoSeconds = null;
+  public ?int $createdAgoSeconds = null;
 
-  public $expiresIn = "";
+  public string $expiresIn = "";
 
-  public $expiresInSeconds = null;
+  public ?int $expiresInSeconds = null;
 
-  public $updatedAgo = "";
+  public string $updatedAgo = "";
 
-  public $updatedAgoSeconds = null;
+  public ?int $updatedAgoSeconds = null;
 
-  public $availableIn = "";
+  public string $availableIn = "";
 
-  public $availableInSeconds = null;
+  public ?int $availableInSeconds = null;
 
-  public $gracePeriod = false;
+  public bool $gracePeriod = false;
 
-  public $redemptionPeriod = false;
+  public bool $redemptionPeriod = false;
 
-  public $pendingDelete = false;
+  public bool $pendingDelete = false;
 
-  public $hold = false;
+  public bool $hold = false;
 
-  public $inactive = false;
+  public bool $inactive = false;
 
-  public function __construct($data)
+  public function __construct(string $data)
   {
     $this->data = $data;
     $this->whoisData = $data;
@@ -231,12 +238,12 @@ class Parser
     "restricted from registration",
   ];
 
-  protected function getReservedRegExp()
+  protected function getReservedRegExp(): string
   {
     return "/" . implode("|", self::RESERVED_KEYWORDS) . "/i";
   }
 
-  protected function getReserved()
+  protected function getReserved(): bool
   {
     return !!preg_match($this->getReservedRegExp(), $this->data);
   }
@@ -309,17 +316,17 @@ class Parser
     "is available for purchase",
   ];
 
-  protected function getUnregisteredRegExp()
+  protected function getUnregisteredRegExp(): string
   {
     return "/" . implode("|", self::UNREGISTERED_KEYWORDS) . "/i";
   }
 
-  protected function getUnregistered()
+  protected function getUnregistered(): bool
   {
     return !!preg_match($this->getUnregisteredRegExp(), $this->data);
   }
 
-  protected function getBaseRegExp($pattern)
+  protected function getBaseRegExp(string $pattern): string
   {
     return "/^[\t ]*(?:$pattern)[\.\t ]*:(.+)$/im";
   }
@@ -331,7 +338,7 @@ class Parser
     // kn, kr, kw, ky, kz, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mo, mq, mr, ms, mt, mu, mx
     // my, mz, nf, ng, ni, nl, no, np, nr, nz, om, pa, pe, pg, ph, pr, ps, pw, qa, ro, rs, rw, sa
     // sb, sc, sd, se, sg, sh, sl, sm, so, ss, st, sx, sy, tc, td, th, tj, tl, tn, to, tt, tv, ug
-    // us, uz, vc, ve, vg, vn, vu, ws, ye, za, zm
+    // us, uz, vc, vg, vn, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3e0b707e, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--80ao21a, xn--90a3ac
     // xn--90ae, xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d
     // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j6w193g, xn--lgbbat1ad8j
@@ -340,7 +347,7 @@ class Parser
     // xn--rvc1e0am3e, xn--s9brj9c, xn--wgbl6a, xn--xkc2dl3a5ee0h, xn--y9a3aq, xn--yfro4i67o
     "domain name",
     // ar, at, ax, be, br, cr, cz, de, dk, eu, fi, fr, gg, gr, hu, il, ir, is, it, je, ls, lt, lv
-    // mc, mk, mw, nc, nu, pk, pm, pt, re, ru, si, sk, sr, su, tf, tg, tm, tz, ua, wf, yt
+    // mc, mk, mw, nc, nu, pk, pm, pt, re, ru, si, sk, sr, su, tf, tg, tm, tz, ua, ve, wf, yt
     // xn--4dbrk0ce, xn--d1alf, xn--e1a4c, xn--mgba3a4f16a, xn--p1ai, xn--qxa6a, xn--qxam
     "domain",
     // lu
@@ -351,17 +358,17 @@ class Parser
     "domain name \(utf8\)",
   ];
 
-  protected function getDomainRegExp()
+  protected function getDomainRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::DOMAIN_KEYWORDS));
   }
 
-  protected function getDomain()
+  protected function getDomain(): string
   {
     if (preg_match($this->getDomainRegExp(), $this->data, $matches)) {
       $domain = strtolower(explode(" ", trim($matches[1]))[0]);
-      if (!empty($domain)) {
-        return idn_to_utf8($domain);
+      if ($domain) {
+        return idn_to_utf8($domain) ?: $domain;
       }
     }
 
@@ -373,12 +380,12 @@ class Parser
     "remarks:      registration information",
   ];
 
-  protected function getRegistryWebsiteRegExp()
+  protected function getRegistryWebsiteRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::REGISTRY_WEBSITE));
   }
 
-  protected function getRegistryWebsite()
+  protected function getRegistryWebsite(): string
   {
     if (preg_match($this->getRegistryWebsiteRegExp(), $this->data, $matches)) {
       $url = strtolower(trim($matches[1]));
@@ -404,12 +411,12 @@ class Parser
     "whois",
   ];
 
-  protected function getRegistryWHOISServerRegExp()
+  protected function getRegistryWHOISServerRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::REGISTRY_WHOIS_SERVER));
   }
 
-  protected function getRegistryWHOISServer()
+  protected function getRegistryWHOISServer(): string
   {
     if (preg_match($this->getRegistryWHOISServerRegExp(), $this->data, $matches)) {
       return trim($matches[1]);
@@ -445,12 +452,12 @@ class Parser
     "registration service provider",
   ];
 
-  protected function getRegistrarRegExp()
+  protected function getRegistrarRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::REGISTRAR_KEYWORDS));
   }
 
-  protected function getRegistrar()
+  protected function getRegistrar(): string
   {
     if (preg_match($this->getRegistrarRegExp(), $this->data, $matches)) {
       return trim($matches[1]);
@@ -480,12 +487,12 @@ class Parser
     "registration service url",
   ];
 
-  protected function getRegistrarURLRegExp()
+  protected function getRegistrarURLRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::REGISTRAR_URL_KEYWORDS));
   }
 
-  protected function getRegistrarURL()
+  protected function getRegistrarURL(): string
   {
     if (preg_match($this->getRegistrarURLRegExp(), $this->data, $matches)) {
       $url = trim($matches[1]);
@@ -509,12 +516,12 @@ class Parser
     "sponsoring registrar iana id",
   ];
 
-  protected function getRegistrarIANAIdRegExp()
+  protected function getRegistrarIANAIdRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::REGISTRAR_IANA_ID_KEYWORDS));
   }
 
-  protected function getRegistrarIANAId()
+  protected function getRegistrarIANAId(): string
   {
     if (preg_match($this->getRegistrarIANAIdRegExp(), $this->data, $matches)) {
       $ianaId = trim($matches[1]);
@@ -540,12 +547,12 @@ class Parser
     "whois tcp uri",
   ];
 
-  protected function getRegistrarWHOISServerRegExp()
+  protected function getRegistrarWHOISServerRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::REGISTRAR_WHOIS_SERVER));
   }
 
-  protected function getRegistrarWHOISServer()
+  protected function getRegistrarWHOISServer(): string
   {
     if (preg_match($this->getRegistrarWHOISServerRegExp(), $this->data, $matches)) {
       return trim($matches[1]);
@@ -611,12 +618,12 @@ class Parser
     "created date",
   ];
 
-  protected function getCreationDateRegExp()
+  protected function getCreationDateRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::CREATION_DATE_KEYWORDS));
   }
 
-  protected function getCreationDate()
+  protected function getCreationDate(): string
   {
     if (preg_match($this->getCreationDateRegExp(), $this->data, $matches)) {
       return trim($matches[1]);
@@ -625,7 +632,7 @@ class Parser
     return "";
   }
 
-  protected function getCreationDateISO8601()
+  protected function getCreationDateISO8601(): ?string
   {
     return $this->getISO8601($this->creationDate);
   }
@@ -685,12 +692,12 @@ class Parser
     "expiry",
   ];
 
-  protected function getExpirationDateRegExp()
+  protected function getExpirationDateRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::EXPIRATION_DATE_KEYWORDS));
   }
 
-  protected function getExpirationDate()
+  protected function getExpirationDate(): string
   {
     if (preg_match($this->getExpirationDateRegExp(), $this->data, $matches)) {
       return trim($matches[1]);
@@ -699,7 +706,7 @@ class Parser
     return "";
   }
 
-  protected function getExpirationDateISO8601()
+  protected function getExpirationDateISO8601(): ?string
   {
     return $this->getISO8601($this->expirationDate);
   }
@@ -748,12 +755,12 @@ class Parser
     "updated",
   ];
 
-  protected function getUpdatedDateRegExp()
+  protected function getUpdatedDateRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::UPDATED_DATE_KEYWORDS));
   }
 
-  protected function getUpdatedDate($subject = null)
+  protected function getUpdatedDate(?string $subject = null): string
   {
     if (preg_match($this->getUpdatedDateRegExp(), $subject ?? $this->data, $matches)) {
       return trim($matches[1]);
@@ -762,7 +769,7 @@ class Parser
     return "";
   }
 
-  protected function getUpdatedDateISO8601()
+  protected function getUpdatedDateISO8601(): ?string
   {
     return $this->getISO8601($this->updatedDate);
   }
@@ -777,12 +784,12 @@ class Parser
     "free-date",
   ];
 
-  protected function getAvailableDateRegExp()
+  protected function getAvailableDateRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::AVAILABLE_DATE_KEYWORDS));
   }
 
-  protected function getAvailableDate()
+  protected function getAvailableDate(): string
   {
     if (preg_match($this->getAvailableDateRegExp(), $this->data, $matches)) {
       return trim($matches[1]);
@@ -791,12 +798,12 @@ class Parser
     return "";
   }
 
-  protected function getAvailableDateISO8601()
+  protected function getAvailableDateISO8601(): ?string
   {
     return $this->getISO8601($this->availableDate);
   }
 
-  protected function getISO8601($dateString)
+  protected function getISO8601(string $dateString): ?string
   {
     // In RDAP, the expiration date of whois.tw is "Z"
     if (empty($dateString) || $dateString === "Z") {
@@ -812,15 +819,19 @@ class Parser
         ? new DateTime($dateString, $timezone)
         : DateTime::createFromFormat($this->dateFormat, $dateString, $timezone);
 
+      if ($date === false) {
+        return null;
+      }
+
       $date->setTimezone(new DateTimeZone("UTC"));
 
       return $date->format($hasTime ? "Y-m-d\TH:i:s\Z" : "Y-m-d");
-    } catch (Throwable $e) {
+    } catch (Throwable) {
       return null;
     }
   }
 
-  protected function getDateDiffText($start, $end)
+  protected function getDateDiffText(?string $start, ?string $end): string
   {
     if (empty($start) || empty($end)) {
       return "";
@@ -845,12 +856,12 @@ class Parser
       }
 
       return ($interval->invert ? "-" : "") . ($parts ? implode(" ", $parts) : "0D");
-    } catch (Throwable $e) {
+    } catch (Throwable) {
       return "";
     }
   }
 
-  protected function getDateDiffSeconds($start, $end)
+  protected function getDateDiffSeconds(?string $start, ?string $end): ?int
   {
     if (empty($start) || empty($end)) {
       return null;
@@ -863,7 +874,7 @@ class Parser
       $endDate = new DateTime($end, $timezone);
 
       return $endDate->getTimestamp() - $startDate->getTimestamp();
-    } catch (Throwable $e) {
+    } catch (Throwable) {
       return null;
     }
   }
@@ -1038,12 +1049,13 @@ class Parser
     ],
   ];
 
-  protected function getStatusRegExp()
+  protected function getStatusRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::STATUS_KEYWORDS));
   }
 
-  protected function getStatus($subject = null)
+  /** @return list<array{text:string, url:string}> */
+  protected function getStatus(?string $subject = null): array
   {
     if (preg_match_all($this->getStatusRegExp(), $subject ?? $this->data, $matches)) {
       return array_map(
@@ -1063,7 +1075,12 @@ class Parser
     return [];
   }
 
-  protected function getStatusFromExplode($separator, $subSeparator = null)
+  /**
+   * @param non-empty-string $separator
+   * @param non-empty-string|null $subSeparator
+   * @return list<array{text:string, url:string}>
+   */
+  protected function getStatusFromExplode(string $separator, ?string $subSeparator = null): array
   {
     if (preg_match($this->getStatusRegExp(), $this->data, $matches)) {
       return array_map(
@@ -1081,7 +1098,7 @@ class Parser
     return [];
   }
 
-  protected function formatStatus()
+  protected function formatStatus(): void
   {
     $statusMap = [];
 
@@ -1130,16 +1147,17 @@ class Parser
     "nameserver",
   ];
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::NAME_SERVERS_KEYWORDS));
   }
 
-  protected function getNameServers($subject = null)
+  /** @return list<string> */
+  protected function getNameServers(?string $subject = null): array
   {
     if (preg_match_all($this->getNameServersRegExp(), $subject ?? $this->data, $matches)) {
       return array_map(
-        fn($item) => strtolower(preg_split("/[ \t]+/", $item, 2)[0]),
+        fn($item) => strtolower(pregSplit("/[ \t]+/", $item, 2)[0]),
         array_values(array_unique(array_filter(array_map("trim", $matches[1])))),
       );
     }
@@ -1147,14 +1165,19 @@ class Parser
     return [];
   }
 
-  protected function getNameServersFromExplode($separator, $subSeparator = " ")
+  /**
+   * @param non-empty-string $separator
+   * @param non-empty-string $subSeparator
+   * @return list<string>
+   */
+  protected function getNameServersFromExplode(string $separator, string $subSeparator = " "): array
   {
     if (preg_match($this->getNameServersRegExp(), $this->data, $matches)) {
       return array_map(
         fn($item) => strtolower(explode($subSeparator, $item)[0]),
         array_values(array_unique(array_filter(array_map(
           "trim",
-          explode($separator, $matches[1])
+          explode($separator, $matches[1]),
         )))),
       );
     }
@@ -1212,17 +1235,17 @@ class Parser
     "true",
   ];
 
-  protected function getDNSSECSignedRegExp()
+  protected function getDNSSECSignedRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::DNSSEC_SIGNED_KEYWORDS));
   }
 
-  protected function getDNSSECSignedExtraRegExp()
+  protected function getDNSSECSignedExtraRegExp(): string
   {
     return $this->getBaseRegExp(implode("|", self::DNSSEC_SIGNED_EXTRA_KEYWORDS));
   }
 
-  protected function getDNSSECSigned()
+  protected function getDNSSECSigned(): ?bool
   {
     if (preg_match($this->getDNSSECSignedRegExp(), $this->data, $matches)) {
       $value = trim($matches[1]);
@@ -1258,7 +1281,8 @@ class Parser
     "Inactive",
   ];
 
-  protected function hasAnyStatusText($statusTexts)
+  /** @param list<string> $statusTexts */
+  protected function hasAnyStatusText(array $statusTexts): bool
   {
     $texts = array_column($this->status, "text");
 
@@ -1290,7 +1314,7 @@ class Parser
     "not defined",
   ];
 
-  protected function removeEmptyValues()
+  protected function removeEmptyValues(): void
   {
     foreach (self::EMPTY_PROPERTIES as $property) {
       $value = $this->$property;
@@ -1302,18 +1326,18 @@ class Parser
       switch ($property) {
         case "status":
           $this->status = array_values(array_filter(
-            $value,
-            fn($item) => !in_array(strtolower($item["text"]), self::EMPTY_VALUES)
+            $this->status,
+            fn($item) => !in_array(strtolower($item["text"]), self::EMPTY_VALUES, true),
           ));
           break;
         case "nameServers":
           $this->nameServers = array_values(array_diff(
-            array_map("strtolower", $value),
-            self::EMPTY_VALUES
+            array_map("strtolower", $this->nameServers),
+            self::EMPTY_VALUES,
           ));
           break;
         default:
-          if (in_array(strtolower($value), self::EMPTY_VALUES)) {
+          if (is_string($value) && in_array(strtolower($value), self::EMPTY_VALUES, true)) {
             $this->$property = "";
           }
           break;
@@ -1321,7 +1345,7 @@ class Parser
     }
   }
 
-  public function getUnknown()
+  public function getUnknown(): bool
   {
     return empty($this->registrar) &&
       empty($this->creationDate) &&

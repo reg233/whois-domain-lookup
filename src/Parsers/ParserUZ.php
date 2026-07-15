@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserUZ extends Parser
 {
-  protected $timezone = "Asia/Tashkent";
+  protected string $timezone = "Asia/Tashkent";
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return "/name server:(?! (?:not[\. ]defined\.|<no value>))(.+)/i";
   }

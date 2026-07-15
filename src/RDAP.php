@@ -1,19 +1,23 @@
 <?php
+
+declare(strict_types=1);
+
 class RDAP
 {
-  public $domain;
+  public string $domain;
 
-  public $extension;
+  public string $extension;
 
-  private $servers;
+  /** @var array<string, string> */
+  private array $servers;
 
-  private $server;
+  private string $server;
 
   private const SERVERS_IANA = __DIR__ . "/data/rdap-servers-iana.json";
 
   private const SERVERS_EXTRA = __DIR__ . "/data/rdap-servers-extra.json";
 
-  public function __construct($domain, $extension, $extensionTop)
+  public function __construct(string $domain, string $extension, ?string $extensionTop)
   {
     $this->domain = $domain;
     $this->extension = $extension;
@@ -32,7 +36,8 @@ class RDAP
     }
   }
 
-  private function getServers()
+  /** @return array<string, string> */
+  private function getServers(): array
   {
     $servers = [];
 
@@ -66,52 +71,50 @@ class RDAP
     return $servers;
   }
 
-  private function getServer()
+  private function getServer(): string
   {
     if ($this->extension === "iana") {
       return "https://rdap.iana.org/";
     }
 
-    $server = $this->servers[idn_to_ascii($this->extension)] ?? "";
+    $extension = idn_to_ascii($this->extension) ?: $this->extension;
+    $server = $this->servers[$extension] ?? "";
 
     if (empty($server)) {
-      throw new RuntimeException("No RDAP server found for '$this->domain'.");
+      throw new RuntimeException("No RDAP server found for '{$this->domain}'.");
     }
 
     return $server;
   }
 
-  public function getData()
+  /** @return array{0:int, 1:string} */
+  public function getData(): array
   {
     $server = rtrim($this->server, "/");
-    $domain = idn_to_ascii($this->domain);
+    $domain = idn_to_ascii($this->domain) ?: $this->domain;
 
-    $curl = curl_init("{$server}/domain/$domain");
+    $ch = curl_init("$server/domain/$domain");
 
-    curl_setopt_array($curl, [
+    curl_setopt_array($ch, [
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_FOLLOWLOCATION => true,
       CURLOPT_TIMEOUT => 10,
-      CURLOPT_USERAGENT => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+      CURLOPT_USERAGENT => USER_AGENT,
     ]);
 
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException("RDAP request failed for '$this->domain': $error.");
+    $response = curl_exec($ch);
+    if (is_bool($response)) {
+      $error = curl_error($ch);
+      throw new RuntimeException("RDAP lookup failed for '{$this->domain}': $error.");
     }
 
-    $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-
-    curl_close($curl);
-
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     if ($code >= 400 && $code !== 404) {
-      throw new RuntimeException("RDAP request failed for '$this->domain': HTTP $code.");
+      throw new RuntimeException("RDAP lookup failed for '{$this->domain}': HTTP $code.");
     }
 
-    if (!preg_match("/^application\/(rdap\+)?json/i", $contentType)) {
+    $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+    if (!is_string($contentType) || !preg_match("/^application\/(rdap\+)?json/i", $contentType)) {
       $response = "";
     }
 

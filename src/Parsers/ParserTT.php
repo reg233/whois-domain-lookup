@@ -1,22 +1,25 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserTT extends Parser
 {
-  protected function getExpirationDateRegExp()
+  protected function getExpirationDateRegExp(): string
   {
     return "/expiration date: (.+) {6}/i";
   }
 
-  protected function getStatusRegExp()
+  protected function getStatusRegExp(): string
   {
     return "/expiration date: .+ {6}(.+)/i";
   }
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return $this->getBaseRegExp("dns hostnames");
   }
 
-  protected function getNameServers($subject = null)
+  protected function getNameServers(?string $subject = null): array
   {
     return $this->getNameServersFromExplode(",");
   }

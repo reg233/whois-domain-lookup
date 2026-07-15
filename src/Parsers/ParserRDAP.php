@@ -1,13 +1,19 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserRDAP extends Parser
 {
-  private $json = [];
+  /** @var array<string, mixed> */
+  private array $json = [];
 
-  public function __construct($extension, $code, $data)
+  public function __construct(string $extension, int $code, string $data)
   {
     $this->extension = $extension;
     $this->rdapData = $data;
-    $this->json = json_decode($data, true);
+
+    $json = json_decode($data, true);
+    $this->json = is_array($json) ? $json : [];
 
     $this->reserved = $this->getReserved();
     if ($this->reserved) {
@@ -24,20 +30,21 @@ class ParserRDAP extends Parser
       return;
     }
 
-    $this->getDomain();
+    $this->domain = $this->getDomain();
 
-    $this->getLinks();
+    $this->setLinks();
 
-    $this->getRegistryWHOISServer();
+    $this->registryWHOISServer = $this->getRegistryWHOISServer();
 
-    $this->getRegistrar();
+    $this->setRegistrarInfo();
 
-    $this->getDates();
+    $this->setDates();
 
-    $this->getStatus();
+    $this->status = $this->getStatus();
+    $this->formatStatus();
 
-    $this->getNameServers();
-    $this->getDNSSECSigned();
+    $this->nameServers = $this->getNameServers();
+    $this->dnssecSigned = $this->getDNSSECSigned();
 
     $this->createdAgo = $this->getDateDiffText($this->creationDateISO8601, "now");
     $this->createdAgoSeconds = $this->getDateDiffSeconds($this->creationDateISO8601, "now");
@@ -58,7 +65,7 @@ class ParserRDAP extends Parser
     }
   }
 
-  protected function getReserved()
+  protected function getReserved(): bool
   {
     // aa.af, xxx.as, bw.bw, email.cm, cv.cv, fuck.cx, 233.ec, xxx.gn, gy.gy, fuck.hn, fuck.ht
     // fuck.ki, ac.kn, lb.lb, 233.ly, mg.mg, xxx.mr, xxx.ms, fuck.nf, 233.ng, xxx.rw, fuck.sb, a.so
@@ -67,7 +74,7 @@ class ParserRDAP extends Parser
       foreach ($this->json["variants"] as $variant) {
         if (
           isset($variant["relations"]) &&
-          in_array("RESTRICTED_REGISTRATION", $variant["relations"])
+          in_array("RESTRICTED_REGISTRATION", $variant["relations"], true)
         ) {
           return true;
         }
@@ -102,15 +109,19 @@ class ParserRDAP extends Parser
     return false;
   }
 
-  protected function getDomain()
+  protected function getDomain(): string
   {
-    if (!empty($this->json["ldhName"])) {
-      // The ldhName of et extension ends with a dot
-      $this->domain = idn_to_utf8(strtolower(rtrim($this->json["ldhName"], ".")));
+    if (empty($this->json["ldhName"])) {
+      return "";
     }
+
+    // The ldhName of et extension ends with a dot
+    $domain = strtolower(rtrim($this->json["ldhName"], "."));
+
+    return idn_to_utf8($domain) ?: $domain;
   }
 
-  protected function getLinks()
+  private function setLinks(): void
   {
     if (!isset($this->json["links"])) {
       return;
@@ -135,14 +146,12 @@ class ParserRDAP extends Parser
     }
   }
 
-  protected function getRegistryWHOISServer()
+  protected function getRegistryWHOISServer(): string
   {
-    if (!empty($this->json["port43"])) {
-      $this->registryWHOISServer = $this->json["port43"];
-    }
+    return $this->json["port43"] ?? "";
   }
 
-  protected function getRegistrar()
+  private function setRegistrarInfo(): void
   {
     if (empty($this->json["entities"])) {
       return;
@@ -152,7 +161,7 @@ class ParserRDAP extends Parser
       $roles = $entity["roles"] ?? [];
 
       if (
-        (is_array($roles) && in_array("registrar", $roles)) ||
+        (is_array($roles) && in_array("registrar", $roles, true)) ||
         (is_string($roles) && $roles === "registrar") // kg
       ) {
         if (isset($entity["vcardArray"][1])) {
@@ -174,7 +183,7 @@ class ParserRDAP extends Parser
           foreach ($entity["entities"] as $subEntity) {
             if (
               isset($subEntity["roles"]) &&
-              in_array("abuse", $subEntity["roles"]) &&
+              in_array("abuse", $subEntity["roles"], true) &&
               isset($subEntity["vcardArray"][1])
             ) {
               foreach ($subEntity["vcardArray"][1] as $vcard) {
@@ -229,10 +238,10 @@ class ParserRDAP extends Parser
     }
   }
 
-  private function formatURL(string $url)
+  private function formatURL(string $url): string
   {
     if ($url) {
-      return preg_match("#^https?://#i", $url) ? $url : "http://" . $url;
+      return preg_match("#^https?://#i", $url) ? $url : "http://$url";
     }
 
     return "";
@@ -247,7 +256,7 @@ class ParserRDAP extends Parser
     "record expires",
   ];
 
-  protected function getDates()
+  private function setDates(): void
   {
     if (empty($this->json["events"])) {
       return;
@@ -259,7 +268,7 @@ class ParserRDAP extends Parser
         if ($action === "registration") {
           $this->creationDate = $event["eventDate"];
           $this->creationDateISO8601 = $this->getCreationDateISO8601();
-        } else if (in_array($action, self::EXPIRATION_DATE_KEYWORDS)) {
+        } else if (in_array($action, self::EXPIRATION_DATE_KEYWORDS, true)) {
           $this->expirationDate = $event["eventDate"];
           $this->expirationDateISO8601 = $this->getExpirationDateISO8601();
         } else if ($action === "last changed") {
@@ -270,37 +279,41 @@ class ParserRDAP extends Parser
     }
   }
 
-  protected function getStatus($subject = null)
+  protected function getStatus(?string $subject = null): array
   {
     if (empty($this->json["status"])) {
-      return;
+      return [];
     }
 
-    $this->status = array_map(
+    return array_map(
       fn($item) => ["text" => $item, "url" => ""],
       array_values(array_unique($this->json["status"])),
     );
-
-    $this->formatStatus();
   }
 
-  protected function getNameServers($subject = null)
+  protected function getNameServers(?string $subject = null): array
   {
     if (empty($this->json["nameservers"])) {
-      return;
+      return [];
     }
 
-    $this->nameServers = array_values(array_unique(array_map(
-      fn($item) => idn_to_utf8(strtolower(explode(" ", $item["ldhName"])[0])),
+    return array_values(array_unique(array_map(
+      function ($item) {
+        $nameServer = strtolower(explode(" ", $item["ldhName"])[0]);
+
+        return idn_to_utf8($nameServer) ?: $nameServer;
+      },
       $this->json["nameservers"],
     )));
   }
 
-  protected function getDNSSECSigned()
+  protected function getDNSSECSigned(): ?bool
   {
     if (isset($this->json["secureDNS"]["delegationSigned"])) {
       // The delegationSigned of kg extension is a bool string
-      $this->dnssecSigned = filter_var($this->json["secureDNS"]["delegationSigned"], FILTER_VALIDATE_BOOL);
+      return filter_var($this->json["secureDNS"]["delegationSigned"], FILTER_VALIDATE_BOOL);
     }
+
+    return null;
   }
 }

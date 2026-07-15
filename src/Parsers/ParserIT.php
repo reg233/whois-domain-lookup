@@ -1,40 +1,43 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserIT extends Parser
 {
-  protected $timezone = "Europe/Rome";
+  protected string $timezone = "Europe/Rome";
 
-  protected function getReservedRegExp()
+  protected function getReservedRegExp(): string
   {
     // it.it
     return "/status: {13}unassignable/i";
   }
 
-  protected function getUnregisteredRegExp()
+  protected function getUnregisteredRegExp(): string
   {
     return "/status: {13}available/i";
   }
 
-  protected function getRegistrarRegExp()
+  protected function getRegistrarRegExp(): string
   {
     return $this->getBaseRegExp("registrar\n  organization");
   }
 
-  protected function getRegistrarURLRegExp()
+  protected function getRegistrarURLRegExp(): string
   {
     return $this->getBaseRegExp("web");
   }
 
-  protected function getStatus($subject = null)
+  protected function getStatus(?string $subject = null): array
   {
     return $this->getStatusFromExplode("/");
   }
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return "/nameservers(.+)/is";
   }
 
-  protected function getNameServers($subject = null)
+  protected function getNameServers(?string $subject = null): array
   {
     return $this->getNameServersFromExplode("\n");
   }

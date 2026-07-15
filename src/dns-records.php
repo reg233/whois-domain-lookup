@@ -1,54 +1,32 @@
 <?php
+
+declare(strict_types=1);
+
 require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/../src/utils.php";
 require_once __DIR__ . "/../vendor/autoload.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "GET") {
   http_response_code(405);
   header("Allow: GET");
-  die;
+  exit;
+}
+
+if (!isPasswordValid()) {
+  http_response_code(401);
+  exit;
 }
 
 $domain = $_GET["domain"] ?? "";
-$subdomain = trim($_GET["subdomain"] ?? "");
-
 if (!$domain) {
   http_response_code(400);
-  die;
+  exit;
 }
 
+$subdomain = cleanDomain($_GET["subdomain"] ?? "");
 if ($subdomain) {
-  $subdomain = htmlspecialchars($subdomain, ENT_QUOTES, "UTF-8");
-  $subdomain = trim(preg_replace(["/\s+/", "/\.{2,}/"], ["", "."], $subdomain), ".");
   $domain = "$subdomain.$domain";
 }
-
-function checkPassword()
-{
-  if (!SITE_PASSWORD) {
-    return;
-  }
-
-  $password = $_COOKIE["password"] ?? null;
-  if ($password === hash("sha256", SITE_PASSWORD)) {
-    return;
-  }
-
-  $authorization = $_SERVER["HTTP_AUTHORIZATION"] ?? null;
-  $bearerPrefix = "Bearer ";
-  if ($authorization && str_starts_with($authorization, $bearerPrefix)) {
-    $hash = substr($authorization, strlen($bearerPrefix));
-    if ($hash === hash("sha256", SITE_PASSWORD)) {
-      return;
-    }
-  }
-
-  http_response_code(401);
-  header("Content-Type: application/json");
-
-  die;
-}
-
-checkPassword();
 
 $types = [
   "A" => [
@@ -84,10 +62,12 @@ $fieldMap = [
   "pri" => "priority",
 ];
 
+$hostname = idn_to_ascii($domain) ?: $domain;
+
 $dnsRecords = [];
 
 foreach ($types as $type => $value) {
-  $records = @dns_get_record(idn_to_ascii($domain), $value["flag"]);
+  $records = @dns_get_record($hostname, $value["flag"]);
 
   if ($records) {
     foreach ($records as $record) {
@@ -111,6 +91,6 @@ foreach ($types as $type => $value) {
 header("Content-Type: application/json");
 
 echo json_encode([
-  "domain" => $domain,
+  "domain" => htmlspecialchars($domain, ENT_QUOTES, "UTF-8"),
   "data" => $dnsRecords ?: new stdClass(),
 ]);

@@ -1,13 +1,20 @@
 <?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . "/utils.php";
+
 class WHOISWeb
 {
-  public $domain;
+  public string $domain;
 
-  public $extension;
+  public string $extension;
 
-  private $domainParts;
+  /** @var array{0:string, 1:string} */
+  private array $domainParts;
 
-  private static $extensionToFunctionSuffix = [
+  /** @var array<string, list<string>> */
+  private static array $extensionToFunctionSuffix = [
     "ao" => ["ao"],
     "az" => ["az"],
     "ba" => ["ba"],
@@ -41,10 +48,10 @@ class WHOISWeb
     "vn" => ["vn"],
   ];
 
-  public static function isSupported($extension)
+  public static function isSupported(string $extension): bool
   {
     foreach (self::$extensionToFunctionSuffix as $extensions) {
-      if (in_array($extension, $extensions)) {
+      if (in_array($extension, $extensions, true)) {
         return true;
       }
     }
@@ -52,19 +59,21 @@ class WHOISWeb
     return false;
   }
 
-  public function __construct($domain, $extension)
+  public function __construct(string $domain, string $extension)
   {
     $this->domain = $domain;
     $this->extension = $extension;
-    $this->domainParts = explode(".", $domain, 2);
+
+    $parts = explode(".", $domain, 2);
+    $this->domainParts = [$parts[0], $parts[1] ?? ""];
 
     libxml_use_internal_errors(true);
   }
 
-  public function getData()
+  public function getData(): string
   {
     foreach (self::$extensionToFunctionSuffix as $functionSuffix => $extensions) {
-      if (in_array(strtolower($this->extension), $extensions)) {
+      if (in_array(strtolower($this->extension), $extensions, true)) {
         $functionName = "get" . strtoupper($functionSuffix);
         return $this->$functionName();
       }
@@ -73,71 +82,91 @@ class WHOISWeb
     return "";
   }
 
-  private function request($url, $options = [], $returnArray = false)
+  /** @param array<int, mixed> $options */
+  private function request(string $url, array $options = []): string
   {
-    $curl = curl_init($url);
+    return $this->requestWithInfo($url, $options)["body"];
+  }
+
+  /**
+   * @param array<int, mixed> $options
+   * @return array{code:int, headers:string, body:string}
+   */
+  private function requestWithInfo(string $url, array $options = []): array
+  {
+    $ch = curl_init($url);
 
     $defaultOptions = [
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_FOLLOWLOCATION => true,
       CURLOPT_TIMEOUT => 10,
-      CURLOPT_USERAGENT => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+      CURLOPT_USERAGENT => USER_AGENT,
     ];
 
-    curl_setopt_array($curl, array_replace($defaultOptions, $options));
+    curl_setopt_array($ch, array_replace($defaultOptions, $options));
 
-    $response = curl_exec($curl);
-    if ($response === false) {
-      $error = curl_error($curl);
-      curl_close($curl);
-      throw new RuntimeException("WHOISWeb request failed for '$this->domain': $error.");
+    $response = curl_exec($ch);
+    if (is_bool($response)) {
+      $error = curl_error($ch);
+      throw new RuntimeException("WHOISWeb lookup failed for '{$this->domain}': $error.");
     }
 
-    $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-
-    curl_close($curl);
-
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     if ($code >= 400 && $code !== 404) {
-      throw new RuntimeException("WHOISWeb request failed for '$this->domain': HTTP $code.");
+      throw new RuntimeException("WHOISWeb lookup failed for '{$this->domain}': HTTP $code.");
     }
 
-    if ($returnArray) {
-      return [
-        "response" => $response,
-        "code" => $code,
-        "headerSize" => $headerSize,
-      ];
+    $headers = "";
+    $body = $response;
+
+    if ($options[CURLOPT_HEADER] ?? false) {
+      $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+      $headers = substr($response, 0, $headerSize);
+      $body = substr($response, $headerSize);
+    }
+    if ($options[CURLOPT_NOBODY] ?? false) {
+      $body = "";
     }
 
-    return $response;
+    return [
+      "code" => $code,
+      "headers" => $headers,
+      "body" => $body,
+    ];
   }
 
-  private function getAO()
+  private function getCookiesFromHeaders(string $headers): string
+  {
+    preg_match_all("/^Set-Cookie: *([^\r\n ;]+)/im", $headers, $matches);
+
+    return implode("; ", $matches[1]);
+  }
+
+  private function getAO(): string
   {
     return "Please visit https://www.dns.ao/ao/whois/";
   }
 
-  private function getAZ()
+  private function getAZ(): string
   {
     return "Please visit https://whois.az";
   }
 
-  private function getBA()
+  private function getBA(): string
   {
     return "Please visit https://nic.ba/?culture=en";
   }
 
-  private function getBB()
+  private function getBB(): string
   {
     $url = "https://whois.telecoms.gov.bb/status/" . $this->domain;
 
-    $response = $this->request($url);
+    $html = $this->request($url);
 
-    $response = str_replace(["<<<", ">>>"], ["&lt;&lt;&lt;", "&gt;&gt;&gt;"], $response);
+    $html = str_replace(["<<<", ">>>"], ["&lt;&lt;&lt;", "&gt;&gt;&gt;"], $html);
 
     $document = new DOMDocument();
-    $document->loadHTML('<?xml encoding="UTF-8"?>' . $response);
+    $document->loadHTML('<?xml encoding="UTF-8"?>' . $html);
 
     $whois = "";
 
@@ -161,7 +190,7 @@ class WHOISWeb
     return trim($whois);
   }
 
-  private function getBO()
+  private function getBO(): string
   {
     $url = "https://nic.bo/whois.php";
 
@@ -177,10 +206,10 @@ class WHOISWeb
       CURLOPT_COOKIE => "app_language=en",
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
@@ -189,7 +218,7 @@ class WHOISWeb
       return trim($error);
     }
 
-    preg_match('/window\.self\.location="(.+)"/i', $response, $matches);
+    preg_match('/window\.self\.location="(.+)"/i', $html, $matches);
 
     if (empty($matches[1])) {
       return "";
@@ -199,9 +228,9 @@ class WHOISWeb
 
     $options = [CURLOPT_COOKIE => "app_language=en"];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
-    $document->loadHTML(str_replace(" :&nbsp;&nbsp;", "", $response));
+    $document->loadHTML(str_replace(" :&nbsp;&nbsp;", "", $html));
 
     $whois = "";
 
@@ -226,7 +255,7 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getBT()
+  private function getBT(): string
   {
     $params = [
       "query" => $this->domainParts[0],
@@ -235,10 +264,10 @@ class WHOISWeb
 
     $url = "https://www.nic.bt/search?" . http_build_query($params);
 
-    $response = $this->request($url);
+    $html = $this->request($url);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $whois = "";
 
@@ -270,7 +299,7 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getCU()
+  private function getCU(): string
   {
     $url = "https://www.nic.cu/dom_search.php";
 
@@ -279,10 +308,10 @@ class WHOISWeb
       CURLOPT_POSTFIELDS => ["domsrch" => $this->domain],
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML('<?xml encoding="UTF-8"?>' . $response);
+    $document->loadHTML('<?xml encoding="UTF-8"?>' . $html);
 
     $xPath = new DOMXPath($document);
 
@@ -318,26 +347,26 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getCY()
+  private function getCY(): string
   {
     return "Please visit https://registry.nic.cy/cy-ui/home";
   }
 
-  private function getDJ()
+  private function getDJ(): string
   {
     return "Please visit https://dot.dj";
   }
 
-  private function getDZ()
+  private function getDZ(): string
   {
     $segment = $this->extension === "dz" ? "/" : "/arabic/";
     $url = "https://api.nic.dz/v1" . $segment . "domains/" . $this->domain;
 
     $options = [CURLOPT_SSL_VERIFYPEER => false];
 
-    $response = $this->request($url, $options);
+    $jsonText = $this->request($url, $options);
 
-    $json = json_decode($response, true);
+    $json = json_decode($jsonText, true);
 
     if (isset($json["title"])) {
       return $json["title"];
@@ -364,7 +393,7 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getGF()
+  private function getGF(): string
   {
     $url = "https://www.dom-enic.com/whois.html";
 
@@ -378,10 +407,10 @@ class WHOISWeb
       CURLOPT_POSTFIELDS => $data,
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
@@ -413,10 +442,10 @@ class WHOISWeb
       }
     }
 
-    return preg_replace("/ {2,}/", " ", $whois);
+    return pregReplace("/ {2,}/", " ", $whois);
   }
 
-  private function getGM()
+  private function getGM(): string
   {
     $url = "https://www.nic.gm/NIC2/scripts/checkdom.aspx?dname=" . $this->domainParts[0];
 
@@ -426,9 +455,7 @@ class WHOISWeb
       CURLOPT_NOBODY => true,
     ];
 
-    ["response" => $response, "headerSize" => $headerSize] = $this->request($url, $options, true);
-
-    $headers = substr($response, 0, $headerSize);
+    ["headers" => $headers] = $this->requestWithInfo($url, $options);
 
     $whois = "";
 
@@ -442,10 +469,10 @@ class WHOISWeb
     } else if (str_contains($headers, "/NIC2/whois-details.html")) {
       $url = "https://www.nic.gm/NIC2/REG/login.aspx?whois=" . $this->domainParts[0];
 
-      $response = $this->request($url);
+      $body = $this->request($url);
 
-      if ($response) {
-        $array = explode(";", $response);
+      if ($body) {
+        $array = explode(";", $body);
 
         $whois .= "Domain Name: {$this->domain}\n";
         $whois .= "Registrar: {$array[2]}\n";
@@ -465,41 +492,35 @@ class WHOISWeb
     if ($whois) {
       $url = "https://www.nic.gm/NIC2/motd.txt";
 
-      $response = $this->request($url);
+      $body = $this->request($url);
 
-      if ($response) {
-        $whois .= ">>> Last update of whois database: " . trim($response) . " <<<";
+      if ($body) {
+        $whois .= ">>> Last update of whois database: " . trim($body) . " <<<";
       }
     }
 
     return $whois;
   }
 
-  private function getGQ()
+  private function getGQ(): string
   {
     return "Please visit http://www.dominio.gq/en/whois.html";
   }
 
-  private function getGR()
+  private function getGR(): string
   {
     $url = "https://grweb.ics.forth.gr/public/whois?lang=en";
 
     $options = [CURLOPT_HEADER => true];
 
-    ["response" => $response, "headerSize" => $headerSize] = $this->request($url, $options, true);
-
-    $headers = substr($response, 0, $headerSize);
-    $body = substr($response, $headerSize);
-
-    preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
-    $cookies = implode("; ", $matches[1]);
+    ["headers" => $headers, "body" => $html] = $this->requestWithInfo($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML($body);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
-    $csrf = $xPath->query("//input[@name='_csrf']")->item(0)?->attributes->getNamedItem("value")?->value;
+    $csrf = $xPath->query("//input[@name='_csrf']")->item(0)?->attributes?->getNamedItem("value")?->value;
 
     if (!$csrf) {
       return "";
@@ -516,12 +537,12 @@ class WHOISWeb
     $options = [
       CURLOPT_POST => true,
       CURLOPT_POSTFIELDS => http_build_query($data),
-      CURLOPT_COOKIE => $cookies,
+      CURLOPT_COOKIE => $this->getCookiesFromHeaders($headers),
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
@@ -601,20 +622,20 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getGT()
+  private function getGT(): string
   {
     $url = "https://www.gt/sitio/whois.php?dn=" . $this->domain . "&lang=en";
 
-    $response = $this->request($url);
+    $html = $this->request($url);
 
     $document = new DOMDocument();
-    $document->loadHTML(str_replace("&nbsp;", " ", $response));
+    $document->loadHTML(str_replace("&nbsp;", " ", $html));
 
     $xPath = new DOMXPath($document);
 
     $message = $xPath->query('//div[@class="caja caja-message"]')->item(0);
     if ($message) {
-      return trim(preg_replace("/ {2,}/", "", $message->textContent));
+      return trim(pregReplace("/ {2,}/", "", $message->textContent));
     }
 
     $whois = "";
@@ -623,7 +644,7 @@ class WHOISWeb
     if ($whoisNodeList->length === 2) {
       foreach ($whoisNodeList->item(0)->childNodes as $child) {
         if ($child->nodeName === "div") {
-          $class = $child->attributes->getNamedItem("class")->value;
+          $class = $child->attributes?->getNamedItem("class")?->value;
           if ($class === "alert alert-success") {
             $h3 = $xPath->query(".//h3", $child)->item(0);
             if ($h3) {
@@ -642,15 +663,15 @@ class WHOISWeb
           } else if ($class === "form-stack") {
             $expiration = $xPath->query(".//strong", $child)->item(0);
             if ($expiration) {
-              $whois .= trim(preg_replace(["/\n/", "/ +/"], ["", " "], $expiration->textContent)) . "\n";
+              $whois .= trim(pregReplace(["/\n/", "/ +/"], ["", " "], $expiration->textContent)) . "\n";
             } else {
               foreach ($xPath->query('.//div[@class="form-field"]', $child) as $field) {
-                $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
+                $whois .= "  " . trim(pregReplace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
               }
             }
           } else if ($class === "form-field") {
             foreach ($xPath->query(".//li", $child) as $nameServer) {
-              $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $nameServer->textContent), " \n.") . "\n";
+              $whois .= "  " . trim(pregReplace(["/\n/", "/ +/"], ["", " "], $nameServer->textContent), " \n.") . "\n";
             }
           }
         }
@@ -665,7 +686,7 @@ class WHOISWeb
 
           $fields = $xPath->query('.//div[@class="form-field"]', $child);
           foreach ($fields as $field) {
-            $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
+            $whois .= "  " . trim(pregReplace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
           }
         }
       }
@@ -674,18 +695,18 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getGW()
+  private function getGW(): string
   {
     $url = "https://registar.nic.gw/en/whois/" . $this->domain . "/";
 
-    ["response" => $response, "code" => $code] = $this->request($url, [], true);
+    ["code" => $code, "body" => $html] = $this->requestWithInfo($url);
 
     if ($code === 404) {
       return "Domain not found";
     }
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $whois = "";
 
@@ -720,23 +741,13 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getHM()
+  private function getHM(): string
   {
     $url = "https://www.registry.hm";
 
     $options = [CURLOPT_HEADER => true, CURLOPT_NOBODY => true];
 
-    $response = $this->request($url, $options);
-
-    $sessionId = "";
-    if (preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $response, $matches)) {
-      foreach ($matches[1] as $cookie) {
-        if (str_starts_with($cookie, "PHPSESSID=")) {
-          $sessionId = $cookie;
-          break;
-        }
-      }
-    }
+    ["headers" => $headers] = $this->requestWithInfo($url, $options);
 
     $url = "https://www.registry.hm/HR_whois2.php";
 
@@ -748,13 +759,13 @@ class WHOISWeb
     $options = [
       CURLOPT_POST => true,
       CURLOPT_POSTFIELDS => $data,
-      CURLOPT_COOKIE => $sessionId,
+      CURLOPT_COOKIE => $this->getCookiesFromHeaders($headers),
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $whois = "";
 
@@ -762,8 +773,8 @@ class WHOISWeb
     if ($pre) {
       foreach ($pre->childNodes as $child) {
         if ($child->nodeName === "a") {
-          $class = $child->attributes->getNamedItem("class")->value;
-          $cfEmail = $child->attributes->getNamedItem("data-cfemail")->value;
+          $class = $child->attributes?->getNamedItem("class")?->value;
+          $cfEmail = $child->attributes?->getNamedItem("data-cfemail")?->value;
           if ($class === "__cf_email__" && $cfEmail) {
             $whois .= $this->decodeCFEmail($cfEmail);
           } else {
@@ -780,16 +791,29 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getHU()
+  private function decodeCFEmail(string $cfEmail): string
+  {
+    $result = "";
+
+    $key = hexdec(substr($cfEmail, 0, 2));
+
+    for ($i = 2; $i < strlen($cfEmail); $i += 2) {
+      $result .= chr(hexdec(substr($cfEmail, $i, 2)) ^ $key);
+    }
+
+    return $result;
+  }
+
+  private function getHU(): string
   {
     $url = "https://info.domain.hu/webwhois/en/domain/" . $this->domain;
 
     $options = [CURLOPT_POST => true, CURLOPT_POSTFIELDS => []];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
@@ -821,31 +845,27 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getJO()
+  private function getJO(): string
   {
     $url = "https://dns.jo/FirstPageen.aspx";
 
     $options = [CURLOPT_HEADER => true];
 
-    ["response" => $response, "code" => $code, "headerSize" => $headerSize] = $this->request($url, $options, true);
+    ["code" => $code, "headers" => $headers, "body" => $html] = $this->requestWithInfo($url, $options);
 
     if ($code !== 200) {
       return "";
     }
 
-    $headers = substr($response, 0, $headerSize);
-    $body = substr($response, $headerSize);
-
-    preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
-    $cookies = implode("; ", $matches[1]);
+    $cookies = $this->getCookiesFromHeaders($headers);
 
     $document = new DOMDocument();
-    $document->loadHTML($body);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
     $expression = "//select[@id='ddl']/option[normalize-space(text())='." . $this->domainParts[1] .  "']";
-    $ddl = $xPath->query($expression)->item(0)?->attributes->getNamedItem("value")?->value;
+    $ddl = $xPath->query($expression)->item(0)?->attributes?->getNamedItem("value")?->value;
 
     $viewState = $document->getElementById("__VIEWSTATE")?->attributes->getNamedItem("value")?->value;
     $viewStateGenerator = $document->getElementById("__VIEWSTATEGENERATOR")?->attributes->getNamedItem("value")?->value;
@@ -872,13 +892,13 @@ class WHOISWeb
       CURLOPT_COOKIE => $cookies,
     ];
 
-    ["response" => $response, "code" => $code] = $this->request($url, $options, true);
+    ["code" => $code, "body" => $html] = $this->requestWithInfo($url, $options);
 
     if ($code !== 200) {
       return "";
     }
 
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $result = trim($document->getElementById("Result")?->textContent ?? "");
     if ($result) {
@@ -893,7 +913,7 @@ class WHOISWeb
       "__EVENTTARGET" => "WhoIs\$ctl02\$link",
     ];
 
-    preg_match_all("/\|hiddenField\|([^|]+)\|([^|]*)\|/", $response, $matches, PREG_SET_ORDER);
+    preg_match_all("/\|hiddenField\|([^|]+)\|([^|]*)\|/", $html, $matches, PREG_SET_ORDER);
 
     foreach ($matches as $match) {
       if ($match[1] !== "__EVENTTARGET") {
@@ -907,7 +927,7 @@ class WHOISWeb
       CURLOPT_COOKIE => $cookies,
     ];
 
-    ["response" => $response, "code" => $code] = $this->request($url, $options, true);
+    ["code" => $code] = $this->requestWithInfo($url, $options);
 
     if ($code !== 200) {
       return "";
@@ -917,9 +937,9 @@ class WHOISWeb
 
     $options = [CURLOPT_COOKIE => $cookies];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
@@ -928,7 +948,7 @@ class WHOISWeb
     $whois = "";
 
     for ($i = 0; $i < $spans->length; $i += 2) {
-      $key = trim($spans->item($i)->textContent ?? "");
+      $key = trim($spans->item($i)->textContent);
       $value = trim($spans->item($i + 1)?->textContent ?? "");
 
       if ($key) {
@@ -939,13 +959,13 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getLK()
+  private function getLK(): string
   {
     $url = "https://register.domains.lk/proxy/domains/single-search?keyword=" . $this->domain;
 
-    $response = $this->request($url);
+    $jsonText = $this->request($url);
 
-    $json = json_decode($response, true);
+    $json = json_decode($jsonText, true);
 
     $whois = "";
 
@@ -974,14 +994,14 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getMT()
+  private function getMT(): string
   {
     $url = "https://www.nic.org.mt/dotmt/whois/?" . $this->domain;
 
-    $response = $this->request($url);
+    $html = $this->request($url);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $pre = $document->getElementsByTagName("pre")->item(0);
     if ($pre) {
@@ -991,17 +1011,17 @@ class WHOISWeb
     return "";
   }
 
-  private function getNI()
+  private function getNI(): string
   {
     $url = "https://apiecommercenic.uni.edu.ni/api/v1/dominios/whois?dominio=" . $this->domain;
 
-    ["response" => $response, "code" => $code] = $this->request($url, [], true);
+    ["code" => $code, "body" => $jsonText] = $this->requestWithInfo($url);
 
     if ($code === 404) {
       return "Domain not found";
     }
 
-    $json = json_decode($response, true);
+    $json = json_decode($jsonText, true);
 
     $whois = "Domain Name: " . $this->domain . "\n";
     if (isset($json["datos"])) {
@@ -1024,29 +1044,23 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getNP()
+  private function getNP(): string
   {
     $url = "https://register.com.np/whois-lookup";
 
     $options = [CURLOPT_HEADER => true];
 
-    ["response" => $response, "headerSize" => $headerSize] = $this->request($url, $options, true);
-
-    $headers = substr($response, 0, $headerSize);
-    $body = substr($response, $headerSize);
-
-    preg_match_all("/^Set-Cookie:\s*([^;]+)/im", $headers, $matches);
-    $cookies = implode("; ", $matches[1]);
+    ["headers" => $headers, "body" => $html] = $this->requestWithInfo($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML($body);
+    $document->loadHTML($html);
 
     $token = "";
 
     $inputs = $document->getElementsByTagName("input");
     foreach ($inputs as $input) {
-      if ($input->attributes->getNamedItem("name")->value === "_token") {
-        $token = $input->attributes->getNamedItem("value")->value;
+      if ($input->attributes->getNamedItem("name")?->value === "_token") {
+        $token = $input->attributes->getNamedItem("value")?->value;
         break;
       }
     }
@@ -1066,12 +1080,12 @@ class WHOISWeb
     $options = [
       CURLOPT_POST => true,
       CURLOPT_POSTFIELDS => $data,
-      CURLOPT_COOKIE => $cookies,
+      CURLOPT_COOKIE => $this->getCookiesFromHeaders($headers),
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
@@ -1101,7 +1115,7 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getNR()
+  private function getNR(): string
   {
     $params = [
       "subdomain" => $this->domainParts[0],
@@ -1111,10 +1125,10 @@ class WHOISWeb
 
     $url = "https://www.cenpac.net.nr/dns/whois.html?" . http_build_query($params);
 
-    $response = $this->request($url);
+    $html = $this->request($url);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $form = $document->getElementsByTagName("form")->item(0);
     if (!$form) {
@@ -1178,19 +1192,19 @@ class WHOISWeb
     return str_replace(" (modify)", "", $whois);
   }
 
-  private function getPA()
+  private function getPA(): string
   {
     $url = "https://nic.pa:8080/whois/" . $this->domain;
 
     $options = [CURLOPT_SSL_VERIFYPEER => false];
 
-    ["response" => $response, "code" => $code] = $this->request($url, $options, true);
+    ["code" => $code, "body" => $jsonText] = $this->requestWithInfo($url, $options);
 
     if ($code === 404) {
       return "Domain not found";
     }
 
-    $json = json_decode($response, true);
+    $json = json_decode($jsonText, true);
 
     $whois = "";
 
@@ -1225,14 +1239,14 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getPH()
+  private function getPH(): string
   {
     $url = "https://whois.dot.ph/?search=" . $this->domain;
 
-    $response = $this->request($url);
+    $html = $this->request($url);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $message = $document->getElementById("alert-message");
     if ($message) {
@@ -1258,13 +1272,13 @@ class WHOISWeb
         }
       }
 
-      if (preg_match("/createDate = moment\('(.+?)'\)/", $response, $matches)) {
+      if (preg_match("/createDate = moment\('(.+?)'\)/", $html, $matches)) {
         $whois = str_replace('<span id="create-date"></span>', $matches[1], $whois);
       }
-      if (preg_match("/expiryDate = moment\('(.+?)'\)/", $response, $matches)) {
+      if (preg_match("/expiryDate = moment\('(.+?)'\)/", $html, $matches)) {
         $whois = str_replace('<span id="expiry-date"></span>', $matches[1], $whois);
       }
-      if (preg_match("/updateDate = moment\('(.+?)'\)/", $response, $matches)) {
+      if (preg_match("/updateDate = moment\('(.+?)'\)/", $html, $matches)) {
         $whois = str_replace('<span id="update-date"></span>', $matches[1], $whois);
       }
     }
@@ -1272,12 +1286,12 @@ class WHOISWeb
     return trim($whois);
   }
 
-  private function getPY()
+  private function getPY(): string
   {
     return "Please visit https://www.nic.py/consultdompy.php";
   }
 
-  private function getSV()
+  private function getSV(): string
   {
     $url = "https://svnet.sv/accion/procesos.php";
 
@@ -1291,10 +1305,10 @@ class WHOISWeb
       CURLOPT_POSTFIELDS => $data,
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
@@ -1307,7 +1321,7 @@ class WHOISWeb
 
     $button = $xPath->query("//strong[text()='$this->domain']/following-sibling::button[1]")->item(0);
     if ($button) {
-      $value = $button->attributes->getNamedItem("onclick")?->value;
+      $value = $button->attributes?->getNamedItem("onclick")?->value;
       if ($value && preg_match("/\((\d+)\)/", $value, $matches)) {
         $id = $matches[1];
       }
@@ -1327,9 +1341,9 @@ class WHOISWeb
       CURLOPT_POSTFIELDS => $data,
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
-    $document->loadHTML('<?xml encoding="UTF-8"?>' . str_replace("&nbsp;", "", $response));
+    $document->loadHTML('<?xml encoding="UTF-8"?>' . str_replace("&nbsp;", "", $html));
 
     $whois = "";
 
@@ -1347,14 +1361,14 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getTJ()
+  private function getTJ(): string
   {
     $url = "http://www.nic.tj/cgi/whois2?domain=" . substr($this->domain, 0, -3);
 
-    $response = $this->request($url);
+    $html = $this->request($url);
 
     $document = new DOMDocument();
-    $document->loadHTML($response);
+    $document->loadHTML($html);
 
     $p = $document->getElementsByTagName("p")->item(0);
     if ($p) {
@@ -1385,7 +1399,7 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getTT()
+  private function getTT(): string
   {
     $url = "https://nic.tt/cgi-bin/search.pl";
 
@@ -1399,10 +1413,10 @@ class WHOISWeb
       CURLOPT_POSTFIELDS => $data
     ];
 
-    $response = $this->request($url, $options);
+    $html = $this->request($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML(str_replace("&nbsp", " ", $response));
+    $document->loadHTML(str_replace("&nbsp", " ", $html));
 
     $xPath = new DOMXPath($document);
 
@@ -1427,15 +1441,26 @@ class WHOISWeb
     return str_replace(" (owner can view under Retrieve->Domain Details)", "", $whois);
   }
 
-  private function getVN()
+  private function getVN(): string
   {
+    $url = "https://whois.inet.vn/whois?domain=" . $this->domain;
+
+    $options = [CURLOPT_HEADER => true, CURLOPT_NOBODY => true];
+
+    ["headers" => $headers] = $this->requestWithInfo($url, $options);
+
     $url = "https://whois.inet.vn/api/whois/domainspecify/" . $this->domain;
 
-    $response = $this->request($url);
+    $options = [
+      CURLOPT_HTTPHEADER => ["X-Requested-With: XMLHttpRequest"],
+      CURLOPT_COOKIE => $this->getCookiesFromHeaders($headers),
+    ];
 
-    $json = json_decode($response, true);
+    $jsonText = $this->request($url, $options);
 
-    $json["message"] = null;
+    $json = json_decode($jsonText, true);
+
+    unset($json["message"]);
 
     $code = $json["code"] ?? "";
 
@@ -1448,19 +1473,18 @@ class WHOISWeb
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => json_encode($data),
         CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
-        CURLOPT_COOKIE => "iclid=233",
       ];
 
-      $response = $this->request($url, $options);
+      $jsonText = $this->request($url, $options);
 
-      $jsonNew = json_decode($response, true);
+      $availableJson = json_decode($jsonText, true);
 
-      $availability = $jsonNew["availability"] ?? "";
+      $availability = $availableJson["availability"] ?? "";
       if ($availability) {
         $json["availability"] = $availability;
       }
 
-      $message = $jsonNew["message"] ?? "";
+      $message = $availableJson["message"] ?? "";
       if ($message) {
         $json["message"] = $message;
       }
@@ -1522,7 +1546,18 @@ class WHOISWeb
     return $whois;
   }
 
-  private function formatVNDate($date)
+  /**
+   * @param array{
+   *   year?: int,
+   *   month?: int,
+   *   day?: int,
+   *   hour?: int,
+   *   minute?: int,
+   *   second?: int,
+   *   timezone?: int
+   * } $date
+   */
+  private function formatVNDate(array $date): string
   {
     $dateString = sprintf(
       "%04d-%02d-%02d %02d:%02d:%02d",
@@ -1543,18 +1578,5 @@ class WHOISWeb
     $dateTime->setTimezone(new DateTimeZone("UTC"));
 
     return $dateTime->format('Y-m-d\TH:i:s\Z');
-  }
-
-  private function decodeCFEmail($cfEmail)
-  {
-    $result = "";
-
-    $key = hexdec(substr($cfEmail, 0, 2));
-
-    for ($i = 2; $i < strlen($cfEmail); $i += 2) {
-      $result .= chr(hexdec(substr($cfEmail, $i, 2)) ^ $key);
-    }
-
-    return $result;
   }
 }

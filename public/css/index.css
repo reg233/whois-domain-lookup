@@ -279,6 +279,10 @@ dialog[open] {
   flex-direction: column;
 }
 
+dialog:not([open]) {
+  display: none;
+}
+
 dialog::backdrop {
   background-color: #00000080;
 }

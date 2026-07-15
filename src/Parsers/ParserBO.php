@@ -1,12 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserBO extends Parser
 {
-  protected function getStatusRegExp()
+  protected function getStatusRegExp(): string
   {
     return $this->getBaseRegExp("state");
   }
 
-  protected function getStatus($subject = null)
+  protected function getStatus(?string $subject = null): array
   {
     // Due to the redundancy of the state, it needs to be extracted from the specified string.
     if (preg_match("/other data(.+)/is", $this->data, $matches)) {
@@ -16,7 +19,7 @@ class ParserBO extends Parser
     return [];
   }
 
-  protected function getNameServersRegExp()
+  protected function getNameServersRegExp(): string
   {
     return $this->getBaseRegExp("dns\d");
   }

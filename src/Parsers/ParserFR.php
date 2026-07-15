@@ -1,17 +1,20 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserFR extends Parser
 {
-  protected function getRegistrarURLRegExp()
+  protected function getRegistrarURLRegExp(): string
   {
     return $this->getBaseRegExp("website");
   }
 
-  protected function getStatusRegExp()
+  protected function getStatusRegExp(): string
   {
     return $this->getBaseRegExp("eppstatus");
   }
 
-  protected function getStatus($subject = null)
+  protected function getStatus(?string $subject = null): array
   {
     // Due to the redundancy of the eppstatus, it needs to be extracted from the specified string.
     if (preg_match("/^(.+?)source:/is", $this->data, $matches)) {

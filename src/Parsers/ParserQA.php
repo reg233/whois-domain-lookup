@@ -1,14 +1,17 @@
 <?php
+
+declare(strict_types=1);
+
 class ParserQA extends Parser
 {
-  protected function getReservedRegExp()
+  protected function getReservedRegExp(): string
   {
     // 0.qa
     // qa.qa
     return "/reserved by qdr|is not available/i";
   }
 
-  protected function getStatus($subject = null)
+  protected function getStatus(?string $subject = null): array
   {
     if (preg_match_all($this->getStatusRegExp(), $this->data, $matches)) {
       return array_map(

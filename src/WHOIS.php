@@ -1,19 +1,24 @@
 <?php
+
+declare(strict_types=1);
+
 class WHOIS
 {
-  public $domain;
+  public string $domain;
 
-  public $extension;
+  public string $extension;
 
-  private $servers;
+  /** @var array<string, string|array{host:string, query:string}> */
+  private array $servers;
 
-  private $server;
+  /** @var string|array{host:string, query:string} */
+  private string|array $server;
 
   private const SERVERS_IANA = __DIR__ . "/data/whois-servers-iana.json";
 
   private const SERVERS_EXTRA = __DIR__ . "/data/whois-servers-extra.json";
 
-  public function __construct($domain, $extension, $extensionTop)
+  public function __construct(string $domain, string $extension, ?string $extensionTop)
   {
     $this->domain = $domain;
     $this->extension = $extension;
@@ -32,7 +37,8 @@ class WHOIS
     }
   }
 
-  private function getServers()
+  /** @return array<string, string|array{host:string, query:string}> */
+  private function getServers(): array
   {
     $servers = [];
 
@@ -59,65 +65,78 @@ class WHOIS
     return $servers;
   }
 
-  private function getServer()
+  /** @return string|array{host:string, query:string} */
+  private function getServer(): string|array
   {
     if ($this->extension === "iana") {
       return "whois.iana.org";
     }
 
-    $server = $this->servers[idn_to_ascii($this->extension)] ?? "";
+    $extension = idn_to_ascii($this->extension) ?: $this->extension;
+    $server = $this->servers[$extension] ?? "";
 
     if (!$server && !WHOISWeb::isSupported($this->extension)) {
-      throw new RuntimeException("No WHOIS server found for '$this->domain'.");
+      throw new RuntimeException("No WHOIS server found for '{$this->domain}'.");
     }
 
     return $server;
   }
 
-  public function getData()
+  public function getData(): string
   {
     if (empty($_GET["whois-server"]) && WHOISWeb::isSupported($this->extension)) {
       return (new WHOISWeb($this->domain, $this->extension))->getData();
     }
 
-    $domain = idn_to_ascii($this->domain);
+    $domain = idn_to_ascii($this->domain) ?: $this->domain;
 
-    $host = $this->server;
-    $query = "$domain\r\n";
+    $server = $this->server;
 
-    if (is_array($this->server)) {
-      $host = $this->server["host"];
-      $query = sprintf($this->server["query"], $domain);
+    if (is_array($server)) {
+      $host = $server["host"];
+      $query = sprintf($server["query"], $domain);
+    } else {
+      $host = $server;
+      $query = "$domain\r\n";
     }
 
     $socket = @stream_socket_client("tcp://$host:43", $errno, $errstr, 10);
-
-    if (!$socket) {
-      throw new RuntimeException("WHOIS request failed for '$this->domain': $errstr.");
+    if ($socket === false) {
+      throw new RuntimeException("WHOIS lookup failed for '{$this->domain}': $errstr.");
     }
 
     stream_set_timeout($socket, 10);
 
-    fwrite($socket, $query);
+    if (fwrite($socket, $query) === false) {
+      fclose($socket);
+      throw new RuntimeException("WHOIS lookup failed for '{$this->domain}': failed to send request.");
+    }
 
-    $data = stream_get_contents($socket);
-
-    // Skip encoding the data for "հայ" extension to avoid garbled text
-    if ($this->extension !== "հայ") {
-      $encoding = mb_detect_encoding($data, ["UTF-8", "ISO-8859-1"], true);
-      if ($encoding && $encoding !== "UTF-8") {
-        $data = mb_convert_encoding($data, "UTF-8", $encoding);
-      }
+    $response = stream_get_contents($socket);
+    if ($response === false) {
+      fclose($socket);
+      throw new RuntimeException("WHOIS lookup failed for '{$this->domain}': failed to read response.");
     }
 
     $metaData = stream_get_meta_data($socket);
     if ($metaData["timed_out"]) {
       fclose($socket);
-      throw new RuntimeException("WHOIS request timed out for '$this->domain'.");
+      throw new RuntimeException("WHOIS lookup failed for '{$this->domain}': timed out.");
     }
 
     fclose($socket);
 
-    return $data;
+    // Skip encoding the response for "հայ" extension to avoid garbled text
+    if ($this->extension !== "հայ") {
+      $encoding = mb_detect_encoding($response, ["UTF-8", "ISO-8859-1"], true);
+      if ($encoding && $encoding !== "UTF-8") {
+        $convertedResponse = mb_convert_encoding($response, "UTF-8", $encoding);
+        if ($convertedResponse !== false) {
+          $response = $convertedResponse;
+        }
+      }
+    }
+
+    return $response;
   }
 }

@@ -1,15 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 require_once __DIR__ . "/../config/config.php";
 require_once __DIR__ . "/utils.php";
 
-function redirect()
+function redirect(): never
 {
   $redirect = BASE;
   if (isset($_GET["redirect"]) && preg_match("#^" . BASE . ".*$#", $_GET["redirect"])) {
     $redirect = $_GET["redirect"];
   }
   header("Location: $redirect");
-  die;
+  exit;
 }
 
 $failed = false;
@@ -24,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 } else if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (!SITE_PASSWORD) {
     http_response_code(500);
-    die;
+    exit;
   }
 
   if (($_POST["password"] ?? "") === SITE_PASSWORD) {
