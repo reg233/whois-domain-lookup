@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-07-09T01:00:03Z",
+  "publication": "2026-07-14T22:00:03Z",
   "services": [
     [
       [
@@ -1078,6 +1078,7 @@
         "cheap",
         "church",
         "cipriani",
+        "circle",
         "citadel",
         "city",
         "claims",
@@ -1175,6 +1176,7 @@
         "gold",
         "golf",
         "goodyear",
+        "got",
         "graphics",
         "gratis",
         "green",
@@ -1218,6 +1220,7 @@
         "jewelry",
         "jio",
         "jll",
+        "jot",
         "juegos",
         "juniper",
         "kaufen",
@@ -4100,14 +4103,6 @@
     ],
     [
       [
-        "circle"
-      ],
-      [
-        "https://rdap.nominet.uk/circle/"
-      ]
-    ],
-    [
-      [
         "cymru"
       ],
       [
@@ -4172,14 +4167,6 @@
     ],
     [
       [
-        "got"
-      ],
-      [
-        "https://rdap.nominet.uk/got/"
-      ]
-    ],
-    [
-      [
         "gucci"
       ],
       [
@@ -4224,14 +4211,6 @@
       ],
       [
         "https://rdap.nominet.uk/jobs/"
-      ]
-    ],
-    [
-      [
-        "jot"
-      ],
-      [
-        "https://rdap.nominet.uk/jot/"
       ]
     ],
     [
