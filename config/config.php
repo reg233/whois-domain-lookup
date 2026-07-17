@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-define("VERSION", "v2026.7.15+1");
+define("VERSION", "v2026.7.17");
 
 define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
