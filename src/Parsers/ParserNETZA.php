@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Class ParserNETZA
- * 
- * Parses data for the "za.net" domain extension.
+ * Parser for the za.net extension.
  */
 class ParserNETZA extends Parser
 {

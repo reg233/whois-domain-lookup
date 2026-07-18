@@ -81,7 +81,7 @@ class RDAP
     $server = $this->servers[$extension] ?? "";
 
     if (empty($server)) {
-      throw new RuntimeException("No RDAP server found for '{$this->domain}'.");
+      throw new RuntimeException("No RDAP server found for '$this->domain'.");
     }
 
     return $server;
@@ -98,6 +98,7 @@ class RDAP
     curl_setopt_array($ch, [
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_CONNECTTIMEOUT => 10,
       CURLOPT_TIMEOUT => 10,
       CURLOPT_USERAGENT => USER_AGENT,
     ]);
@@ -105,12 +106,12 @@ class RDAP
     $response = curl_exec($ch);
     if (is_bool($response)) {
       $error = curl_error($ch);
-      throw new RuntimeException("RDAP lookup failed for '{$this->domain}': $error.");
+      throw new RuntimeException("RDAP lookup failed for '$this->domain': $error.");
     }
 
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     if ($code >= 400 && $code !== 404) {
-      throw new RuntimeException("RDAP lookup failed for '{$this->domain}': HTTP $code.");
+      throw new RuntimeException("RDAP lookup failed for '$this->domain': HTTP $code.");
     }
 
     $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);

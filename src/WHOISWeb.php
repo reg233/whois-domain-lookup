@@ -90,6 +90,7 @@ class WHOISWeb
 
   /**
    * @param array<int, mixed> $options
+   *
    * @return array{code:int, headers:string, body:string}
    */
   private function requestWithInfo(string $url, array $options = []): array
@@ -108,12 +109,12 @@ class WHOISWeb
     $response = curl_exec($ch);
     if (is_bool($response)) {
       $error = curl_error($ch);
-      throw new RuntimeException("WHOISWeb lookup failed for '{$this->domain}': $error.");
+      throw new RuntimeException("WHOISWeb lookup failed for '$this->domain': $error.");
     }
 
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     if ($code >= 400 && $code !== 404) {
-      throw new RuntimeException("WHOISWeb lookup failed for '{$this->domain}': HTTP $code.");
+      throw new RuntimeException("WHOISWeb lookup failed for '$this->domain': HTTP $code.");
     }
 
     $headers = "";
@@ -244,7 +245,7 @@ class WHOISWeb
       $tds = $tr->getElementsByTagName("td");
       if ($tds->length === 1) {
         $whois .= strtoupper(trim($tds->item(0)->textContent)) . "\n";
-      } else if ($tds->length === 2) {
+      } elseif ($tds->length === 2) {
         $key = trim($tds->item(0)->textContent);
         $value = trim($tds->item(1)->textContent);
 
@@ -460,13 +461,13 @@ class WHOISWeb
     $whois = "";
 
     if (str_contains($headers, "/NIC2/whois-available.html")) {
-      $whois .= "No match for \"{$this->domain}\".\n";
-    } else if (
+      $whois .= "No match for \"$this->domain\".\n";
+    } elseif (
       str_contains($headers, "/NIC2/whois-reserved.html") ||
       str_contains($headers, "/NIC2/whois-numbers.html")
     ) {
       $whois .= "This name is reserved by the registry.\n";
-    } else if (str_contains($headers, "/NIC2/whois-details.html")) {
+    } elseif (str_contains($headers, "/NIC2/whois-details.html")) {
       $url = "https://www.nic.gm/NIC2/REG/login.aspx?whois=" . $this->domainParts[0];
 
       $body = $this->request($url);
@@ -474,18 +475,18 @@ class WHOISWeb
       if ($body) {
         $array = explode(";", $body);
 
-        $whois .= "Domain Name: {$this->domain}\n";
-        $whois .= "Registrar: {$array[2]}\n";
-        $whois .= "Creation Date: {$array[11]}\n";
-        $whois .= "Registrant Name: {$array[1]}\n";
-        $whois .= "Admin Name: {$array[3]}\n";
-        $whois .= "Admin Organization: {$array[4]}\n";
-        $whois .= "Tech Name: {$array[5]}\n";
-        $whois .= "Tech Organization: {$array[6]}\n";
-        $whois .= "Name Server: {$array[7]}\n";
-        $whois .= "Name Server: {$array[8]}\n";
-        $whois .= "Name Server: {$array[9]}\n";
-        $whois .= "Name Server: {$array[10]}\n";
+        $whois .= "Domain Name: $this->domain\n";
+        $whois .= "Registrar: $array[2]\n";
+        $whois .= "Creation Date: $array[11]\n";
+        $whois .= "Registrant Name: $array[1]\n";
+        $whois .= "Admin Name: $array[3]\n";
+        $whois .= "Admin Organization: $array[4]\n";
+        $whois .= "Tech Name: $array[5]\n";
+        $whois .= "Tech Organization: $array[6]\n";
+        $whois .= "Name Server: $array[7]\n";
+        $whois .= "Name Server: $array[8]\n";
+        $whois .= "Name Server: $array[9]\n";
+        $whois .= "Name Server: $array[10]\n";
       }
     }
 
@@ -658,9 +659,9 @@ class WHOISWeb
                 $whois .= "Domain Status: " . trim($domainStatus->textContent) . "\n";
               }
             }
-          } else if ($class === "alert alert-info") {
+          } elseif ($class === "alert alert-info") {
             $whois .= "\n" . trim($child->textContent) . ":\n";
-          } else if ($class === "form-stack") {
+          } elseif ($class === "form-stack") {
             $expiration = $xPath->query(".//strong", $child)->item(0);
             if ($expiration) {
               $whois .= trim(pregReplace(["/\n/", "/ +/"], ["", " "], $expiration->textContent)) . "\n";
@@ -669,7 +670,7 @@ class WHOISWeb
                 $whois .= "  " . trim(pregReplace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
               }
             }
-          } else if ($class === "form-field") {
+          } elseif ($class === "form-field") {
             foreach ($xPath->query(".//li", $child) as $nameServer) {
               $whois .= "  " . trim(pregReplace(["/\n/", "/ +/"], ["", " "], $nameServer->textContent), " \n.") . "\n";
             }
@@ -726,13 +727,13 @@ class WHOISWeb
 
         if ($nodeName === "span") {
           $whois .= "\n$textContent\n\n";
-        } else if (
+        } elseif (
           $nodeName === "#text" &&
           $prevNodeName === "label" &&
           $prevTextContent !== "E-mail:"
         ) {
           $whois .= "$prevTextContent $textContent\n";
-        } else if ($nodeName === "a") {
+        } elseif ($nodeName === "a") {
           $whois .= "E-mail: $textContent\n";
         }
       }
@@ -780,7 +781,7 @@ class WHOISWeb
           } else {
             $whois .= $child->textContent;
           }
-        } else if ($child->nodeName === "br") {
+        } elseif ($child->nodeName === "br") {
           $whois .= "\n";
         } else {
           $whois .= $child->textContent;
@@ -864,7 +865,7 @@ class WHOISWeb
 
     $xPath = new DOMXPath($document);
 
-    $expression = "//select[@id='ddl']/option[normalize-space(text())='." . $this->domainParts[1] .  "']";
+    $expression = "//select[@id='ddl']/option[normalize-space(text())='." . $this->domainParts[1] . "']";
     $ddl = $xPath->query($expression)->item(0)?->attributes?->getNamedItem("value")?->value;
 
     $viewState = $document->getElementById("__VIEWSTATE")?->attributes->getNamedItem("value")?->value;
@@ -1159,7 +1160,7 @@ class WHOISWeb
                     $value = $subTr->childNodes->item(1)->textContent;
 
                     $whois .= "$key $value\n";
-                  } else if ($subTr->childNodes->length) {
+                  } elseif ($subTr->childNodes->length) {
                     $text = $subTr->childNodes->item(0)->textContent;
                     if ($text === html_entity_decode("&nbsp;")) {
                       $whois .= "\n";
@@ -1176,7 +1177,7 @@ class WHOISWeb
                   $whois .= "$text\n";
                 }
               }
-            } else if ($tr->childNodes->length === 2) {
+            } elseif ($tr->childNodes->length === 2) {
               $key = trim($tr->childNodes->item(0)->textContent);
               $value = $tr->childNodes->item(1)->textContent;
 
@@ -1232,7 +1233,7 @@ class WHOISWeb
         $whois .= "Registrant Phone: " . implode(", ", array_filter([$contact["telefono"] ?? "", $contact["telefono_oficina"] ?? ""])) . "\n";
         $whois .= "Registrant Email: " . ($contact["email"] ?? "") . "\n";
       }
-    } else if (isset($json["mensaje"])) {
+    } elseif (isset($json["mensaje"])) {
       $whois .= $json["mensaje"];
     }
 
@@ -1382,7 +1383,7 @@ class WHOISWeb
       $tds = $tr->getElementsByTagName("td");
       if ($tds->length === 1) {
         $whois .= "\n" . strtoupper(trim($tds->item(0)->textContent)) . "\n";
-      } else if ($tds->length === 2) {
+      } elseif ($tds->length === 2) {
         $key = trim($tds->item(0)->textContent);
         if ($tds->item(0)->attributes->getNamedItem("class")?->value === "subfield") {
           $key = "  $key";
@@ -1410,7 +1411,7 @@ class WHOISWeb
 
     $options = [
       CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => $data
+      CURLOPT_POSTFIELDS => $data,
     ];
 
     $html = $this->request($url, $options);
@@ -1441,6 +1442,9 @@ class WHOISWeb
     return str_replace(" (owner can view under Retrieve->Domain Details)", "", $whois);
   }
 
+  /**
+   * @throws Exception
+   */
   private function getVN(): string
   {
     $url = "https://whois.inet.vn/whois?domain=" . $this->domain;
@@ -1556,6 +1560,8 @@ class WHOISWeb
    *   second?: int,
    *   timezone?: int
    * } $date
+   *
+   * @throws Exception
    */
   private function formatVNDate(array $date): string
   {
@@ -1570,9 +1576,13 @@ class WHOISWeb
     );
 
     $timezoneOffset = $date["timezone"] ?? 0;
+    $timezoneSign = $timezoneOffset < 0 ? "-" : "+";
+    $timezoneOffset = abs($timezoneOffset);
+
     $offsetHours = intdiv($timezoneOffset, 60);
-    $offsetMinutes = abs($timezoneOffset % 60);
-    $timezone = sprintf("%+03d:%02d", $offsetHours, $offsetMinutes);
+    $offsetMinutes = $timezoneOffset % 60;
+
+    $timezone = sprintf("%s%02d:%02d", $timezoneSign, $offsetHours, $offsetMinutes);
 
     $dateTime = new DateTime($dateString, new DateTimeZone($timezone));
     $dateTime->setTimezone(new DateTimeZone("UTC"));

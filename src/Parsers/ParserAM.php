@@ -29,7 +29,7 @@ class ParserAM extends Parser
 
   protected function getDNSSECSigned(): ?bool
   {
-    if (preg_match("/dns servers \(zone signed, \d ds records?\)/i", $this->data, $matches)) {
+    if (preg_match("/dns servers \(zone signed, \d ds records?\)/i", $this->data)) {
       return true;
     }
 

@@ -1,9 +1,10 @@
 .git/
 .github/
+.idea/
 .vercel/
 .vscode/
 api/
-resources/
+test/
 **/.DS_Store
 .dockerignore
 .gitignore
@@ -12,6 +13,6 @@ composer.json
 composer.lock
 docker-compose.yml
 Dockerfile
+phpstan.neon
 README*.md
-test*.php
 vercel.json

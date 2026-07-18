@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Pdp\CannotProcessHost;
 use Pdp\Domain;
 use Pdp\Rules;
 
@@ -14,7 +15,7 @@ class Lookup
   private ?string $extensionTop = null;
 
   /** @var list<'whois'|'rdap'> */
-  private array $dataSource = [];
+  private array $dataSource;
 
   public ?string $whoisData = null;
 
@@ -34,7 +35,12 @@ class Lookup
 
   public Parser $parser;
 
-  /** @param list<'whois'|'rdap'> $dataSource */
+  /**
+   * @param list<'whois'|'rdap'> $dataSource
+   *
+   * @throws CannotProcessHost
+   * @throws Throwable
+   */
   public function __construct(string $domain, array $dataSource)
   {
     $this->parseDomain($domain);
@@ -58,6 +64,10 @@ class Lookup
     }
   }
 
+  /**
+   * @throws CannotProcessHost
+   * @throws Throwable
+   */
   private function parseDomain(string $domain): void
   {
     $publicSuffixList = Rules::fromPath(__DIR__ . "/data/public-suffix-list.dat");
@@ -77,7 +87,7 @@ class Lookup
         if ($e->getMessage() === "The domain \"{$domain->toString()}\" can not contain a public suffix.") {
           $this->domain = $domain->toString();
           $this->extension = "iana";
-        } else if ($e->getMessage() === "The public suffix and the domain name are identical `{$domain->toString()}`.") {
+        } elseif ($e->getMessage() === "The public suffix and the domain name are identical `{$domain->toString()}`.") {
           $this->domain = $domain->toString();
           $this->extension = $domain->label(0) ?? throw $e;
         } else {
@@ -87,6 +97,9 @@ class Lookup
     }
   }
 
+  /**
+   * @throws Throwable
+   */
   private function getWHOIS(): void
   {
     try {
@@ -110,7 +123,7 @@ class Lookup
         throw $e;
       }
 
-      if ($e->getMessage() === "No WHOIS server found for '{$this->domain}'.") {
+      if ($e->getMessage() === "No WHOIS server found for '$this->domain'.") {
         $this->whoisUnknown = $e->getMessage();
       } else {
         $this->whoisError = $e->getMessage();
@@ -118,6 +131,9 @@ class Lookup
     }
   }
 
+  /**
+   * @throws Throwable
+   */
   private function getRDAP(): void
   {
     try {
@@ -141,7 +157,7 @@ class Lookup
         throw $e;
       }
 
-      if ($e->getMessage() === "No RDAP server found for '{$this->domain}'.") {
+      if ($e->getMessage() === "No RDAP server found for '$this->domain'.") {
         $this->rdapUnknown = $e->getMessage();
       } else {
         $this->rdapError = $e->getMessage();
@@ -152,11 +168,11 @@ class Lookup
   private function merge(): void
   {
     if ($this->whoisUnknown && $this->rdapUnknown) {
-      throw new RuntimeException("No WHOIS or RDAP server found for '{$this->domain}'.");
+      throw new RuntimeException("No WHOIS or RDAP server found for '$this->domain'.");
     }
 
     if ($this->whoisError && $this->rdapError) {
-      throw new RuntimeException("WHOIS and RDAP lookups failed for '{$this->domain}'.");
+      throw new RuntimeException("WHOIS and RDAP lookups failed for '$this->domain'.");
     }
 
     if ($this->whoisError && $this->rdapUnknown) {
@@ -169,12 +185,12 @@ class Lookup
 
     if ($this->whoisParser && $this->rdapParser) {
       $this->mergeParser($this->whoisParser, $this->rdapParser);
-    } else if ($this->whoisParser) {
+    } elseif ($this->whoisParser) {
       $this->parser = $this->whoisParser;
-    } else if ($this->rdapParser) {
+    } elseif ($this->rdapParser) {
       $this->parser = $this->rdapParser;
     } else {
-      throw new RuntimeException("No WHOIS or RDAP parser is available for '{$this->domain}'.");
+      throw new RuntimeException("No WHOIS or RDAP parser is available for '$this->domain'.");
     }
   }
 
@@ -289,11 +305,11 @@ class Lookup
     }
 
     try {
-      if (fgetcsv($stream, 0, ",", '"', "\\") === false) {
+      if (fgetcsv(stream: $stream, escape: "\\") === false) {
         return;
       }
 
-      while (($row = fgetcsv($stream, 0, ",", '"', "\\")) !== false) {
+      while (($row = fgetcsv(stream: $stream, escape: "\\")) !== false) {
         $ianaId = trim($row[0] ?? "");
         $registrar = strtolower(trim($row[1] ?? ""));
 

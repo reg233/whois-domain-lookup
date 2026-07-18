@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-define("VERSION", "v2026.7.17");
-
 define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
 define("SITE_SHORT_TITLE", getenv("SITE_SHORT_TITLE") ?: "WHOIS");

@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Class ParserUKAC
- * 
- * Parses data for the "ac.uk" domain extension.
+ * Parser for the ac.uk extension.
  */
 class ParserUKAC extends Parser
 {

@@ -136,10 +136,10 @@ class ParserRDAP extends Parser
         if ($this->extension === "iana") {
           if ($rel === "related" && $title === "Registration URL") {
             $this->registryWebsite = $href;
-          } else if ($rel === "alternate" && $title === "RDAP Server") {
+          } elseif ($rel === "alternate" && $title === "RDAP Server") {
             $this->registryRDAPServer = $href;
           }
-        } else if ($rel === "related") {
+        } elseif ($rel === "related") {
           $this->registrarRDAPServer = explode("/domain/", $href)[0];
         }
       }
@@ -162,7 +162,7 @@ class ParserRDAP extends Parser
 
       if (
         (is_array($roles) && in_array("registrar", $roles, true)) ||
-        (is_string($roles) && $roles === "registrar") // kg
+        ($roles === "registrar") // kg
       ) {
         if (isset($entity["vcardArray"][1])) {
           foreach ($entity["vcardArray"][1] as $vcard) {
@@ -178,7 +178,7 @@ class ParserRDAP extends Parser
                 break;
             }
           }
-        } else if (isset($entity["entities"])) {
+        } elseif (isset($entity["entities"])) {
           // as, bw, kn, mg, ml, pg, sd, td, zm
           foreach ($entity["entities"] as $subEntity) {
             if (
@@ -187,17 +187,15 @@ class ParserRDAP extends Parser
               isset($subEntity["vcardArray"][1])
             ) {
               foreach ($subEntity["vcardArray"][1] as $vcard) {
-                switch ($vcard[0]) {
-                  case "fn":
-                    $this->registrar = $vcard[3];
-                    break;
+                if ($vcard[0] === "fn") {
+                  $this->registrar = $vcard[3];
                 }
               }
 
               break;
             }
           }
-        } else if (!empty($entity["handle"])) {
+        } elseif (!empty($entity["handle"])) {
           // ar, cr, cz, tz, ve
           $this->registrar = $entity["handle"];
         }
@@ -227,7 +225,7 @@ class ParserRDAP extends Parser
                 break;
               }
             }
-          } else if (!empty($entity["url"])) {
+          } elseif (!empty($entity["url"])) {
             // ch, li
             $this->registrarURL = $this->formatURL($entity["url"]);
           }
@@ -268,10 +266,10 @@ class ParserRDAP extends Parser
         if ($action === "registration") {
           $this->creationDate = $event["eventDate"];
           $this->creationDateISO8601 = $this->getCreationDateISO8601();
-        } else if (in_array($action, self::EXPIRATION_DATE_KEYWORDS, true)) {
+        } elseif (in_array($action, self::EXPIRATION_DATE_KEYWORDS, true)) {
           $this->expirationDate = $event["eventDate"];
           $this->expirationDateISO8601 = $this->getExpirationDateISO8601();
-        } else if ($action === "last changed") {
+        } elseif ($action === "last changed") {
           $this->updatedDate = $event["eventDate"];
           $this->updatedDateISO8601 = $this->getUpdatedDateISO8601();
         }

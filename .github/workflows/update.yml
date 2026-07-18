@@ -40,8 +40,8 @@ jobs:
               ((i++))
             done
 
-            sed -i "5s/.*/define(\"VERSION\", \"${tag}\");/" config/config.php
-            git add config/config.php
+            sed -i "s/^const VERSION = \".*\";$/const VERSION = \"${tag}\";/" config/version.php
+            git add config/version.php
 
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"

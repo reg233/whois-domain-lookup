@@ -973,7 +973,7 @@ class Parser
     "Pending Delete" => [
       "aliases" => [
         "pendingdelete",
-        "tobedeleted", // ls, mk, mw, tz, xn--d1alf
+        "tobedeleted", // ls, mk, mw, tz, ve, xn--d1alf
       ],
       "fragment" => "pendingDelete",
     ],
@@ -1060,7 +1060,7 @@ class Parser
     if (preg_match_all($this->getStatusRegExp(), $subject ?? $this->data, $matches)) {
       return array_map(
         function ($item) {
-          $pattern = "#^(.+)\s+(?:(https?://\S+)|\((https?://[^\s\)]+)\))#i";
+          $pattern = "#^(.+)\s+(?:(https?://\S+)|\((https?://[^\s)]+)\))#i";
 
           if (preg_match($pattern, $item, $matches)) {
             return ["text" => $matches[1], "url" => $matches[2] ?: $matches[3]];
@@ -1078,6 +1078,7 @@ class Parser
   /**
    * @param non-empty-string $separator
    * @param non-empty-string|null $subSeparator
+   *
    * @return list<array{text:string, url:string}>
    */
   protected function getStatusFromExplode(string $separator, ?string $subSeparator = null): array
@@ -1086,7 +1087,7 @@ class Parser
       return array_map(
         fn($item) => [
           "text" => $subSeparator ? explode($subSeparator, $item)[0] : $item,
-          "url" => ""
+          "url" => "",
         ],
         array_values(array_unique(array_filter(array_map(
           "trim",
@@ -1168,6 +1169,7 @@ class Parser
   /**
    * @param non-empty-string $separator
    * @param non-empty-string $subSeparator
+   *
    * @return list<string>
    */
   protected function getNameServersFromExplode(string $separator, string $subSeparator = " "): array
@@ -1298,7 +1300,7 @@ class Parser
     "updatedDate",
     "availableDate",
     "status",
-    "nameServers"
+    "nameServers",
   ];
 
   private const EMPTY_VALUES = [

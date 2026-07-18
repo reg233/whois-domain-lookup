@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "GET") {
 }
 
 require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/../config/version.php";
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/utils.php";
 
@@ -97,12 +98,10 @@ if ($domain) {
     $whoisData = $lookup->whoisData;
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
+  } catch (SyntaxError|UnableToResolveDomain) {
+    $error = "'$domain' is not a valid domain.";
   } catch (Throwable $e) {
-    if ($e instanceof SyntaxError || $e instanceof UnableToResolveDomain) {
-      $error = "'$domain' is not a valid domain.";
-    } else {
-      $error = rtrim($e->getMessage(), ".") . ".";
-    }
+    $error = rtrim($e->getMessage(), ".") . ".";
   }
 
   if ($echoJSON) {
@@ -123,7 +122,7 @@ if ($domain) {
 
     exit;
   }
-} else if ($echoJSON) {
+} elseif ($echoJSON) {
   echo json_encode(
     ["code" => 1, "msg" => "The 'domain' parameter is required.", "data" => null],
     JSON_UNESCAPED_UNICODE,

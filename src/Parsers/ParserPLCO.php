@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Class ParserPLCO
- * 
- * Parses data for the "co.pl" domain extension.
+ * Parser for the co.pl extension.
  */
 class ParserPLCO extends Parser
 {

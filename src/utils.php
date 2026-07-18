@@ -72,6 +72,7 @@ function getProtocol(): string
  * @param string|string[] $pattern
  * @param string|string[] $replacement
  * @param string|string[] $subject
+ *
  * @return ($subject is array ? string[] : string)
  */
 function pregReplace(array|string $pattern, array|string $replacement, array|string $subject): array|string

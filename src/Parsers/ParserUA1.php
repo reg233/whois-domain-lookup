@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Class ParserUA1
- * 
- * Parses data for the "укр" domain extension.
+ * Parser for the укр extension.
  */
 class ParserUA1 extends Parser
 {

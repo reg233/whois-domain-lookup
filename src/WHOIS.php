@@ -76,7 +76,7 @@ class WHOIS
     $server = $this->servers[$extension] ?? "";
 
     if (!$server && !WHOISWeb::isSupported($this->extension)) {
-      throw new RuntimeException("No WHOIS server found for '{$this->domain}'.");
+      throw new RuntimeException("No WHOIS server found for '$this->domain'.");
     }
 
     return $server;
@@ -102,26 +102,26 @@ class WHOIS
 
     $socket = @stream_socket_client("tcp://$host:43", $errno, $errstr, 10);
     if ($socket === false) {
-      throw new RuntimeException("WHOIS lookup failed for '{$this->domain}': $errstr.");
+      throw new RuntimeException("WHOIS lookup failed for '$this->domain': $errstr.");
     }
 
     stream_set_timeout($socket, 10);
 
     if (fwrite($socket, $query) === false) {
       fclose($socket);
-      throw new RuntimeException("WHOIS lookup failed for '{$this->domain}': failed to send request.");
+      throw new RuntimeException("WHOIS lookup failed for '$this->domain': failed to send request.");
     }
 
     $response = stream_get_contents($socket);
     if ($response === false) {
       fclose($socket);
-      throw new RuntimeException("WHOIS lookup failed for '{$this->domain}': failed to read response.");
+      throw new RuntimeException("WHOIS lookup failed for '$this->domain': failed to read response.");
     }
 
     $metaData = stream_get_meta_data($socket);
     if ($metaData["timed_out"]) {
       fclose($socket);
-      throw new RuntimeException("WHOIS lookup failed for '{$this->domain}': timed out.");
+      throw new RuntimeException("WHOIS lookup failed for '$this->domain': timed out.");
     }
 
     fclose($socket);

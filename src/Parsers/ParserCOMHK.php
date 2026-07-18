@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Class ParserCOMHK
- * 
- * Parses data for the "hk.com" domain extension.
+ * Parser for the hk.com extension.
  */
 class ParserCOMHK extends Parser
 {

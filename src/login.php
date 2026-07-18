@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/../config/version.php";
 require_once __DIR__ . "/utils.php";
 
 function redirect(): never
@@ -24,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
   ) {
     redirect();
   }
-} else if ($_SERVER["REQUEST_METHOD"] === "POST") {
+} elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (!SITE_PASSWORD) {
     http_response_code(500);
     exit;
@@ -259,7 +260,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
       const form = document.getElementById("form");
       const signInButton = document.getElementById("sign-in-button");
 
-      form.addEventListener("submit", (e) => {
+      form.addEventListener("submit", () => {
         signInButton.disabled = true;
         signInButton.dataset.loading = "true";
       });
