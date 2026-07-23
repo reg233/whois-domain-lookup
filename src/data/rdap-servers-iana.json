@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-07-14T22:00:03Z",
+  "publication": "2026-07-23T02:00:03Z",
   "services": [
     [
       [
@@ -5186,6 +5186,14 @@
       ],
       [
         "https://tld-rdap.verisign.com/verisign/v1/"
+      ]
+    ],
+    [
+      [
+        "web"
+      ],
+      [
+        "https://tld-rdap.verisign.com/web/v1/"
       ]
     ],
     [
