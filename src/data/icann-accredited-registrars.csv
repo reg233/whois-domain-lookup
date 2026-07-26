@@ -600,7 +600,7 @@ ID,Name,Link,"RDAP Base URL"
 1466,"Lexsynergy Limited",http://www.lexsynergy.com,https://rdap.lexsynergy.com/
 1467,"Combell NV",http://www.combell.com,https://rdap.combell.com/
 1469,"Jiangsu Bangning Science & technology Co. Ltd.",http://www.55hl.com,https://rdap.55hl.com/v1/
-1470,"Shanghai Yovole Networks, Inc.",http://www.yovole.com,https://rdap.sundns.com/rdap/
+1470,"Shanghai Yovole Networks, Inc.",http://www.yovole.com,https://rdap.sundns.com/
 1472,"LiquidNet Ltd.",http://www.liquidnetlimited.com,https://rdap.liquidnetlimited.com/v1/
 1475,"April Sea Corporation Company Limited",http://maprilis.net,https://rdap.maprilis.com.vn/rdap/
 1476,"World4You Internet Services GmbH",http://www.world4you.com,https://rdap.world4you.biz/
@@ -1320,7 +1320,6 @@ ID,Name,Link,"RDAP Base URL"
 2485,"SHENZHEN EIMS INFORMATION TECHNOLOGY CO. ,LTD",https://www190.vip/,https://rdap.190.vip/
 2486,"Ednit Software Private Limited",http://www.bookmyidentity.com,https://rdapserver.net/
 2487,"Internet Domain Service BS Corp",http://internetbs.net,https://rdap.internet.bs/
-2504,"HongKong Di En Si International Co., Limited",http://www.gooddns.com,https://rdap.gooddns.com/
 2505,"DropCatch.com 746 LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
 2506,"DropCatch.com 747 LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
 2507,"DropCatch.com 748 LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
@@ -2590,7 +2589,7 @@ ID,Name,Link,"RDAP Base URL"
 4157,"Yunnan Landui Cloud Computing Co., Ltd.",http://www.landui.com,https://www.landui.com/rdap/domain/
 4158,"Bangning Digital Technology Co.,Ltd",http://www.com.top,https://rdap.com.top/v1/
 4159,"Porto Software LLC",http://vezra.com,https://rdap.vezra.com/v1/domain/VEZRA.COM/
-4161,"SEO Domains EOOD",https://seodomainsnow.com,https://rdap.seo.domains/
+4161,"SEO Domains EOOD",https://seodomainsnow.com,https://rdap.seodomainsnow.com/
 4162,"NameMart Pte. Ltd.",https://www.namemart.com,https://rdap.namemart.com/rdap/
 4163,"Xiamen 35.com Information Co., Ltd.",https://www.35.com/,https://rdap.35.com/rdap/
 4164,"Gname 151 Inc",http://www.gname.com,https://rdap.gname.com/
@@ -3020,6 +3019,6 @@ ID,Name,Link,"RDAP Base URL"
 4588,"DreamFusion - IT Services, Lda (WebTuga)",https://www.webtuga.pt,https://rdap.webtuga.pt/
 4589,"Sampling Line – Serviços e Internet Lda",https://registrar.pt/,https://rdap.registrar.pt/
 4890,"Kenpai Technology Co., Ltd.",http://www.kenpai.com,https://rdap.kp.rdapwhois.cn/
-4891,"Internet Group Limited",http://www.nikonic.com,
+4891,"Internet Group Limited",http://www.nikonic.com,https://rdap.nikonic.com/
 9995,"Pre-Delegation Testing Registrar #1",,
 10007,"Domain The Net Technologies Ltd.",http://www.domainthenet.com,https://rdap.domainthenet.com/rdap/
