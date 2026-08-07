@@ -267,7 +267,7 @@ ID,Name,Link,"RDAP Base URL"
 976,"http.net Internet GmbH",http://www.http.net,https://rdap.routing.net/
 980,"! #1 Host Japan, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 981,"! #1 Host Korea, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
-985,"Own Identity, Inc.",http://www.ownidentity.com,https://rdap.ownidentity.com/rdap/
+985,"Own Identity, Inc.",https://www.ownidentity.com/,https://rdap.ownidentity.com/rdap/
 986,"Mighty Bay, LLC",http://mighty-bay.com,https://rdapserver.net/
 987,"Imperial Registrations, Inc.",http://www.imperialregistrations.com,https://rdapserver.net/
 996,"DomainAdministration.com, LLC",http://www.domainadministration.com,https://rdap.networksolutions.com/rdap/
