@@ -2975,7 +2975,7 @@ ID,Name,Link,"RDAP Base URL"
 4544,"Doruk Bilisim Teknolojileri Ltd",https://doruk.net.tr/,https://rdapserver.net/
 4545,"Sollutium EU sp. z o.o.",https://vsys.name,https://rdap.vsys.name/
 4546,"NameSaller LLC",https://namesaller.com,https://rdap.namesaller.com/
-4547,"Atom.com Domains LLC",,https://rdap.atom.com/
+4547,"Atom.com Domains LLC",https://www.atom.com/,https://rdap.atom.com/
 4548,"SecureName, Inc.",http://securename.com,
 4549,"0.Link Ltd.",http://0.link,https://rdap.0.link/
 4550,"Gate Hills Technology FZCO",http://gatehills.com/,https://rdap.gatehills.com/rdap/
