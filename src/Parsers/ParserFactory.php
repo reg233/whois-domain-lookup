@@ -61,7 +61,6 @@ class ParserFactory
     "netza" => ["za.net", "za.org"],
     "np" => ["np"],
     "pf" => ["pf"],
-    "ph" => ["ph"],
     "pl" => ["pl"],
     "plco" => ["co.pl"],
     "pt" => ["pt"],

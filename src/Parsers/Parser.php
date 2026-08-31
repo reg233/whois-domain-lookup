@@ -187,7 +187,7 @@ class Parser
     "status:\tnot allowed",
     // com.bg
     "status: forbidden",
-    // a.bi, xxx.ps
+    // a.bi
     "on a restricted list",
     // bo.bo
     "illegal characters",
@@ -297,7 +297,7 @@ class Parser
     // hk, vn
     // xn--j6w193g
     "has not been registered",
-    // jo, ph, tt
+    // jo, tt
     // xn--mgbayh7gpa
     "domain (?:name )?is available",
     // ls
@@ -336,9 +336,9 @@ class Parser
     // by, bz, ca, cc, cd, ci, cm, cn, co, cv, cx, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gf, gh
     // gi, gl, gm, gn, gs, gt, gw, gy, hk, hm, hn, hr, ht, id, ie, im, in, io, iq, jo, jp, ke, ki
     // kn, kr, kw, ky, kz, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mo, mq, mr, ms, mt, mu, mx
-    // my, mz, nf, ng, ni, nl, no, np, nr, nz, om, pa, pe, pg, ph, pr, ps, pw, qa, ro, rs, rw, sa
-    // sb, sc, sd, se, sg, sh, sl, sm, so, ss, st, sx, sy, tc, td, th, tj, tl, tn, to, tt, tv, ug
-    // us, uz, vc, vg, vn, vu, ws, ye, za, zm
+    // my, mz, nf, ng, ni, nl, no, np, nr, nz, om, pa, pe, pg, pr, ps, pw, qa, ro, rs, rw, sa, sb
+    // sc, sd, se, sg, sh, sl, sm, so, ss, st, sx, sy, tc, td, th, tj, tl, tn, to, tt, tv, ug, us
+    // uz, vc, vg, vn, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3e0b707e, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--80ao21a, xn--90a3ac
     // xn--90ae, xn--90ais, xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d
     // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j6w193g, xn--lgbbat1ad8j
@@ -430,9 +430,9 @@ class Parser
     // cc, cd, ci, cm, co, cr, cv, cx, cz, dk, dm, do, dz, ec, et, fi, fj, fm, fo, fr, ga, gd, ge
     // gg, gh, gi, gl, gm, gn, gs, gy, hm, hn, hr, ht, hu, id, ie, in, io, iq, je, ke, ki, kn, kw
     // ky, la, lb, lc, ls, lt, ly, ma, mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my, mz
-    // nc, nf, ng, nu, nz, om, pg, ph, pm, pr, ps, pw, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh
-    // si, sn, so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn
-    // vu, wf, ws, ye, yt, za, zm
+    // nc, nf, ng, nu, nz, om, pg, pm, pr, ps, pw, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh, si
+    // sn, so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn, vu
+    // wf, ws, ye, yt, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90a3ac, xn--90ais
     // xn--clchc0ea0b2g2a9gcd, xn--d1alf, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
     // xn--h2brj9c8c, xn--j1amh, xn--lgbbat1ad8j, xn--mgb9awbf, xn--mgbbh1a, xn--mgbbh1a71e
@@ -565,8 +565,8 @@ class Parser
     // com, ac, ad, af, ag, ai, as, aw, bb, bf, bh, bi, bj, bm, bn, bw, by, bz, ca, cc, cd, ci, cl
     // cm, co, cv, cx, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gr, gs, gy, hn
     // hr, ht, id, ie, in, io, iq, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr
-    // ms, mu, my, mz, nf, ng, nl, nz, pa, pg, ph, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl
-    // so, sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vn, vu, ws, ye, za, zm
+    // ms, mu, my, mz, nf, ng, nl, nz, pa, pg, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl, so
+    // sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vn, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90ais, xn--clchc0ea0b2g2a9gcd
     // xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh
     // xn--lgbbat1ad8j, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--ogbpf8fl
@@ -659,7 +659,7 @@ class Parser
     // bd, fr, hk, hu, im, pk, pm, re, tf, uk, wf, yt
     // xn--j6w193g
     "expiry date",
-    // bn, bt, by, cl, gr, gw, kr, mx, ph, pt, rs, uz
+    // bn, bt, by, cl, gr, gw, kr, mx, pt, rs, uz
     // xn--3e0b707e, xn--90a3ac, xn--90ais, xn--j1amh, xn--qxam
     "expiration date",
     // bo
@@ -715,8 +715,8 @@ class Parser
     // com, ac, ad, af, ag, ai, aw, bb, bf, bh, bi, bj, bm, bw, bz, ca, cc, cd, ci, cm, co, cv, cx
     // dm, do, ec, et, fj, fm, fo, gd, gh, gi, gl, gn, gs, gy, hn, hr, ht, id, ie, in, io, iq, ke
     // ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, ng, nl, nz
-    // pa, pg, ph, pr, ps, pw, rw, sb, sc, sd, sg, sh, so, ss, sx, sy, td, th, tl, to, tv, us, uz
-    // vc, vg, vu, ws, ye, za, zm
+    // pa, pg, pr, ps, pw, rw, sb, sc, sd, sg, sh, so, ss, sx, sy, td, th, tl, to, tv, us, uz, vc
+    // vg, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--clchc0ea0b2g2a9gcd, xn--fpcrj9c3d
     // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh, xn--mgbbh1a
     // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a
@@ -892,7 +892,7 @@ class Parser
     // xn--rvc1e0am3e, xn--s9brj9c, xn--xkc2dl3a5ee0h, xn--yfro4i67o
     "domain status",
     // ae, am, au, aw, ax, br, cr, cz, de, dk, ee, fi, gw, hu, il, it, jp, ls, lt, lv, mc, mk, mw
-    // mx, nl, nu, pf, ph, pk, qa, se, si, sm, sr, st, tg, th, tm, tz, ua, ug, uz
+    // mx, nl, nu, pf, pk, qa, se, si, sm, sr, st, tg, th, tm, tz, ua, ug, uz
     // xn--4dbrk0ce, xn--d1alf, xn--mgbaam7a8h, xn--o3cw4h, xn--wgbl6a, xn--y9a3aq
     "status",
     // bg
@@ -1127,9 +1127,9 @@ class Parser
     // com, ac, ad, ae, af, ag, ai, as, au, bb, bf, bh, bi, bj, bm, bw, by, bz, ca, cc, cd, ci, cl
     // cm, cn, co, cv, cx, dm, do, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gs, gy, hm, hn
     // hr, ht, id, ie, im, in, io, iq, jp, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm
-    // mn, mr, ms, mu, my, mz, nf, ng, nz, om, pa, pe, pg, ph, pk, pr, ps, pt, pw, qa, rw, sa, sb
-    // sc, sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vn, vu, ws
-    // ye, za, zm
+    // mn, mr, ms, mu, my, mz, nf, ng, nz, om, pa, pe, pg, pk, pr, ps, pt, pw, qa, rw, sa, sb, sc
+    // sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vn, vu, ws, ye
+    // za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90ais, xn--clchc0ea0b2g2a9gcd
     // xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
     // xn--h2brj9c8c, xn--mgb9awbf, xn--mgbaam7a8h, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgberp4a5d4ar

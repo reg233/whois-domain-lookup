@@ -69,7 +69,7 @@ class ParserRDAP extends Parser
   {
     // aa.af, xxx.as, bw.bw, email.cm, cv.cv, fuck.cx, 233.ec, xxx.gn, gy.gy, fuck.hn, fuck.ht
     // fuck.ki, ac.kn, lb.lb, 233.ly, mg.mg, xxx.mr, xxx.ms, fuck.nf, 233.ng, xxx.rw, fuck.sb, a.so
-    // ss.ss, fuck.tl
+    // ss.ss, fuck.tl, a.vi
     if (isset($this->json["variants"])) {
       foreach ($this->json["variants"] as $variant) {
         if (
@@ -88,7 +88,7 @@ class ParserRDAP extends Parser
           // ca.ca, xxx.sg
           // xn--clchc0ea0b2g2a9gcd.xn--clchc0ea0b2g2a9gcd, xn--yfro4i67o.xn--yfro4i67o
           "has usage restrictions",
-          // in.in, www.iq, ky.ky, xxx.my, co.pw
+          // in.in, www.iq, ky.ky, xxx.my, com.no, co.pw
           "is not available",
         ];
         if (preg_match("/" . implode("|", $keywords) . "/i", $desc)) {

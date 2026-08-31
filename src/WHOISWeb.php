@@ -1242,49 +1242,7 @@ class WHOISWeb
 
   private function getPH(): string
   {
-    $url = "https://whois.dot.ph/?search=" . $this->domain;
-
-    $html = $this->request($url);
-
-    $document = new DOMDocument();
-    $document->loadHTML($html);
-
-    $message = $document->getElementById("alert-message");
-    if ($message) {
-      return trim($message->textContent);
-    }
-
-    $whois = "";
-
-    $pre = $document->getElementsByTagName("pre")->item(0);
-    if ($pre) {
-      foreach ($pre->childNodes as $child) {
-        switch ($child->nodeName) {
-          case "b":
-          case "#text":
-            $whois .= $child->textContent;
-            break;
-          case "br":
-            $whois .= "\n";
-            break;
-          case "span":
-            $whois .= $document->saveHTML($child);
-            break;
-        }
-      }
-
-      if (preg_match("/createDate = moment\('(.+?)'\)/", $html, $matches)) {
-        $whois = str_replace('<span id="create-date"></span>', $matches[1], $whois);
-      }
-      if (preg_match("/expiryDate = moment\('(.+?)'\)/", $html, $matches)) {
-        $whois = str_replace('<span id="expiry-date"></span>', $matches[1], $whois);
-      }
-      if (preg_match("/updateDate = moment\('(.+?)'\)/", $html, $matches)) {
-        $whois = str_replace('<span id="update-date"></span>', $matches[1], $whois);
-      }
-    }
-
-    return trim($whois);
+    return "Please visit https://whois.dot.ph";
   }
 
   private function getPY(): string
