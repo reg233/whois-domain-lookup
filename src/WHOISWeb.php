@@ -33,7 +33,7 @@ class WHOISWeb
     "gw" => ["gw"],
     "hm" => ["hm"],
     "hu" => ["hu"],
-    "jo" => ["jo", "الاردن"],
+    "jo1" => ["الاردن"],
     "lk" => ["lk"],
     "mt" => ["mt"],
     "ni" => ["ni"],
@@ -846,7 +846,7 @@ class WHOISWeb
     return $whois;
   }
 
-  private function getJO(): string
+  private function getJO1(): string
   {
     $url = "https://dns.jo/FirstPageen.aspx";
 

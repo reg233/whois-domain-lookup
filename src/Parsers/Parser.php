@@ -178,8 +178,8 @@ class Parser
     // xn--mgbaam7a8h.xn--mgbaam7a8h
     "has been reserved",
     // aa.af, xxx.as, bf.bf, fuck.bj, bw.bw, email.cm, cv.cv, fuck.cx, 233.ec, xxx.gn, gy.gy
-    // fuck.hn, fuck.ht, 233.ke, fuck.ki, ac.kn, lb.lb, 233.ly, a.ma, mg.mg, xxx.mr, xxx.ms
-    // fuck.nf, 233.ng, pe.pe, xxx.rw, fuck.sb, a.sl, a.so, ss.ss, xxx.tc, fuck.tl
+    // fuck.hn, fuck.ht, 233.ke, fuck.ki, ac.kn, 233.ly, a.ma, mg.mg, xxx.mr, xxx.ms, fuck.nf
+    // 233.ng, pe.pe, xxx.rw, fuck.sb, a.sl, a.so, ss.ss, xxx.tc, fuck.tl
     "prohibited string",
     // bd.bd
     "reserved word",
@@ -249,7 +249,7 @@ class Parser
   }
 
   private const UNREGISTERED_KEYWORDS = [
-    // com, am, br, cc, cn, ge, gm, jp, mo, no, pt, sa, th, tr, uk
+    // com, am, br, cc, cn, ge, gm, jo, jp, mo, no, pt, sa, th, tr, uk
     // xn--fiqs8s, xn--fiqz9s, xn--j1amh, xn--mgberp4a5d4ar, xn--mix891f, xn--o3cw4h, xn--y9a3aq
     "no match",
     // ac, ag, ai, au, ax, bm, bn, bz, ca, dz, ee, fi, fr, ga, gg, gi, gw, hm, ie, im, io, je, kg
@@ -297,9 +297,6 @@ class Parser
     // hk, vn
     // xn--j6w193g
     "has not been registered",
-    // jo, tt
-    // xn--mgbayh7gpa
-    "domain (?:name )?is available",
     // ls
     "no record found",
     // lu
@@ -314,6 +311,9 @@ class Parser
     "no records found",
     // tm
     "is available for purchase",
+    // tt
+    // xn--mgbayh7gpa
+    "domain name is available",
   ];
 
   protected function getUnregisteredRegExp(): string
@@ -428,11 +428,11 @@ class Parser
   private const REGISTRAR_KEYWORDS = [
     // com, ac, ad, af, ag, ai, am, ar, as, at, ax, bb, bf, bh, bi, bj, bm, bn, bt, bw, by, bz, ca
     // cc, cd, ci, cm, co, cr, cv, cx, cz, dk, dm, do, dz, ec, et, fi, fj, fm, fo, fr, ga, gd, ge
-    // gg, gh, gi, gl, gm, gn, gs, gy, hm, hn, hr, ht, hu, id, ie, in, io, iq, je, ke, ki, kn, kw
-    // ky, la, lb, lc, ls, lt, ly, ma, mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my, mz
-    // nc, nf, ng, nu, nz, om, pg, pm, pr, ps, pw, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh, si
-    // sn, so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn, vu
-    // wf, ws, ye, yt, za, zm
+    // gg, gh, gi, gl, gm, gn, gs, gy, hm, hn, hr, ht, hu, id, ie, in, io, iq, je, jo, ke, ki, kn
+    // kw, ky, la, lb, lc, ls, lt, ly, ma, mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my
+    // mz, nc, nf, ng, nu, nz, om, pg, pm, pr, ps, pw, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh
+    // si, sn, so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn
+    // vu, wf, ws, ye, yt, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90a3ac, xn--90ais
     // xn--clchc0ea0b2g2a9gcd, xn--d1alf, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
     // xn--h2brj9c8c, xn--j1amh, xn--lgbbat1ad8j, xn--mgb9awbf, xn--mgbbh1a, xn--mgbbh1a71e
@@ -468,9 +468,9 @@ class Parser
 
   private const REGISTRAR_URL_KEYWORDS = [
     // com, ac, ad, af, ag, ai, au, bb, bf, bh, bm, bz, ca, cc, cl, cm, co, cx, dm, do, ec, et, fj
-    // fm, fo, gd, gi, gl, gn, gs, gy, hn, hr, hu, id, ie, in, io, iq, ke, ki, kw, ky, la, lb, lc
-    // me, mm, mn, mu, my, mz, nf, ng, nz, om, pr, ps, pw, rw, sb, sc, sd, sh, so, sx, to, tv, us
-    // vc, vg, vu, ws, ye, za, zm
+    // fm, fo, gd, gi, gl, gn, gs, gy, hn, hr, hu, id, ie, in, io, iq, jo, ke, ki, kw, ky, la, lb
+    // lc, me, mm, mn, mu, my, mz, nf, ng, nz, om, pr, ps, pw, rw, sb, sc, sd, sh, so, sx, to, tv
+    // us, vc, vg, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--fpcrj9c3d, xn--gecrj9c
     // xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh, xn--mgb9awbf, xn--mgbbh1a
     // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
@@ -535,8 +535,8 @@ class Parser
 
   private const REGISTRAR_WHOIS_SERVER = [
     // com, ac, af, ag, ai, au, bb, bh, bm, bz, ca, cc, co, cx, dm, et, fm, fo, gd, gi, gl, gn, gs
-    // gy, hr, ht, id, ie, in, io, iq, ke, kw, ky, la, lc, me, mg, mm, mn, mu, my, mz, ng, om, pr
-    // pw, sb, sc, sh, so, sx, tl, to, tv, us, vc, vg, vu, ye, za
+    // gy, hr, ht, id, ie, in, io, iq, jo, ke, kw, ky, la, lc, me, mg, mm, mn, mu, my, mz, ng, om
+    // pr, pw, sb, sc, sh, so, sx, tl, to, tv, us, vc, vg, vu, ye, za
     // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--mgb9awbf, xn--mgbtx2b
     // xn--q7ce6a
     "registrar whois server",
@@ -564,9 +564,9 @@ class Parser
   private const CREATION_DATE_KEYWORDS = [
     // com, ac, ad, af, ag, ai, as, aw, bb, bf, bh, bi, bj, bm, bn, bw, by, bz, ca, cc, cd, ci, cl
     // cm, co, cv, cx, dm, do, dz, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gr, gs, gy, hn
-    // hr, ht, id, ie, in, io, iq, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr
-    // ms, mu, my, mz, nf, ng, nl, nz, pa, pg, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl, so
-    // sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vn, vu, ws, ye, za, zm
+    // hr, ht, id, ie, in, io, iq, jo, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn
+    // mr, ms, mu, my, mz, nf, ng, nl, nz, pa, pg, pk, pr, ps, pt, pw, rw, sb, sc, sd, sg, sh, sl
+    // so, sr, ss, sx, sy, tc, td, tl, tn, to, tv, us, uz, vc, vg, vn, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90ais, xn--clchc0ea0b2g2a9gcd
     // xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh
     // xn--lgbbat1ad8j, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--ogbpf8fl
@@ -581,7 +581,7 @@ class Parser
     "created",
     // bd, bo
     "activation date",
-    // bt, jo, nr, rs, sm, tj, tt
+    // bt, nr, rs, sm, tj, tt
     // xn--90a3ac, xn--mgbayh7gpa
     "registration date",
     // cn
@@ -713,10 +713,10 @@ class Parser
 
   protected const UPDATED_DATE_KEYWORDS = [
     // com, ac, ad, af, ag, ai, aw, bb, bf, bh, bi, bj, bm, bw, bz, ca, cc, cd, ci, cm, co, cv, cx
-    // dm, do, ec, et, fj, fm, fo, gd, gh, gi, gl, gn, gs, gy, hn, hr, ht, id, ie, in, io, iq, ke
-    // ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, ng, nl, nz
-    // pa, pg, pr, ps, pw, rw, sb, sc, sd, sg, sh, so, ss, sx, sy, td, th, tl, to, tv, us, uz, vc
-    // vg, vu, ws, ye, za, zm
+    // dm, do, ec, et, fj, fm, fo, gd, gh, gi, gl, gn, gs, gy, hn, hr, ht, id, ie, in, io, iq, jo
+    // ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, ng, nl
+    // nz, pa, pg, pr, ps, pw, rw, sb, sc, sd, sg, sh, so, ss, sx, sy, td, th, tl, to, tv, us, uz
+    // vc, vg, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--clchc0ea0b2g2a9gcd, xn--fpcrj9c3d
     // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh, xn--mgbbh1a
     // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a
@@ -882,9 +882,9 @@ class Parser
   private const STATUS_KEYWORDS = [
     // com, ac, ad, af, ag, ai, bb, bf, bh, bi, bj, bm, bn, bw, bz, ca, cc, cd, ci, cm, cn, co, cv
     // cx, dm, do, ec, et, fj, fm, fo, gd, ge, gg, gh, gi, gl, gn, gs, gt, gy, hk, hn, ht, id, ie
-    // in, io, iq, je, ke, ki, kn, kr, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms, mu
-    // my, mz, nf, ng, nz, pa, pe, pg, pr, ps, pt, pw, ro, rs, rw, sb, sc, sd, sg, sh, sk, so, ss
-    // sx, sy, tc, td, tl, tn, to, tr, tv, tw, us, vc, vg, vn, vu, ws, ye, za, zm
+    // in, io, iq, je, jo, ke, ki, kn, kr, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms
+    // mu, my, mz, nf, ng, nz, pa, pe, pg, pr, ps, pt, pw, ro, rs, rw, sb, sc, sd, sg, sh, sk, so
+    // ss, sx, sy, tc, td, tl, tn, to, tr, tv, tw, us, vc, vg, vn, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3e0b707e, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90a3ac
     // xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve
     // xn--h2brj9c, xn--h2brj9c8c, xn--j6w193g, xn--kprw13d, xn--kpry57d, xn--mgbbh1a
@@ -1126,10 +1126,10 @@ class Parser
   private const NAME_SERVERS_KEYWORDS = [
     // com, ac, ad, ae, af, ag, ai, as, au, bb, bf, bh, bi, bj, bm, bw, by, bz, ca, cc, cd, ci, cl
     // cm, cn, co, cv, cx, dm, do, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gs, gy, hm, hn
-    // hr, ht, id, ie, im, in, io, iq, jp, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm
-    // mn, mr, ms, mu, my, mz, nf, ng, nz, om, pa, pe, pg, pk, pr, ps, pt, pw, qa, rw, sa, sb, sc
-    // sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vn, vu, ws, ye
-    // za, zm
+    // hr, ht, id, ie, im, in, io, iq, jo, jp, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml
+    // mm, mn, mr, ms, mu, my, mz, nf, ng, nz, om, pa, pe, pg, pk, pr, ps, pt, pw, qa, rw, sa, sb
+    // sc, sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vn, vu, ws
+    // ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90ais, xn--clchc0ea0b2g2a9gcd
     // xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
     // xn--h2brj9c8c, xn--mgb9awbf, xn--mgbaam7a8h, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgberp4a5d4ar

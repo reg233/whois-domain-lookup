@@ -68,8 +68,8 @@ class ParserRDAP extends Parser
   protected function getReserved(): bool
   {
     // aa.af, xxx.as, bw.bw, email.cm, cv.cv, fuck.cx, 233.ec, xxx.gn, gy.gy, fuck.hn, fuck.ht
-    // fuck.ki, ac.kn, lb.lb, 233.ly, mg.mg, xxx.mr, xxx.ms, fuck.nf, 233.ng, xxx.rw, fuck.sb, a.so
-    // ss.ss, fuck.tl, a.vi
+    // fuck.ki, ac.kn, 233.ly, mg.mg, xxx.mr, xxx.ms, fuck.nf, 233.ng, xxx.rw, fuck.sb, a.so, ss.ss
+    // fuck.tl, a.vi
     if (isset($this->json["variants"])) {
       foreach ($this->json["variants"] as $variant) {
         if (
