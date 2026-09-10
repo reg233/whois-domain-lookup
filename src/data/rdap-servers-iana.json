@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-07-23T02:00:03Z",
+  "publication": "2026-09-09T23:00:03Z",
   "services": [
     [
       [
@@ -670,6 +670,14 @@
       ],
       [
         "https://rdap.centralnic.com/quest/"
+      ]
+    ],
+    [
+      [
+        "radio"
+      ],
+      [
+        "https://rdap.centralnic.com/radio/"
       ]
     ],
     [
@@ -3243,14 +3251,6 @@
       ],
       [
         "https://rdap.nic.racing/"
-      ]
-    ],
-    [
-      [
-        "radio"
-      ],
-      [
-        "https://rdap.nic.radio/"
       ]
     ],
     [
