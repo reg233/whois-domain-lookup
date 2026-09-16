@@ -445,6 +445,8 @@ class Parser
     // cn, pe, sl, sr, sy, tc
     // xn--fiqs8s, xn--fiqz9s, xn--ogbpf8fl
     "sponsoring registrar",
+    // kz
+    "current registrar",
     // lu
     "registrar-name",
     // tw
@@ -469,8 +471,8 @@ class Parser
   private const REGISTRAR_URL_KEYWORDS = [
     // com, ac, ad, af, ag, ai, au, bb, bf, bh, bm, bz, ca, cc, cl, cm, co, cx, dm, do, ec, et, fj
     // fm, fo, gd, gi, gl, gn, gs, gy, hn, hr, hu, id, ie, in, io, iq, jo, ke, ki, kw, ky, la, lb
-    // lc, me, mm, mn, mu, my, mz, nf, ng, nz, om, pr, ps, pw, rw, sb, sc, sd, sh, so, sx, to, tv
-    // us, vc, vg, vu, ws, ye, za, zm
+    // lc, me, mm, mn, mu, my, mz, nf, ng, nz, om, pr, ps, pw, rw, sb, sc, sd, sh, so, sx, tl, to
+    // tv, us, vc, vg, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--fpcrj9c3d, xn--gecrj9c
     // xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh, xn--mgb9awbf, xn--mgbbh1a
     // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
@@ -510,7 +512,7 @@ class Parser
   private const REGISTRAR_IANA_ID_KEYWORDS = [
     // com, ac, af, ag, ai, bh, bm, bz, ca, cc, co, cx, dm, et, fm, fo, gd, gi, gl, gn, gs, gy, id
     // ie, in, io, iq, ki, kw, ky, la, lc, me, mm, mn, mu, my, nf, ng, om, pr, ps, pw, sb, sc, sd
-    // sh, so, sx, to, tv, us, vc, vg, vu, ws, za
+    // sh, so, sx, tl, to, tv, us, vc, vg, vu, ws, za
     "registrar iana id",
     // sy
     "sponsoring registrar iana id",
@@ -1126,10 +1128,10 @@ class Parser
   private const NAME_SERVERS_KEYWORDS = [
     // com, ac, ad, ae, af, ag, ai, as, au, bb, bf, bh, bi, bj, bm, bw, by, bz, ca, cc, cd, ci, cl
     // cm, cn, co, cv, cx, dm, do, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gm, gn, gs, gy, hm, hn
-    // hr, ht, id, ie, im, in, io, iq, jo, jp, ke, ki, kn, kw, ky, la, lb, lc, ly, ma, me, mg, ml
-    // mm, mn, mr, ms, mu, my, mz, nf, ng, nz, om, pa, pe, pg, pk, pr, ps, pt, pw, qa, rw, sa, sb
-    // sc, sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vn, vu, ws
-    // ye, za, zm
+    // hr, ht, id, ie, im, in, io, iq, jo, jp, ke, ki, kn, kw, ky, kz, la, lb, lc, ly, ma, me, mg
+    // ml, mm, mn, mr, ms, mu, my, mz, nf, ng, nz, om, pa, pe, pg, pk, pr, ps, pt, pw, qa, rw, sa
+    // sb, sc, sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vn, vu
+    // ws, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90ais, xn--clchc0ea0b2g2a9gcd
     // xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
     // xn--h2brj9c8c, xn--mgb9awbf, xn--mgbaam7a8h, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgberp4a5d4ar
