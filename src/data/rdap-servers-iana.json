@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-09-09T23:00:03Z",
+  "publication": "2026-09-16T19:00:03Z",
   "services": [
     [
       [
@@ -3107,6 +3107,15 @@
       ],
       [
         "https://rdap.nic.open/"
+      ]
+    ],
+    [
+      [
+        "kr",
+        "xn--3e0b707e"
+      ],
+      [
+        "https://rdap.nic.or.kr/"
       ]
     ],
     [
