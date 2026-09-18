@@ -88,8 +88,10 @@ class ParserRDAP extends Parser
           // ca.ca, xxx.sg
           // xn--clchc0ea0b2g2a9gcd.xn--clchc0ea0b2g2a9gcd, xn--yfro4i67o.xn--yfro4i67o
           "has usage restrictions",
-          // in.in, www.iq, ky.ky, xxx.my, com.no, co.pw
+          // xxx.dm, in.in, www.iq, ky.ky, xxx.my, com.no, co.pw
           "is not available",
+          // xn--3e0b707e.xn--3e0b707e
+          "name is restricted",
         ];
         if (preg_match("/" . implode("|", $keywords) . "/i", $desc)) {
           return true;
@@ -195,8 +197,13 @@ class ParserRDAP extends Parser
               break;
             }
           }
+        } elseif (!empty($entity["jscontact_card"])) {
+          // kr
+          // xn--3e0b707e
+          $this->registrar = $entity["jscontact_card"]["name"]["full"] ?? "";
+          $this->registrarURL = $this->formatURL($entity["jscontact_card"]["links"]["url"]["uri"] ?? "");
         } elseif (!empty($entity["handle"])) {
-          // ar, cr, cz, tz, ve
+          // ar, cr, cz, tz, ve, ws
           $this->registrar = $entity["handle"];
         }
 
@@ -211,6 +218,15 @@ class ParserRDAP extends Parser
               break;
             }
           }
+        }
+
+        // The registrar of the ws extension has the same value as the registrarIANAId
+        if (
+          $this->registrar &&
+          $this->registrarIANAId &&
+          $this->registrar === $this->registrarIANAId
+        ) {
+          $this->registrar = "";
         }
 
         if (!$this->registrarURL) {
@@ -291,9 +307,8 @@ class ParserRDAP extends Parser
 
   protected function getNameServers(?string $subject = null): array
   {
-    if (empty($this->json["nameservers"])) {
-      return [];
-    }
+    // The nameservers field key in the ws extension is nameServers
+    $nameServers = $this->json["nameservers"] ?? $this->json["nameServers"] ?? [];
 
     return array_values(array_unique(array_map(
       function ($item) {
@@ -301,7 +316,7 @@ class ParserRDAP extends Parser
 
         return idn_to_utf8($nameServer) ?: $nameServer;
       },
-      $this->json["nameservers"],
+      $nameServers,
     )));
   }
 

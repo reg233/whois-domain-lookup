@@ -446,6 +446,7 @@ class Parser
     // xn--fiqs8s, xn--fiqz9s, xn--ogbpf8fl
     "sponsoring registrar",
     // kz
+    // xn--80ao21a
     "current registrar",
     // lu
     "registrar-name",
@@ -469,10 +470,10 @@ class Parser
   }
 
   private const REGISTRAR_URL_KEYWORDS = [
-    // com, ac, ad, af, ag, ai, au, bb, bf, bh, bm, bz, ca, cc, cl, cm, co, cx, dm, do, ec, et, fj
-    // fm, fo, gd, gi, gl, gn, gs, gy, hn, hr, hu, id, ie, in, io, iq, jo, ke, ki, kw, ky, la, lb
-    // lc, me, mm, mn, mu, my, mz, nf, ng, nz, om, pr, ps, pw, rw, sb, sc, sd, sh, so, sx, tl, to
-    // tv, us, vc, vg, vu, ws, ye, za, zm
+    // com, ac, ad, af, ag, ai, as, au, bb, bf, bh, bm, bz, ca, cc, cl, cm, co, cx, dm, do, ec, et
+    // fj, fm, fo, gd, gi, gl, gn, gs, gy, hn, hr, hu, id, ie, in, io, iq, jo, ke, ki, kw, ky, la
+    // lb, lc, me, mm, mn, mu, my, mz, nf, ng, nz, om, pr, ps, pw, rw, sb, sc, sd, sh, so, sx, tl
+    // to, tv, us, vc, vg, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--fpcrj9c3d, xn--gecrj9c
     // xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--j1amh, xn--mgb9awbf, xn--mgbbh1a
     // xn--mgbbh1a71e, xn--mgbgu82a, xn--mgbtx2b, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
@@ -510,9 +511,9 @@ class Parser
   }
 
   private const REGISTRAR_IANA_ID_KEYWORDS = [
-    // com, ac, af, ag, ai, bh, bm, bz, ca, cc, co, cx, dm, et, fm, fo, gd, gi, gl, gn, gs, gy, id
-    // ie, in, io, iq, ki, kw, ky, la, lc, me, mm, mn, mu, my, nf, ng, om, pr, ps, pw, sb, sc, sd
-    // sh, so, sx, tl, to, tv, us, vc, vg, vu, ws, za
+    // com, ac, af, ag, ai, as, bh, bm, bz, ca, cc, co, cx, dm, et, fm, fo, gd, gi, gl, gn, gs, gy
+    // id, ie, in, io, iq, ki, kw, ky, la, lc, me, mm, mn, mu, my, nf, ng, om, pr, ps, pw, sb, sc
+    // sd, sh, so, sx, tl, to, tv, us, vc, vg, vu, ws, za
     "registrar iana id",
     // sy
     "sponsoring registrar iana id",
@@ -640,11 +641,11 @@ class Parser
   }
 
   private const EXPIRATION_DATE_KEYWORDS = [
-    // com, ac, ad, af, ag, ai, bf, bh, bi, bj, bm, bw, bz, ca, cc, cd, ci, cm, co, cv, cx, dm, do
-    // ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gn, gs, gy, hn, ht, id, ie, in, io, iq, ke, ki, kn
-    // kw, ky, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, ng, ni, pa, pg
-    // pr, ps, pw, rw, sb, sc, sd, sg, sh, sl, so, sr, ss, sx, sy, tc, td, tl, to, tv, us, vc, vg
-    // vn, vu, ye, za, zm
+    // com, ac, ad, af, ag, ai, as, bf, bh, bi, bj, bm, bw, bz, ca, cc, cd, ci, cm, co, cv, cx, dm
+    // do, ec, et, fj, fm, fo, gd, ge, gh, gi, gl, gn, gs, gy, hn, ht, id, ie, in, io, iq, ke, ki
+    // kn, kw, ky, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mr, ms, mu, my, mz, nf, ng, ni, pa
+    // pg, pr, ps, pw, rw, sb, sc, sd, sg, sh, sl, so, sr, ss, sx, sy, tc, td, tl, to, tv, us, vc
+    // vg, vn, vu, ye, za, zm
     // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--clchc0ea0b2g2a9gcd, xn--fpcrj9c3d
     // xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--mgbbh1a, xn--mgbbh1a71e
     // xn--mgbgu82a, xn--mgbtx2b, xn--ogbpf8fl, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
@@ -882,11 +883,11 @@ class Parser
   }
 
   private const STATUS_KEYWORDS = [
-    // com, ac, ad, af, ag, ai, bb, bf, bh, bi, bj, bm, bn, bw, bz, ca, cc, cd, ci, cm, cn, co, cv
-    // cx, dm, do, ec, et, fj, fm, fo, gd, ge, gg, gh, gi, gl, gn, gs, gt, gy, hk, hn, ht, id, ie
-    // in, io, iq, je, jo, ke, ki, kn, kr, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms
-    // mu, my, mz, nf, ng, nz, pa, pe, pg, pr, ps, pt, pw, ro, rs, rw, sb, sc, sd, sg, sh, sk, so
-    // ss, sx, sy, tc, td, tl, tn, to, tr, tv, tw, us, vc, vg, vn, vu, ws, ye, za, zm
+    // com, ac, ad, af, ag, ai, as, bb, bf, bh, bi, bj, bm, bn, bw, bz, ca, cc, cd, ci, cm, cn, co
+    // cv, cx, dm, do, ec, et, fj, fm, fo, gd, ge, gg, gh, gi, gl, gn, gs, gt, gy, hk, hn, ht, id
+    // ie, in, io, iq, je, jo, ke, ki, kn, kr, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr
+    // ms, mu, my, mz, nf, ng, nz, pa, pe, pg, pr, ps, pt, pw, ro, rs, rw, sb, sc, sd, sg, sh, sk
+    // so, ss, sx, sy, tc, td, tl, tn, to, tr, tv, tw, us, vc, vg, vn, vu, ws, ye, za, zm
     // xn--2scrj9c, xn--3e0b707e, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90a3ac
     // xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve
     // xn--h2brj9c, xn--h2brj9c8c, xn--j6w193g, xn--kprw13d, xn--kpry57d, xn--mgbbh1a
@@ -1132,11 +1133,11 @@ class Parser
     // ml, mm, mn, mr, ms, mu, my, mz, nf, ng, nz, om, pa, pe, pg, pk, pr, ps, pt, pw, qa, rw, sa
     // sb, sc, sd, sg, sh, sl, so, sr, ss, st, sx, sy, tc, td, th, tl, to, tv, us, vc, vg, vn, vu
     // ws, ye, za, zm
-    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--90ais, xn--clchc0ea0b2g2a9gcd
-    // xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve, xn--h2brj9c
-    // xn--h2brj9c8c, xn--mgb9awbf, xn--mgbaam7a8h, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgberp4a5d4ar
-    // xn--mgbgu82a, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a, xn--rvc1e0am3e, xn--s9brj9c
-    // xn--wgbl6a, xn--xkc2dl3a5ee0h, xn--yfro4i67o
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--80ao21a, xn--90ais
+    // xn--clchc0ea0b2g2a9gcd, xn--fiqs8s, xn--fiqz9s, xn--fpcrj9c3d, xn--gecrj9c, xn--h2breg3eve
+    // xn--h2brj9c, xn--h2brj9c8c, xn--mgb9awbf, xn--mgbaam7a8h, xn--mgbbh1a, xn--mgbbh1a71e
+    // xn--mgberp4a5d4ar, xn--mgbgu82a, xn--mgbtx2b, xn--o3cw4h, xn--ogbpf8fl, xn--q7ce6a
+    // xn--rvc1e0am3e, xn--s9brj9c, xn--wgbl6a, xn--xkc2dl3a5ee0h, xn--yfro4i67o
     "name server",
     // ar, at, ax, br, cr, cz, de, ee, fi, fr, il, ir, is, ls, lu, lv, mc, mk, mw, nu, pm, re, ru
     // se, su, tf, tz, ua, ve, wf, yt
@@ -1207,7 +1208,7 @@ class Parser
   private const DNSSEC_SIGNED_EXTRA_KEYWORDS = [
     // br
     "dsrecord",
-    // cr, cz, de, ee, tz
+    // cr, cz, de, ee, tz, ve
     "dnskey",
     // fr, pm, re, tf, wf, yt
     "key1-tag",

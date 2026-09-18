@@ -317,6 +317,9 @@ class Lookup
           ($this->parser->registrarIANAId && $ianaId === $this->parser->registrarIANAId) ||
           ($this->parser->registrar && $registrar === strtolower($this->parser->registrar))
         ) {
+          if (!$this->parser->registrar) {
+            $this->parser->registrar = trim($row[1] ?? "");
+          }
           $this->parser->registrarIANAId = $ianaId;
           if (!$this->parser->registrarURL) {
             $this->parser->registrarURL = trim($row[2] ?? "");
