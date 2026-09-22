@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2026-09-20_14-15-26_UTC
-// COMMIT: 645b36c9a51ff0b3718df0ba02f6570aa6921632
+// VERSION: 2026-09-21_10-14-19_UTC
+// COMMIT: 17cb0fe6547bacf263f5f931218885ab89d3dc75
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
