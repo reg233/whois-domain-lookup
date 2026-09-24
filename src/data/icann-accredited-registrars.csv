@@ -3009,7 +3009,7 @@ ID,Name,Link,"RDAP Base URL"
 4581,"UnstoppableUS9 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
 4582,"UnstoppableUS10 LLC",http://unstoppabledomains.com,https://api.unstoppabledomains.com/rdap/
 4583,"Knet Registrar (Beijing) Co., Ltd.",http://www.瑞吉思.网址,https://rdap.knetreg.cn/
-4584,"Xiamen Lingmao Digital Technology Co., Ltd.",https://www.lmkj.com/,
+4584,"Xiamen Lingmao Digital Technology Co., Ltd.",https://www.lmkj.com/,https://rdap.lmkj.com/
 4585,"Servytec Networks, S.L. (Funcionalia)",https://rdap.funcionalia.com/,https://rdap.funcionalia.com/rdap/
 4586,"PT Cloud Hosting Indonesia",http://idcloudhost.com/,https://rdap.idch.co.id/
 4587,"Nameslink (Hong Kong) Private Limited",https://www.nameslink.com/,https://nameslink.com/rdap/
@@ -3318,7 +3318,7 @@ ID,Name,Link,"RDAP Base URL"
 4890,"Kenpai Technology Co., Ltd.",http://www.kenpai.com,https://rdap.kp.rdapwhois.cn/
 4891,"Internet Group Limited",http://www.nikonic.com,https://rdap.nikonic.com/
 4892,"Cityhost LLC",https://cityhost.ua/en/,https://rdap.cityhost.ua/
-4893,"GMO Domain Registry GmbH dba Taku",https://taku.com/,
+4893,"GMO Domain Registry GmbH dba Taku",https://taku.com/,https://rdap.taku.com/
 4894,"Podaon SIA",https://zomro.com,https://rdap.zomro.com/
 9995,"Pre-Delegation Testing Registrar #1",,
 10007,"Domain The Net Technologies Ltd.",http://www.domainthenet.com,https://rdap.domainthenet.com/rdap/
