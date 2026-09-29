@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-09-16T19:00:03Z",
+  "publication": "2026-09-28T22:00:03Z",
   "services": [
     [
       [
@@ -118,6 +118,15 @@
       ],
       [
         "https://rdap.aliregistry.cn/rdap/"
+      ]
+    ],
+    [
+      [
+        "bh",
+        "xn--mgbcpq6gpa1a"
+      ],
+      [
+        "https://rdap.bhregistry.bh/rdap/"
       ]
     ],
     [
