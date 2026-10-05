@@ -187,6 +187,14 @@ class Parser
     "status:\tnot allowed",
     // com.bg
     "status: forbidden",
+    // domain.bh, xxx.dm, in.in, www.iq, ir.ir, kw.kw, ky.ky, xxx.my, xxx.uz
+    // xn--2scrj9c.xn--2scrj9c, xn--3hcrj9c.xn--3hcrj9c, xn--45br5cyl.xn--45br5cyl
+    // xn--45brj9c.xn--45brj9c, xn--fpcrj9c3d.xn--fpcrj9c3d, xn--gecrj9c.xn--gecrj9c
+    // xn--h2breg3eve.xn--h2breg3eve, xn--h2brj9c.xn--h2brj9c, xn--h2brj9c8c.xn--h2brj9c8c
+    // xn--mgba3a4f16a.xn--mgba3a4f16a, a.xn--mgbbh1a, xn--mgbbh1a71e.xn--mgbbh1a71e
+    // xn--mgbgu82a.xn--mgbgu82a, xn--rvc1e0am3e.xn--rvc1e0am3e, xn--s9brj9c.xn--s9brj9c
+    // a.xn--xkc2dl3a5ee0h
+    "is not available",
     // a.bi
     "on a restricted list",
     // bo.bo
@@ -199,14 +207,6 @@ class Parser
     // cn.cn, iana.su, pk.pk, uk.uk, vn.vn
     // xn--fiqs8s.xn--fiqs8s, xn--fiqz9s.xn--fiqz9s
     "can ?not be registered",
-    // xxx.dm, in.in, www.iq, ir.ir, kw.kw, ky.ky, xxx.my, xxx.uz
-    // xn--2scrj9c.xn--2scrj9c, xn--3hcrj9c.xn--3hcrj9c, xn--45br5cyl.xn--45br5cyl
-    // xn--45brj9c.xn--45brj9c, xn--fpcrj9c3d.xn--fpcrj9c3d, xn--gecrj9c.xn--gecrj9c
-    // xn--h2breg3eve.xn--h2breg3eve, xn--h2brj9c.xn--h2brj9c, xn--h2brj9c8c.xn--h2brj9c8c
-    // xn--mgba3a4f16a.xn--mgba3a4f16a, a.xn--mgbbh1a, xn--mgbbh1a71e.xn--mgbbh1a71e
-    // xn--mgbgu82a.xn--mgbgu82a, xn--rvc1e0am3e.xn--rvc1e0am3e, xn--s9brj9c.xn--s9brj9c
-    // a.xn--xkc2dl3a5ee0h
-    "is not available",
     // do.do, www.idf.il
     // xn--4dbrk0ce.xn--4dbrk0ce
     "domain(?: name)? is not allowed",
@@ -258,9 +258,9 @@ class Parser
     // xn--3e0b707e, xn--clchc0ea0b2g2a9gcd, xn--kprw13d, xn--kpry57d, xn--lgbbat1ad8j
     // xn--yfro4i67o
     "not? found",
-    // ad, af, as, bh, bw, by, ci, cm, co, cv, cx, ec, et, fj, fm, fo, gd, gl, gn, gs, gy, hn, ht
-    // id, ke, ki, kn, la, lb, ly, ma, mg, ml, mm, mr, ms, mz, nf, ng, pg, pw, rw, sb, sd, so, ss
-    // td, tl, vg, ws, zm
+    // ad, af, as, bw, by, ci, cm, co, cv, cx, ec, et, fj, fm, fo, gd, gl, gn, gs, gy, hn, ht, id
+    // ke, ki, kn, la, lb, ly, ma, mg, ml, mm, mr, ms, mz, nf, ng, pg, pw, rw, sb, sd, so, ss, td
+    // tl, vg, ws, zm
     // xn--90ais, xn--q7ce6a
     "not exist",
     // ae, il, mc, om, qa, tv, us, vu
@@ -277,6 +277,11 @@ class Parser
     // bf, bi, bj, cd, do, gh, pe, ps, sl, sr, sy, tc, tg, tn
     // xn--ogbpf8fl, xn--pgbs0dh
     "no object found",
+    // bh, dm, in, iq, kw, ky, lk, my, to
+    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--fpcrj9c3d, xn--gecrj9c
+    // xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgbgu82a
+    // xn--mgbtx2b, xn--rvc1e0am3e, xn--s9brj9c, xn--xkc2dl3a5ee0h
+    "is available for registration",
     // bo
     "unregistered domain name",
     // bt
@@ -286,11 +291,6 @@ class Parser
     "no entries found",
     // de, lv
     "status: free",
-    // dm, in, iq, kw, ky, lk, my, to
-    // xn--2scrj9c, xn--3hcrj9c, xn--45br5cyl, xn--45brj9c, xn--fpcrj9c3d, xn--gecrj9c
-    // xn--h2breg3eve, xn--h2brj9c, xn--h2brj9c8c, xn--mgbbh1a, xn--mgbbh1a71e, xn--mgbgu82a
-    // xn--mgbtx2b, xn--rvc1e0am3e, xn--s9brj9c, xn--xkc2dl3a5ee0h
-    "is available for registration",
     // gt, hu, nr, pk, rs
     // xn--90a3ac
     "not registered",
@@ -1191,10 +1191,10 @@ class Parser
   }
 
   private const DNSSEC_SIGNED_KEYWORDS = [
-    // com, ac, ad, af, ag, ai, at, au, aw, bg, bi, bj, bw, ca, cc, ci, cn, co, cx, dk, dm, fi, fm, fo
-    // ga, gd, gl, gs, gy, hk, hn, ht, id, ie, il, in, io, is, ke, ki, kw, ky, la, lb, lc, mc, md
-    // me, mg, mm, mn, mr, mu, my, nf, nl, no, nu, nz, pg, pl, pr, pw, ro, sa, sb, sc, se, sg, sh
-    // sn, ss, sx, th, tl, tn, tv, us, vc, vn, vu, za, zm
+    // com, ac, ad, af, ag, ai, at, au, aw, bg, bh, bi, bj, bw, bz, ca, cc, ci, cn, co, cx, dk, dm
+    // ec, fi, fm, fo, ga, gd, gi, gl, gs, gy, hk, hn, ht, id, ie, il, in, io, is, ke, ki, kr, kw
+    // ky, la, lb, lc, mc, md, me, mg, ml, mm, mn, mr, mu, my, nf, nl, no, nu, nz, pg, pl, pr, pw
+    // ro, sa, sb, sc, se, sg, sh, sk, sn, ss, sx, th, tl, tn, tv, us, vc, vn, vu, za, zm
     // xn--2scrj9c
     "dnssec",
     // gr
@@ -1223,14 +1223,15 @@ class Parser
   ];
 
   private const DNSSEC_SIGNED_VALUES = [
-    // com, ac, ad, af, ag, ai, au, bi, bj, bw, ca, cc, ci, cn, co, cx, dm, fm, fo, ga, gd, gl, gs, gy
-    // hk, hn, ht, ie, in, io, ke, ki, kw, ky, la, lb, lc, me, mg, mm, mn, mr, mu, my, nf, nz, pg
-    // pr, pw, sa, sb, sc, sg, sh, sn, ss, sx, th, tl, tv, us, vc, vn, vu, za, zm
+    // com, ac, ad, af, ag, ai, au, bh, bi, bj, bw, bz, ca, cc, ci, cn, co, cx, dm, ec, fm, fo, ga
+    // gd, gi, gl, gs, gy, hk, hn, ht, ie, in, io, ke, ki, kw, ky, la, lb, lc, me, mg, ml, mm, mn
+    // mr, mu, my, nf, nz, pg, pr, pw, sa, sb, sc, sg, sh, sn, ss, sx, th, tl, tv, us, vc, vn, vu
+    // za, zm
     // xn--2scrj9c
     "signeddelegation",
-    // at, id, il, mc, no, pl, tn, uk
+    // at, id, il, kr, mc, no, pl, tn, uk
     "signed",
-    // aw, it, nl, rs
+    // aw, it, nl, rs, sk
     "yes",
     // bg, md, ro
     "active",
@@ -1250,15 +1251,15 @@ class Parser
     return $this->getBaseRegExp(implode("|", self::DNSSEC_SIGNED_EXTRA_KEYWORDS));
   }
 
-  protected function getDNSSECSigned(): ?bool
+  protected function getDNSSECSigned(?string $subject = null): ?bool
   {
-    if (preg_match($this->getDNSSECSignedRegExp(), $this->data, $matches)) {
+    if (preg_match($this->getDNSSECSignedRegExp(), $subject ?? $this->data, $matches)) {
       $value = trim($matches[1]);
       if ($value) {
         return in_array(strtolower($value), self::DNSSEC_SIGNED_VALUES, true);
       }
     }
-    if (preg_match($this->getDNSSECSignedExtraRegExp(), $this->data, $matches)) {
+    if (preg_match($this->getDNSSECSignedExtraRegExp(), $subject ?? $this->data, $matches)) {
       return !!trim($matches[1]);
     }
 

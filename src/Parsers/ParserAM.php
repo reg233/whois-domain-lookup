@@ -27,7 +27,7 @@ class ParserAM extends Parser
     return $this->getNameServersFromExplode("\n");
   }
 
-  protected function getDNSSECSigned(): ?bool
+  protected function getDNSSECSigned(?string $subject = null): ?bool
   {
     if (preg_match("/dns servers \(zone signed, \d ds records?\)/i", $this->data)) {
       return true;

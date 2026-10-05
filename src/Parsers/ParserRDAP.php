@@ -5,8 +5,9 @@ declare(strict_types=1);
 class ParserRDAP extends Parser
 {
   /** @var array<string, mixed> */
-  private array $json = [];
+  private array $json;
 
+  /** @noinspection PhpMissingParentConstructorInspection */
   public function __construct(string $extension, int $code, string $data)
   {
     $this->extension = $extension;
@@ -85,11 +86,11 @@ class ParserRDAP extends Parser
     if (isset($this->json["description"]) && is_array($this->json["description"])) {
       foreach ($this->json["description"] as $desc) {
         $keywords = [
+          // domain.bh, xxx.dm, in.in, www.iq, ky.ky, xxx.my, com.no, co.pw
+          "is not available",
           // ca.ca, xxx.sg
           // xn--clchc0ea0b2g2a9gcd.xn--clchc0ea0b2g2a9gcd, xn--yfro4i67o.xn--yfro4i67o
           "has usage restrictions",
-          // xxx.dm, in.in, www.iq, ky.ky, xxx.my, com.no, co.pw
-          "is not available",
           // xn--3e0b707e.xn--3e0b707e
           "name is restricted",
         ];
@@ -204,7 +205,8 @@ class ParserRDAP extends Parser
           $this->registrarURL = $this->formatURL($entity["jscontact_card"]["links"]["url"]["uri"] ?? "");
         } elseif (!empty($entity["handle"])) {
           // ar, cr, cz, tz, ve, ws
-          $this->registrar = $entity["handle"];
+          // The type of the handle field for xn--fz7h.ws is int
+          $this->registrar = (string)$entity["handle"];
         }
 
         if (isset($entity["publicIds"])) {
@@ -214,7 +216,8 @@ class ParserRDAP extends Parser
               $publicId["type"] === "IANA Registrar ID" &&
               !empty($publicId["identifier"])
             ) {
-              $this->registrarIANAId = $publicId["identifier"];
+              // The type of the identifier field for xn--fz7h.ws is int
+              $this->registrarIANAId = (string)$publicId["identifier"];
               break;
             }
           }
@@ -320,7 +323,7 @@ class ParserRDAP extends Parser
     )));
   }
 
-  protected function getDNSSECSigned(): ?bool
+  protected function getDNSSECSigned(?string $subject = null): ?bool
   {
     if (isset($this->json["secureDNS"]["delegationSigned"])) {
       // The delegationSigned of kg extension is a bool string
