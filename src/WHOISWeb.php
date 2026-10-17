@@ -197,13 +197,13 @@ class WHOISWeb
 
     $data = [
       "dominio" => $this->domainParts[0],
-      "subdominio" => "." . $this->domainParts[1],
+      "subdominio" => ".{$this->domainParts[1]}",
       "enviar" => "",
     ];
 
     $options = [
       CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => $data,
+      CURLOPT_POSTFIELDS => http_build_query($data),
       CURLOPT_COOKIE => "app_language=en",
     ];
 
@@ -225,7 +225,7 @@ class WHOISWeb
       return "";
     }
 
-    $url = "https://nic.bo/" . $matches[1];
+    $url = "https://nic.bo/$matches[1]";
 
     $options = [CURLOPT_COOKIE => "app_language=en"];
 
@@ -244,7 +244,7 @@ class WHOISWeb
     foreach ($trs as $tr) {
       $tds = $tr->getElementsByTagName("td");
       if ($tds->length === 1) {
-        $whois .= strtoupper(trim($tds->item(0)->textContent)) . "\n";
+        $whois .= "\n" . strtoupper(trim($tds->item(0)->textContent)) . "\n";
       } elseif ($tds->length === 2) {
         $key = trim($tds->item(0)->textContent);
         $value = trim($tds->item(1)->textContent);
@@ -448,59 +448,32 @@ class WHOISWeb
 
   private function getGM(): string
   {
-    $url = "https://www.nic.gm/NIC2/scripts/checkdom.aspx?dname=" . $this->domainParts[0];
+    $url = "https://www.nic.gm/REG/login.aspx?action=lookup&dname={$this->domainParts[0]}";
 
-    $options = [
-      CURLOPT_FOLLOWLOCATION => false,
-      CURLOPT_HEADER => true,
-      CURLOPT_NOBODY => true,
-    ];
+    $jsonText = $this->request($url);
 
-    ["headers" => $headers] = $this->requestWithInfo($url, $options);
+    $json = json_decode($jsonText, true);
 
-    $whois = "";
-
-    if (str_contains($headers, "/NIC2/whois-available.html")) {
-      $whois .= "No match for \"$this->domain\".\n";
-    } elseif (
-      str_contains($headers, "/NIC2/whois-reserved.html") ||
-      str_contains($headers, "/NIC2/whois-numbers.html")
-    ) {
-      $whois .= "This name is reserved by the registry.\n";
-    } elseif (str_contains($headers, "/NIC2/whois-details.html")) {
-      $url = "https://www.nic.gm/NIC2/REG/login.aspx?whois=" . $this->domainParts[0];
-
-      $body = $this->request($url);
-
-      if ($body) {
-        $array = explode(";", $body);
-
-        $whois .= "Domain Name: $this->domain\n";
-        $whois .= "Registrar: $array[2]\n";
-        $whois .= "Creation Date: $array[11]\n";
-        $whois .= "Registrant Name: $array[1]\n";
-        $whois .= "Admin Name: $array[3]\n";
-        $whois .= "Admin Organization: $array[4]\n";
-        $whois .= "Tech Name: $array[5]\n";
-        $whois .= "Tech Organization: $array[6]\n";
-        $whois .= "Name Server: $array[7]\n";
-        $whois .= "Name Server: $array[8]\n";
-        $whois .= "Name Server: $array[9]\n";
-        $whois .= "Name Server: $array[10]\n";
-      }
-    }
-
-    if ($whois) {
-      $url = "https://www.nic.gm/NIC2/motd.txt";
-
-      $body = $this->request($url);
-
-      if ($body) {
-        $whois .= ">>> Last update of whois database: " . trim($body) . " <<<";
-      }
-    }
-
-    return $whois;
+    return match ($json["status"] ?? "") {
+      "registered" => implode("\n", [
+        "Domain Name: " . ($json["domain"]["fqdn"] ?? ""),
+        "Registrar: " . ($json["domain"]["registrar_name"] ?? ""),
+        "Creation Date: " . ($json["domain"]["created_raw"] ?? ""),
+        "Registrant Name: " . ($json["domain"]["owner_org"] ?? ""),
+        "Name Server: " . ($json["domain"]["ns1"] ?? ""),
+        "Name Server: " . ($json["domain"]["ns2"] ?? ""),
+        "Name Server: " . ($json["domain"]["ns3"] ?? ""),
+        "Name Server: " . ($json["domain"]["ns4"] ?? ""),
+        "",
+      ]),
+      "available" => "Domain not found.\n\nAvailable in the registry. Registration is subject to registry policy.\n",
+      "reserved" => "This name is reserved by the registry.\n\nReserved — registry review required.\n",
+      "blocked" => "This name is reserved by the registry.\n\nBlocked — registration restricted.\n",
+      "numbers" => "This name is reserved by the registry.\n\nNumeric-only domain — registry review required.\n",
+      "illegal" => "Invalid domain name.\n",
+      "unicode" => "Unicode domain input is not supported.\n",
+      default => "Status unavailable.\n",
+    };
   }
 
   private function getGQ(): string
@@ -820,14 +793,7 @@ class WHOISWeb
 
     $error = $xPath->query('//p[@class="error"]')->item(0);
     if ($error && trim($error->textContent)) {
-      $textContent = trim($error->textContent);
-
-      // Conflict with co.ms
-      if ($textContent === "Reserved domain") {
-        return "Reserved domain name";
-      }
-
-      return $textContent;
+      return trim($error->textContent);
     }
 
     $whois = "";
@@ -997,19 +963,7 @@ class WHOISWeb
 
   private function getMT(): string
   {
-    $url = "https://www.nic.org.mt/dotmt/whois/?" . $this->domain;
-
-    $html = $this->request($url);
-
-    $document = new DOMDocument();
-    $document->loadHTML($html);
-
-    $pre = $document->getElementsByTagName("pre")->item(0);
-    if ($pre) {
-      return $pre->textContent;
-    }
-
-    return "";
+    return "Please visit https://www.nic.org.mt/dotmt/whois/";
   }
 
   private function getNI(): string

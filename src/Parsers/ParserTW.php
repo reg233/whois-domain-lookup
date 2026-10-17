@@ -9,7 +9,7 @@ class ParserTW extends Parser
   protected function getReservedRegExp(): string
   {
     // tw.tw
-    // xxx.tw, xxx.台湾, xxx.台灣
+    // xxx.tw
     return "/網域名稱不合規定|reserved name/i";
   }
 

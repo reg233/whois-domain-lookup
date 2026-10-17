@@ -55,7 +55,6 @@ class ParserFactory
     "md" => ["md"],
     "mk" => ["mk", "мкд"],
     "mo" => ["mo", "澳門"],
-    "mt" => ["mt"],
     "mw" => ["mw"],
     "mx" => ["mx"],
     "nc" => ["nc"],

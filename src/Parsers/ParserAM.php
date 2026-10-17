@@ -7,7 +7,7 @@ class ParserAM extends Parser
   protected function getReservedRegExp(): string
   {
     // Conflict with ac.me
-    // fuck.am, xn--y9a3aq.xn--y9a3aq
+    // fuck.am
     return "/reserved name/i";
   }
 

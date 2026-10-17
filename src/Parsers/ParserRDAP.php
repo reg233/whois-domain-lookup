@@ -82,14 +82,13 @@ class ParserRDAP extends Parser
       }
     }
 
-    // The description of sr and ye extension is a string
+    // The description of sr extension is a string
     if (isset($this->json["description"]) && is_array($this->json["description"])) {
       foreach ($this->json["description"] as $desc) {
         $keywords = [
           // domain.bh, xxx.dm, in.in, www.iq, ky.ky, xxx.my, com.no, co.pw
           "is not available",
           // ca.ca, xxx.sg
-          // xn--clchc0ea0b2g2a9gcd.xn--clchc0ea0b2g2a9gcd, xn--yfro4i67o.xn--yfro4i67o
           "has usage restrictions",
           // xn--3e0b707e.xn--3e0b707e
           "name is restricted",
@@ -200,7 +199,6 @@ class ParserRDAP extends Parser
           }
         } elseif (!empty($entity["jscontact_card"])) {
           // kr
-          // xn--3e0b707e
           $this->registrar = $entity["jscontact_card"]["name"]["full"] ?? "";
           $this->registrarURL = $this->formatURL($entity["jscontact_card"]["links"]["url"]["uri"] ?? "");
         } elseif (!empty($entity["handle"])) {

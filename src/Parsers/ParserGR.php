@@ -6,7 +6,7 @@ class ParserGR extends Parser
 {
   protected function getReservedRegExp(): string
   {
-    // gr.gr, gr.ελ
+    // gr.gr
     return "/not acceptable/i";
   }
 

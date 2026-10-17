@@ -708,7 +708,7 @@ ID,Name,Link,"RDAP Base URL"
 1644,"SouthNames, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 1645,"Diamatrix C.C.",http://www.domains.co.za,https://rdap.domains.co.za/rdap/
 1647,"Hosting Concepts B.V. d/b/a Registrar.eu",https://www.openprovider.com,https://rdap.registrar.eu/v1/
-1649,"P.A. Viet Nam Company Limited",https://www.pavietnam.vn,https://rdap.pavietnam.vn/
+1649,"P.A Viet Nam Company Limited",https://www.pavietnam.vn,https://rdap.pavietnam.vn/
 1651,"Dynadot3 LLC",http://www.dynadot3.com,https://rdap.dynadot.com/
 1652,"Dynadot4 LLC",http://www.dynadot4.com,https://rdap.dynadot.com/
 1653,"Dynadot5 LLC",http://www.dynadot5.com,https://rdap.dynadot.com/
@@ -779,10 +779,10 @@ ID,Name,Link,"RDAP Base URL"
 1741,"Shinjiru Technology Sdn Bhd",http://www.ilovewww.com,https://rdapserver.net/
 1744,"Domain Vault Limited",http://www.domainvault.kiwi,https://rdap.domainhiveltd.com/
 1745,"LogicBoxes Naming Services Ltd.",http://logicboxesnamingservices.com,https://rdapserver.net/
-1749,"Upperlink Limited",http://domains.upperlink.ng,https://rdapserver.net/
+1749,"Upperlink Limited",http://domains.upperlink.ng,https://rdap.upperlink.ng/
 1750,"Authentic Web Inc.",http://www.authenticweb.com,https://authenticweb.rdap.tucows.com/
 1751,"SQUIDSAILERDOMAINS.COM, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
-1752,"Limited Liability Company ""DOMAINS.RU""",http://salenames.ru,https://rdap.salenames.ru/
+1752,"Limited Liability Company ""DOMAINS.RU""",https://domains.ru/,https://rdap.salenames.ru/
 1755,"Netistrar Limited",http://www.netistrar.com,https://rdap.netistrar.com/
 1756,"DropCatch.com 345 LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
 1757,"DropCatch.com 346 LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
@@ -2454,7 +2454,7 @@ ID,Name,Link,"RDAP Base URL"
 4019,"Gname 050 Inc",https://www.gname.com,https://rdap.gname.com/
 4020,"Webslice International Pte. Ltd",https://webslice.com/,https://rdapserver.net/
 4021,"HostPro Lab",http://hostpro.ua,https://rdap.hostpro.ua/
-4022,"Bolster Inc.",http://bolster.ai,https://registrars.rdap.org/
+4022,"Bolster Inc.",http://bolster.ai,https://rdap.bolster.ai/
 4023,"Namemart Ltd",https://www.namemart.com,https://rdap.namemart.com/rdap/
 4029,"PT Aksara Data Digital",http://aksaradata.id,https://rdap.aksaradata.id/
 4030,"Intis Telecom Limited",http://www.dnsale.com,https://rdap.dnsale.com/
@@ -2761,7 +2761,7 @@ ID,Name,Link,"RDAP Base URL"
 4334,"Tailor Brands Ltd",https://tailorbrands.com/,https://rdap.tailorbrands.com/rdap/domain/example.com/
 4335,"OrangeHost LLC",https://www.orangehost.com/,https://rdap.orangehost.com/
 4336,"Cloud DNS Ltd",https://www.cloudns.net,https://rdap.cloudns.net/
-4337,"D3Serve Labs Inc. dba Namefi",https://namefi.io/,https://rdap.namefi.io/
+4337,"D3Serve Labs Inc. dba Namefi",https://namefi.io/,https://api.namefi.io/v1/rdap/
 4338,"Pan Domains Limited",https://www.pandomains.com/,https://rdap.pandomains.com/
 4339,"Salvage Ltd",https://www.bb-online.com/,https://rdap.bb-online.com/
 4340,"OpusDNS GmbH",https://opusdns.com,https://rdap.opusdns.com/
@@ -2967,7 +2967,7 @@ ID,Name,Link,"RDAP Base URL"
 4540,"Gname 498 Inc",http://www.gname.com,https://rdap.gname.com/
 4541,"Gname 499 Inc",http://www.gname.com,https://rdap.gname.com/
 4542,"Gname 500 Inc",http://www.gname.com,https://rdap.gname.com/
-4543,"BF Internet Limited",http://www.kenpai.net,https://rdap.kphk.rdapwhois.cn/
+4543,"BF Internet Limited",https://bfiname.com,https://rdap.kphk.rdapwhois.cn/
 4544,"Doruk Bilisim Teknolojileri Ltd",https://doruk.net.tr/,https://rdapserver.net/
 4545,"Sollutium EU sp. z o.o.",https://vsys.name,https://rdap.vsys.name/
 4546,"NameSaller LLC",https://namesaller.com,https://rdap.namesaller.com/
@@ -3319,5 +3319,7 @@ ID,Name,Link,"RDAP Base URL"
 4892,"Cityhost LLC",https://cityhost.ua/en/,https://rdap.cityhost.ua/
 4893,"GMO Domain Registry GmbH dba Taku",https://taku.com/,https://rdap.taku.com/
 4894,"Podaon SIA",https://zomro.com,https://rdap.zomro.com/
+4895,"Saiyu Technology (Beijing) Co., Ltd.",https://www.saiyutech.cn,
+4896,"Cortexgrip Ltd",http://cortexgrip.com,
 9995,"Pre-Delegation Testing Registrar #1",,
 10007,"Domain The Net Technologies Ltd.",http://www.domainthenet.com,https://rdap.domainthenet.com/rdap/

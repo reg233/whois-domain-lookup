@@ -9,7 +9,7 @@ class ParserSM extends Parser
   protected function getReservedRegExp(): string
   {
     // Conflict with co.ms
-    // sm.sm
+    // xxx.sm
     return "/reserved domain/i";
   }
 
