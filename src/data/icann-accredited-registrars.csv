@@ -2739,7 +2739,7 @@ ID,Name,Link,"RDAP Base URL"
 4311,"Gname 298 Inc",http://www.gname.com,https://rdap.gname.com/
 4312,"Gname 299 Inc",http://www.gname.com,https://rdap.gname.com/
 4313,"GLOBAL ASSET DOMAINS INC.",https://www.gadomains.com/,https://rdap.gadomains.com/
-4314,"Hostyaga FZE LLC",http://ignorre.com,https://rdap.ignorre.com/
+4314,"Hostyaga FZE LLC",http://namefort.com,https://rdap.ignorre.com/
 4315,"Nametrust Inc.",https://nametrust.com,https://rdap.nametrust.com/
 4316,"Amazon Domain Registrar US LLC",https://domains.amazon,https://rdap.domains.amazon/
 4317,"Shanghai Sundns Information Technology Co., Ltd.",https://www.sundns.com,https://rdap.sundns.com/rdap/
@@ -3319,7 +3319,8 @@ ID,Name,Link,"RDAP Base URL"
 4892,"Cityhost LLC",https://cityhost.ua/en/,https://rdap.cityhost.ua/
 4893,"GMO Domain Registry GmbH dba Taku",https://taku.com/,https://rdap.taku.com/
 4894,"Podaon SIA",https://zomro.com,https://rdap.zomro.com/
-4895,"Saiyu Technology (Beijing) Co., Ltd.",https://www.saiyutech.cn,
-4896,"Cortexgrip Ltd",http://cortexgrip.com,
+4895,"Saiyu Technology (Beijing) Co., Ltd.",https://www.saiyutech.cn,https://rdap.saiyutech.cn/
+4896,"Cortexgrip Ltd",http://cortexgrip.com,https://rdap.cortexgrip.com/
+4897,"Nameverse Private Limited",https://www.nameverse.in,
 9995,"Pre-Delegation Testing Registrar #1",,
 10007,"Domain The Net Technologies Ltd.",http://www.domainthenet.com,https://rdap.domainthenet.com/rdap/
