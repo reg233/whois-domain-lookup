@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-09-30T23:00:03Z",
+  "publication": "2026-10-22T23:00:04Z",
   "services": [
     [
       [
@@ -1358,6 +1358,7 @@
         "sarl",
         "saxo",
         "sbi",
+        "sc",
         "scholarships",
         "school",
         "schule",
