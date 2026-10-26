@@ -126,10 +126,9 @@ class WHOIS
 
     fclose($socket);
 
-    // Skip encoding the response for "հայ" extension to avoid garbled text
-    if ($this->extension !== "հայ") {
-      $encoding = mb_detect_encoding($response, ["UTF-8", "ISO-8859-1"], true);
-      if ($encoding && $encoding !== "UTF-8") {
+    if (!mb_check_encoding($response, "UTF-8")) {
+      $encoding = mb_detect_encoding($response, ["ISO-8859-1"], true);
+      if ($encoding) {
         $convertedResponse = mb_convert_encoding($response, "UTF-8", $encoding);
         if ($convertedResponse !== false) {
           $response = $convertedResponse;
