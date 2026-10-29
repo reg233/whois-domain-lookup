@@ -1,6 +1,6 @@
 {
   "description": "RDAP bootstrap file for Domain Name System registrations",
-  "publication": "2026-10-22T23:00:04Z",
+  "publication": "2026-10-28T22:00:04Z",
   "services": [
     [
       [
@@ -1205,7 +1205,6 @@
         "hdfc",
         "hdfcbank",
         "healthcare",
-        "helsinki",
         "hermes",
         "hkt",
         "hockey",
