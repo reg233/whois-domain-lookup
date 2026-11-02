@@ -64,7 +64,6 @@ class ParserFactory
     "pl" => ["pl"],
     "plco" => ["co.pl"],
     "pt" => ["pt"],
-    "qa" => ["qa", "قطر"],
     "ro" => ["ro"],
     "rs" => ["rs", "срб"],
     "ru" => ["ru", "su", "рф", "net.ru", "org.ru", "pp.ru"],

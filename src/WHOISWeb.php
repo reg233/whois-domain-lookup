@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUnusedPrivateMethodInspection */
+
 declare(strict_types=1);
 
 require_once __DIR__ . "/utils.php";
@@ -75,6 +77,11 @@ class WHOISWeb
     foreach (self::$extensionToFunctionSuffix as $functionSuffix => $extensions) {
       if (in_array(strtolower($this->extension), $extensions, true)) {
         $functionName = "get" . strtoupper($functionSuffix);
+
+        if (!method_exists($this, $functionName)) {
+          throw new RuntimeException("Method $functionName does not exist.");
+        }
+
         return $this->$functionName();
       }
     }

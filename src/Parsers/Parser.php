@@ -20,6 +20,8 @@ class Parser
 
   public bool $unknown = false;
 
+  public bool $rateLimited = false;
+
   public bool $reserved = false;
 
   public bool $registered = false;
@@ -102,6 +104,11 @@ class Parser
       return;
     }
 
+    $this->rateLimited = $this->getRateLimited();
+    if ($this->rateLimited) {
+      return;
+    }
+
     $this->reserved = $this->getReserved();
     if ($this->reserved) {
       return;
@@ -171,6 +178,47 @@ class Parser
     }
   }
 
+  private const RATE_LIMITED_KEYWORDS = [
+    // ad, aw, bg, cz, de, nl, pl
+    "limit exceeded",
+    // ae
+    "exceeded the query limit",
+    // at, bf, bi, bj, cd, gh, sl
+    "quota exceeded",
+    // bh, dm, in, iq, kw, ky, my, pw, to
+    "rate limited",
+    // cn
+    "queried interval is too short",
+    // dk, hr, md, th
+    "too many requests",
+    // gr
+    "limit has been exceeded",
+    // ie
+    "reached your minute limit",
+    // jp
+    "incoming of a large amount of\r\nrequests",
+    // kz
+    "reach a limit of requests",
+    // lu
+    "rate reached",
+    // mm
+    "rate is now high",
+    // tv, us, vu
+    "queries exceeded",
+    // ws
+    "exceeded the maximum",
+  ];
+
+  protected function getRateLimitedRegExp(): string
+  {
+    return "/" . implode("|", self::RATE_LIMITED_KEYWORDS) . "/i";
+  }
+
+  protected function getRateLimited(): bool
+  {
+    return !!preg_match($this->getRateLimitedRegExp(), $this->data);
+  }
+
   private const RESERVED_KEYWORDS = [
     // 233.ac, au.au, xxx.bm, domain.bz, gm.gm, fuck.io, name.mn, data.mu, xxx.sh
     "reserved by the registry",
@@ -212,7 +260,7 @@ class Parser
     "domain is reserved",
     // com.mm
     "is a reserved name",
-    // c.om, ac.tv, xxx.vu
+    // c.om, qa.qa, ac.tv, xxx.vu
     "reserved domain name",
     // pk.pk, uk.uk, vn.vn
     "cannot be registered",
@@ -398,11 +446,11 @@ class Parser
     // cd, ci, cm, co, cr, cv, cx, cz, dk, dm, do, dz, ec, et, fi, fj, fm, fo, fr, ga, gd, ge, gg
     // gh, gi, gl, gm, gn, gs, gy, hm, hn, hr, ht, hu, id, ie, in, io, iq, je, jo, ke, ki, kn, kw
     // ky, la, lb, lc, ls, lt, ly, ma, mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my, mz
-    // nc, nf, ng, nu, nz, om, pg, pm, pr, ps, pw, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh, si
-    // sn, so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn, vu
-    // wf, ws, ye, yt, za, zm
+    // nc, nf, ng, nu, nz, om, pg, pm, pr, ps, pw, qa, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh
+    // si, sn, so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn
+    // vu, wf, ws, ye, yt, za, zm
     "registrar",
-    // ae, au, cl, hk, il, qa
+    // ae, au, cl, hk, il
     "registrar name",
     // cn, pe, sl, sr, sy, tc
     "sponsoring registrar",
@@ -646,7 +694,7 @@ class Parser
     // pa, pg, pr, ps, pw, rw, sb, sc, sd, sg, sh, so, ss, sx, sy, td, th, tl, to, tv, us, uz, vc
     // vg, vu, ws, ye, za, zm
     "updated date",
-    // am, au, kz, pl, qa
+    // am, au, kz, pl
     "last modified",
     // ar, at, br, cr, cz, de, ee, ls, mk, mw, tz, ve
     "changed",
@@ -801,11 +849,11 @@ class Parser
     // ac, ad, af, ag, ai, as, bb, bf, bh, bi, bj, bm, bn, bw, bz, ca, cc, cd, ci, cm, cn, co, cv
     // cx, dm, do, ec, et, fj, fm, fo, gd, ge, gg, gh, gi, gl, gn, gs, gt, gy, hk, hn, ht, id, ie
     // in, io, iq, je, jo, ke, ki, kn, kr, kw, ky, la, lb, lc, ly, ma, me, mg, ml, mm, mn, mr, ms
-    // mu, my, mz, nf, ng, nz, pa, pe, pg, pr, ps, pt, pw, ro, rs, rw, sb, sc, sd, sg, sh, sk, so
-    // ss, sx, sy, tc, td, tl, tn, to, tr, tv, tw, us, vc, vg, vn, vu, ws, ye, za, zm
+    // mu, my, mz, nf, ng, nz, pa, pe, pg, pr, ps, pt, pw, qa, ro, rs, rw, sb, sc, sd, sg, sh, sk
+    // so, ss, sx, sy, tc, td, tl, tn, to, tr, tv, tw, us, vc, vg, vn, vu, ws, ye, za, zm
     "domain status",
     // ae, am, au, aw, ax, br, cr, cz, de, dk, ee, fi, gw, hu, il, it, jp, ls, lt, lv, mc, mk, mw
-    // mx, nl, nu, pf, pk, qa, se, si, sm, sr, st, tg, th, tm, tz, ua, ug, uz
+    // mx, nl, nu, pf, pk, se, si, sm, sr, st, tg, th, tm, tz, ua, ug, uz
     "status",
     // bg
     "registration status",

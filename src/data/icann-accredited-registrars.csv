@@ -25,7 +25,6 @@ ID,Name,Link,"RDAP Base URL"
 84,"UK-2 Limited",http://uk2group.com,https://rdapserver.net/
 85,"EPAG Domainservices GmbH",http://www.epag.de,https://rdap.ascio.com/
 86,"DomainSpot LLC",http://domainspot.com,https://rdapanchor.com/
-87,"HANGANG Systems, Inc. dba Doregi.com",http://www.doregi.com,https://rdap.doregi.com/
 88,"Namebay SAM",http://www.namebay.com,https://rdap.namebay.com/
 91,"007Names, Inc.",http://www.007names.com,https://rdap.007names.net/
 93,"GKG.NET, INC.",http://www.gkg.net,
@@ -336,7 +335,7 @@ ID,Name,Link,"RDAP Base URL"
 1078,"DropWeek.com, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 1082,"Register4Less, Inc.",http://register4less.com,https://rdapserver.net/
 1083,"Curious Net, LLC",http://www.curiousnet.com,https://rdapserver.net/
-1084,"Secure Registrar, Inc.",https://www.secureregistrar.com,https://rdap.secureregistrar.com/
+1084,"Domain, LLC",https://www.secureregistrar.com,https://rdap.secureregistrar.com/
 1085,"Click Registrar, LLC dba publicdomainregistry.com",http://publicdomainregistry.com,https://rdapserver.net/
 1086,"Marcaria International LLC",http://www.marcaria.com,https://rdapserver.net/
 1091,"IHS Telekom, Inc.",http://www.ihs.com.tr,https://rdapserver.net/
@@ -2967,7 +2966,7 @@ ID,Name,Link,"RDAP Base URL"
 4540,"Gname 498 Inc",http://www.gname.com,https://rdap.gname.com/
 4541,"Gname 499 Inc",http://www.gname.com,https://rdap.gname.com/
 4542,"Gname 500 Inc",http://www.gname.com,https://rdap.gname.com/
-4543,"BF Internet Limited",https://bfiname.com,https://rdap.kphk.rdapwhois.cn/
+4543,"BF Internet Limited",https://www.bfiname.com/,https://rdap.kphk.rdapwhois.cn/
 4544,"Doruk Bilisim Teknolojileri Ltd",https://doruk.net.tr/,https://rdapserver.net/
 4545,"Sollutium EU sp. z o.o.",https://vsys.name,https://rdap.vsys.name/
 4546,"NameSaller LLC",https://namesaller.com,https://rdap.namesaller.com/

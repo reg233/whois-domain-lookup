@@ -13,6 +13,11 @@ class ParserRDAP extends Parser
     $this->extension = $extension;
     $this->rdapData = $data;
 
+    $this->rateLimited = $code === 429;
+    if ($this->rateLimited) {
+      return;
+    }
+
     $json = json_decode($data, true);
     $this->json = is_array($json) ? $json : [];
 

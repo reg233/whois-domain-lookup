@@ -198,6 +198,11 @@ class Lookup
   {
     $this->parser = $whoisParser;
     $this->parser->rdapData = $rdapParser->rdapData;
+    $this->parser->rateLimited = $whoisParser->rateLimited && $rdapParser->rateLimited;
+
+    if ($rdapParser->rateLimited) {
+      return;
+    }
 
     if ($rdapParser->reserved) {
       $this->parser->unknown = false;
@@ -305,11 +310,11 @@ class Lookup
     }
 
     try {
-      if (fgetcsv(stream: $stream, escape: "\\") === false) {
+      if (fgetcsv($stream, escape: "") === false) {
         return;
       }
 
-      while (($row = fgetcsv(stream: $stream, escape: "\\")) !== false) {
+      while (($row = fgetcsv($stream, escape: "")) !== false) {
         $ianaId = trim($row[0] ?? "");
         $registrar = strtolower(trim($row[1] ?? ""));
 

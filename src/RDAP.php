@@ -110,7 +110,7 @@ class RDAP
     }
 
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if ($code >= 400 && $code !== 404) {
+    if ($code >= 400 && $code !== 404 && $code !== 429) {
       throw new RuntimeException("RDAP lookup failed for '$this->domain': HTTP $code.");
     }
 

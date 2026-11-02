@@ -98,6 +98,15 @@ if ($domain) {
     $whoisData = $lookup->whoisData;
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
+
+    if ($parser->rateLimited) {
+      $errorPrefix = match ($dataSource) {
+        ["whois"] => "WHOIS lookup",
+        ["rdap"] => "RDAP lookup",
+        default => "WHOIS and RDAP lookups",
+      };
+      $error = "$errorPrefix failed for '$domain': temporarily unavailable due to rate limiting.";
+    }
   } catch (SyntaxError|UnableToResolveDomain) {
     $error = "'$domain' is not a valid domain.";
   } catch (Throwable $e) {
@@ -106,9 +115,9 @@ if ($domain) {
 
   if ($echoJSON) {
     if ($error) {
-      $value = ["code" => 1, "msg" => $error, "data" => null];
+      $value = ["code" => 1, "msg" => $error, "data" => $parser->rateLimited ? $parser : null];
     } else {
-      $value = ["code" => 0, "msg" => "Query successful", "data" => $parser];
+      $value = ["code" => 0, "msg" => "Query successful.", "data" => $parser];
     }
 
     $json = json_encode($value, JSON_UNESCAPED_UNICODE);
