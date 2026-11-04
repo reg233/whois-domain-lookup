@@ -186,7 +186,7 @@ class Parser
     // at, bf, bi, bj, cd, gh, sl
     "quota exceeded",
     // bh, dm, in, iq, kw, ky, my, pw, to
-    "rate limited",
+    "has been rate limited",
     // cn
     "queried interval is too short",
     // dk, hr, md, th
