@@ -2,6 +2,8 @@ Options -Indexes
 
 RewriteEngine On
 
+CGIPassAuth On
+
 # Uncomment the four lines below to enable force https.
 # RewriteCond %{HTTP:X-Forwarded-Proto} !https
 # RewriteCond %{HTTPS} off

@@ -725,7 +725,7 @@ ID,Name,Link,"RDAP Base URL"
 1670,"AtlanticDomains, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 1671,"MidWestDomains, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
 1672,"PacificDomains, LLC",http://www.networksolutions.com,https://rdap.snapnames.com/rdap/
-1673,"inherent SAS",https://www.adista.fr/,https://rdap.systonic.fr/
+1673,"inherent SAS",https://www.inherent.fr/,https://rdap.adista.fr/
 1675,"CV. Rumahweb Indonesia",http://www.rumahweb.com,https://rdap.rumahweb.com/
 1677,"AcquiredNames LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
 1678,"BlastDomains LLC",http://www.namebright.com,https://rdap.namebright.com/rdap/
@@ -3320,7 +3320,7 @@ ID,Name,Link,"RDAP Base URL"
 4894,"Podaon SIA",https://zomro.com,https://rdap.zomro.com/
 4895,"Saiyu Technology (Beijing) Co., Ltd.",https://www.saiyutech.cn,https://rdap.saiyutech.cn/
 4896,"Cortexgrip Ltd",http://cortexgrip.com,https://rdap.cortexgrip.com/
-4897,"Nameverse Private Limited",https://www.nameverse.in,
+4897,"Nameverse Private Limited",https://www.nameverse.in,https://rdap.nameverse.in/
 4898,"Immaterialism Limited",https://immateriali.sm,https://rdap.immateriali.sm/
 9995,"Pre-Delegation Testing Registrar #1",,
 10007,"Domain The Net Technologies Ltd.",http://www.domainthenet.com,https://rdap.domainthenet.com/rdap/
