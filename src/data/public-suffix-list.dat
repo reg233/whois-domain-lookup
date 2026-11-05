@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2026-10-31_14-17-28_UTC
-// COMMIT: 73f8cc701c084fe07d888ec552b2f0b53281a674
+// VERSION: 2026-11-04_14-48-28_UTC
+// COMMIT: da91c8eb04f1f10b19e3fe7089d25b5b5ae63b77
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -15317,6 +15317,10 @@ ox.rs
 // oy.lc
 // Submitted by Charly Coste <changaco@changaco.oy.lc>
 oy.lc
+
+// Page Lemon : https://pagelemon.com
+// Submitted by Aporia Research Ltd <hi@pagelemon.com>
+pagelemon.dev
 
 // Pagefog : https://pagefog.com/
 // Submitted by Derek Myers <derek@pagefog.com>
