@@ -1,4 +1,4 @@
-name: Update public-suffix-list.dat and rdap-servers-iana.json
+name: Update public-suffix-list.dat and rdap-servers-iana.json and whois-servers-iana.json
 
 on:
   schedule:
