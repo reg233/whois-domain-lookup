@@ -25,13 +25,19 @@ jobs:
         run: |
           curl -fsSL "https://publicsuffix.org/list/public_suffix_list.dat" -o src/data/public-suffix-list.dat
           curl -fsSL "https://data.iana.org/rdap/dns.json" -o src/data/rdap-servers-iana.json
+          curl -fsSL "https://data.iana.org/TLD/v1/tlds.json" | jq '
+            reduce (.domains[] | select(.status == "active")) as $d ({};
+              .[$d.name] = ($d.whois_server // "")
+            )
+          ' > src/data/whois-servers-iana.json
 
       - name: Commit and push
         run: |
           psl_updated=$(git diff --quiet src/data/public-suffix-list.dat; echo $?)
           rdap_updated=$(git diff --quiet src/data/rdap-servers-iana.json; echo $?)
+          whois_updated=$(git diff --quiet src/data/whois-servers-iana.json; echo $?)
 
-          if [[ $psl_updated == 1 || $rdap_updated == 1 ]]; then
+          if [[ $psl_updated == 1 || $rdap_updated == 1 || $whois_updated == 1 ]]; then
             base_tag="v$(date -u +%Y.%-m.%-d)"
             tag="${base_tag}"
             i=1
@@ -52,12 +58,22 @@ jobs:
               git add src/data/public-suffix-list.dat
               commit_message="public-suffix-list.dat"
             fi
+
             if [[ $rdap_updated == 1 ]]; then
               git add src/data/rdap-servers-iana.json
               if [[ -z $commit_message ]]; then
                 commit_message="rdap-servers-iana.json"
               else
                 commit_message="${commit_message} and rdap-servers-iana.json"
+              fi
+            fi
+
+            if [[ $whois_updated == 1 ]]; then
+              git add src/data/whois-servers-iana.json
+              if [[ -z $commit_message ]]; then
+                commit_message="whois-servers-iana.json"
+              else
+                commit_message="${commit_message} and whois-servers-iana.json"
               fi
             fi
 
