@@ -2,4 +2,4 @@
 
 declare(strict_types=1);
 
-const VERSION = "v2026.11.9";
+const VERSION = "v2026.11.10";

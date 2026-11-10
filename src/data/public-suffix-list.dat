@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2026-11-08_13-21-08_UTC
-// COMMIT: 7a21dc3491d43db036124fdd6a3a77d1cc44ad8a
+// VERSION: 2026-11-09_13-00-17_UTC
+// COMMIT: ab73a956765706dc3f42dbac5c7e48df2297e1ac
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -12538,6 +12538,10 @@ bnr.la
 // Submitted by Andy Ortlieb <aortlieb@atlassian.com>
 bitbucket.io
 
+// Bitgate, Inc. : https://ship.page
+// Submitted by Bitgate, Inc. <abuse@bitgate.com>
+ship.place
+
 // Blackbaud, Inc. : https://www.blackbaud.com
 // Submitted by Paul Crowder <paul.crowder@blackbaud.com>
 blackbaudcdn.net
@@ -12545,6 +12549,10 @@ blackbaudcdn.net
 // Blatech : http://www.blatech.net
 // Submitted by Luke Bratch <luke@bratch.co.uk>
 of.je
+
+// BlitzWorks : https://blitz.cloud
+// Submitted by BlitzWorks <hallo@blitzworks.io>
+prod.page
 
 // Block, Inc. : https://block.xyz
 // Submitted by Jonathan Boice <security@block.xyz>
