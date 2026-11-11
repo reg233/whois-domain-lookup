@@ -33,7 +33,7 @@ function cleanDomain(string $domain): string
     return "";
   }
 
-  $domain = trim(pregReplace(["/\s+/", "/\.{2,}/"], ["", "."], $domain), ".");
+  $domain = trim(preg_replace(["/\s+/", "/\.{2,}/"], ["", "."], $domain), ".");
 
   $parsedUrl = parse_url($domain);
   if ($parsedUrl["host"] ?? "") {
@@ -69,21 +69,38 @@ function getProtocol(): string
 }
 
 /**
- * @param string|string[] $pattern
- * @param string|string[] $replacement
- * @param string|string[] $subject
- *
- * @return ($subject is array ? string[] : string)
+ * @return array<int, mixed>
  */
-function pregReplace(array|string $pattern, array|string $replacement, array|string $subject): array|string
+function getServerCurlOptions(string $url): array
 {
-  return preg_replace($pattern, $replacement, $subject) ?? $subject;
-}
+  $certificateHosts = [
+    "gsrsaovsslca2018.pem" => ["rdap.ethiotelecom.et", "rdap.registry.om"],
+    "RapidSSLTLSRSACAG1.pem" => ["nic.pa"],
+    "rdap.nic.cr.pem" => ["rdap.nic.cr"],
+    "SectigoPublicServerAuthenticationCAOVR36.pem" => ["apiecommercenic.uni.edu.ni"],
+    "ye1.pem" => ["api.nic.dz"],
+  ];
 
-/** @return string[] */
-function pregSplit(string $pattern, string $subject, int $limit = -1): array
-{
-  $substrings = preg_split($pattern, $subject, $limit);
+  $host = strtolower((string)parse_url($url, PHP_URL_HOST));
 
-  return $substrings === false ? [$subject] : $substrings;
+  $options = [];
+
+  foreach ($certificateHosts as $cert => $hosts) {
+    if (in_array($host, $hosts, true)) {
+      $filename = __DIR__ . "/data/certs/$cert";
+
+      if (is_file($filename) && is_readable($filename)) {
+        $options[CURLOPT_CAINFO] = $filename;
+      }
+
+      break;
+    }
+  }
+
+  // rdap.nic.cr uses a self-signed certificate with no host name.
+  if ($host === "rdap.nic.cr") {
+    $options[CURLOPT_SSL_VERIFYHOST] = 0;
+  }
+
+  return $options;
 }

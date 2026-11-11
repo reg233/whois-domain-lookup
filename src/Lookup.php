@@ -83,15 +83,15 @@ class Lookup
         $this->domain = $domainName->registrableDomain()->toString();
         $this->extension = $domainName->suffix()->toString();
         $this->extensionTop = $domainName->domain()->label(0);
-      } catch (Throwable $e) {
-        if ($e->getMessage() === "The domain \"{$domain->toString()}\" can not contain a public suffix.") {
+      } catch (Throwable $t) {
+        if ($t->getMessage() === "The domain \"{$domain->toString()}\" can not contain a public suffix.") {
           $this->domain = $domain->toString();
           $this->extension = "iana";
-        } elseif ($e->getMessage() === "The public suffix and the domain name are identical `{$domain->toString()}`.") {
+        } elseif ($t->getMessage() === "The public suffix and the domain name are identical `{$domain->toString()}`.") {
           $this->domain = $domain->toString();
-          $this->extension = $domain->label(0) ?? throw $e;
+          $this->extension = $domain->label(0);
         } else {
-          throw $e;
+          throw $t;
         }
       }
     }
@@ -118,15 +118,15 @@ class Lookup
       } else {
         $this->whoisParser = $parser;
       }
-    } catch (Throwable $e) {
+    } catch (Throwable $t) {
       if ($this->dataSource === ["whois"]) {
-        throw $e;
+        throw $t;
       }
 
-      if ($e->getMessage() === "No WHOIS server found for '$this->domain'.") {
-        $this->whoisUnknown = $e->getMessage();
+      if ($t->getMessage() === "No WHOIS server found for '$this->domain'.") {
+        $this->whoisUnknown = $t->getMessage();
       } else {
-        $this->whoisError = $e->getMessage();
+        $this->whoisError = $t->getMessage();
       }
     }
   }
@@ -152,15 +152,15 @@ class Lookup
       } else {
         $this->rdapParser = $parser;
       }
-    } catch (Throwable $e) {
+    } catch (Throwable $t) {
       if ($this->dataSource === ["rdap"]) {
-        throw $e;
+        throw $t;
       }
 
-      if ($e->getMessage() === "No RDAP server found for '$this->domain'.") {
-        $this->rdapUnknown = $e->getMessage();
+      if ($t->getMessage() === "No RDAP server found for '$this->domain'.") {
+        $this->rdapUnknown = $t->getMessage();
       } else {
-        $this->rdapError = $e->getMessage();
+        $this->rdapError = $t->getMessage();
       }
     }
   }
@@ -301,11 +301,8 @@ class Lookup
   private function setRegistrarInfoFromICANN(): void
   {
     $filename = __DIR__ . "/data/icann-accredited-registrars.csv";
-    if (!file_exists($filename)) {
-      return;
-    }
 
-    if (($stream = fopen($filename, "r")) === false) {
+    if (($stream = @fopen($filename, "r")) === false) {
       return;
     }
 
@@ -314,27 +311,34 @@ class Lookup
         return;
       }
 
+      $registrar = strtolower($this->parser->registrar);
+
       while (($row = fgetcsv($stream, escape: "")) !== false) {
-        $ianaId = trim($row[0] ?? "");
-        $registrar = strtolower(trim($row[1] ?? ""));
+        $id = trim($row[0] ?? "");
+        $name = trim($row[1] ?? "");
 
         if (
-          ($this->parser->registrarIANAId && $ianaId === $this->parser->registrarIANAId) ||
-          ($this->parser->registrar && $registrar === strtolower($this->parser->registrar))
+          !($this->parser->registrarIANAId && $id === $this->parser->registrarIANAId) &&
+          !($registrar && strtolower($name) === $registrar)
         ) {
-          if (!$this->parser->registrar) {
-            $this->parser->registrar = trim($row[1] ?? "");
-          }
-          $this->parser->registrarIANAId = $ianaId;
-          if (!$this->parser->registrarURL) {
-            $this->parser->registrarURL = trim($row[2] ?? "");
-          }
-          if (!$this->parser->registrarRDAPServer) {
-            $this->parser->registrarRDAPServer = trim($row[3] ?? "");
-          }
-
-          return;
+          continue;
         }
+
+        if (!$this->parser->registrar) {
+          $this->parser->registrar = $name;
+        }
+
+        $this->parser->registrarIANAId = $id;
+
+        if (!$this->parser->registrarURL) {
+          $this->parser->registrarURL = trim($row[2] ?? "");
+        }
+
+        if (!$this->parser->registrarRDAPServer) {
+          $this->parser->registrarRDAPServer = trim($row[3] ?? "");
+        }
+
+        return;
       }
 
       if ($this->parser->registrarIANAId) {

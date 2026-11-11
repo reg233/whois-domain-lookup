@@ -14,13 +14,14 @@ const appleTheme = (theme) => {
     ? theme === "dark"
     : window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  if (isDark) {
-    document.documentElement.setAttribute("data-theme", "dark");
-    themeColor.content = "#050a1a";
-  } else {
-    document.documentElement.setAttribute("data-theme", "light");
-    themeColor.content = "#eef6ff";
-  }
+  document.documentElement.setAttribute(
+    "data-theme",
+    isDark ? "dark" : "light",
+  );
+
+  themeColor.content = getComputedStyle(document.documentElement)
+    .getPropertyValue("--surface-page-start")
+    .trim();
 };
 
 appleTheme(localTheme);

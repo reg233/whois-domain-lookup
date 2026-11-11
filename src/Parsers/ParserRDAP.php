@@ -105,11 +105,7 @@ class ParserRDAP extends Parser
     }
 
     // iana.ye
-    if (
-      isset($this->json["error"]) &&
-      is_string($this->json["error"]) &&
-      $this->json["error"] === "Domain name is reserved or restricted"
-    ) {
+    if (isset($this->json["error"]) && $this->json["error"] === "Domain name is reserved or restricted") {
       return true;
     }
 

@@ -235,7 +235,7 @@ Example: `Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381
 | 46 | [cm](https://en.wikipedia.org/wiki/.cm) | ![](https://uptime.233333.best/api/badge/55/status?label) | ![](https://uptime.233333.best/api/badge/56/status?label) |  |
 | 47 | [cn](https://en.wikipedia.org/wiki/.cn) | ![](https://uptime.233333.best/api/badge/57/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 48 | [co](https://en.wikipedia.org/wiki/.co) | ![](https://uptime.233333.best/api/badge/58/status?label) | ![](https://uptime.233333.best/api/badge/59/status?label) |  |
-| 49 | [cr](https://en.wikipedia.org/wiki/.cr) | ![](https://uptime.233333.best/api/badge/60/status?label) | ![](https://uptime.233333.best/api/badge/61/status?label) | RDAP: SSL certificate problem |
+| 49 | [cr](https://en.wikipedia.org/wiki/.cr) | ![](https://uptime.233333.best/api/badge/60/status?label) | ![](https://uptime.233333.best/api/badge/61/status?label) |  |
 | 50 | [cu](https://en.wikipedia.org/wiki/.cu) | ![](https://uptime.233333.best/api/badge/62/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 51 | [cv](https://en.wikipedia.org/wiki/.cv) | ![](https://uptime.233333.best/api/badge/63/status?label) | ![](https://uptime.233333.best/api/badge/64/status?label) |  |
 | 52 | [cw](https://en.wikipedia.org/wiki/.cw) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
@@ -247,13 +247,13 @@ Example: `Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381
 | 58 | [dk](https://en.wikipedia.org/wiki/.dk) | ![](https://uptime.233333.best/api/badge/71/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 59 | [dm](https://en.wikipedia.org/wiki/.dm) | ![](https://uptime.233333.best/api/badge/72/status?label) | ![](https://uptime.233333.best/api/badge/73/status?label) |  |
 | 60 | [do](https://en.wikipedia.org/wiki/.do) | ![](https://uptime.233333.best/api/badge/74/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 61 | [dz](https://en.wikipedia.org/wiki/.dz) | ![](https://uptime.233333.best/api/badge/75/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
+| 61 | [dz](https://en.wikipedia.org/wiki/.dz) | ![](https://uptime.233333.best/api/badge/75/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 62 | [ec](https://en.wikipedia.org/wiki/.ec) | ![](https://uptime.233333.best/api/badge/76/status?label) | ![](https://uptime.233333.best/api/badge/77/status?label) |  |
 | 63 | [ee](https://en.wikipedia.org/wiki/.ee) | ![](https://uptime.233333.best/api/badge/78/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 64 | [eg](https://en.wikipedia.org/wiki/.eg) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 65 | [er](https://en.wikipedia.org/wiki/.er) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 66 | [es](https://en.wikipedia.org/wiki/.es) | ![](https://uptime.233333.best/api/badge/79/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 67 | [et](https://en.wikipedia.org/wiki/.et) | ![](https://uptime.233333.best/api/badge/80/status?label) | ![](https://uptime.233333.best/api/badge/81/status?label) | RDAP: SSL certificate problem |
+| 67 | [et](https://en.wikipedia.org/wiki/.et) | ![](https://uptime.233333.best/api/badge/80/status?label) | ![](https://uptime.233333.best/api/badge/81/status?label) |  |
 | 68 | [eu](https://en.wikipedia.org/wiki/.eu) | ![](https://uptime.233333.best/api/badge/82/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 69 | [fi](https://en.wikipedia.org/wiki/.fi) | ![](https://uptime.233333.best/api/badge/83/status?label) | ![](https://uptime.233333.best/api/badge/84/status?label) |  |
 | 70 | [fj](https://en.wikipedia.org/wiki/.fj) | ![](https://uptime.233333.best/api/badge/85/status?label) | ![](https://uptime.233333.best/api/badge/86/status?label) |  |
@@ -356,7 +356,7 @@ Example: `Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381
 | 167 | [nr](https://en.wikipedia.org/wiki/.nr) | ![](https://uptime.233333.best/api/badge/211/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 168 | [nu](https://en.wikipedia.org/wiki/.nu) | ![](https://uptime.233333.best/api/badge/212/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 169 | [nz](https://en.wikipedia.org/wiki/.nz) | ![](https://uptime.233333.best/api/badge/213/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 170 | [om](https://en.wikipedia.org/wiki/.om) | ![](https://uptime.233333.best/api/badge/214/status?label) | ![](https://uptime.233333.best/api/badge/215/status?label) | RDAP: SSL certificate problem |
+| 170 | [om](https://en.wikipedia.org/wiki/.om) | ![](https://uptime.233333.best/api/badge/214/status?label) | ![](https://uptime.233333.best/api/badge/215/status?label) |  |
 | 171 | [pa](https://en.wikipedia.org/wiki/.pa) | ![](https://uptime.233333.best/api/badge/216/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 172 | [pe](https://en.wikipedia.org/wiki/.pe) | ![](https://uptime.233333.best/api/badge/217/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 173 | [pf](https://en.wikipedia.org/wiki/.pf) | ![](https://uptime.233333.best/api/badge/218/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |

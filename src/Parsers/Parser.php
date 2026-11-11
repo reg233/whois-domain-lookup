@@ -285,9 +285,9 @@ class Parser
   }
 
   private const UNREGISTERED_KEYWORDS = [
-    // ac, ag, ai, au, ax, bm, bn, bz, ca, dz, ee, fi, fr, ga, gg, gi, gm, gw, hm, ie, im, io, je
-    // kg, kr, lc, me, mn, mu, ni, nu, nz, pa, pm, pr, re, sc, se, sg, sh, sk, sn, sx, tf, ug, uz
-    // vc, wf, ye, yt
+    // ac, ag, ai, au, ax, bm, bn, bz, ca, ee, fi, fr, ga, gg, gi, gm, gw, hm, ie, im, io, je, kg
+    // kr, lc, me, mn, mu, ni, nu, nz, pa, pm, pr, re, sc, se, sg, sh, sk, sn, sx, tf, ug, uz, vc
+    // wf, ye, yt
     "not found",
     // ad, af, as, bw, by, ci, cm, co, cv, cx, ec, et, fj, fm, fo, gd, gl, gn, gs, gy, hn, ht, id
     // ke, ki, kn, la, lb, ly, ma, mg, ml, mm, mr, ms, mz, nf, ng, pg, pw, rw, sb, sd, so, ss, td
@@ -295,7 +295,7 @@ class Parser
     "not exist",
     // ae, il, mc, om, qa, tv, us, vu
     "no data",
-    // am, br, cc, cn, ge, jo, jp, mo, no, pt, sa, th, tr, uk
+    // am, br, cc, cn, dz, ge, jo, jp, mo, no, pt, sa, th, tr, uk
     "no match",
     // at, kz
     "nothing found",
@@ -638,7 +638,7 @@ class Parser
     "expire",
     // bb, hr, ws
     "registrar registration expiration date",
-    // bd, fr, hk, hu, im, pk, pm, re, tf, uk, wf, yt
+    // bd, dz, fr, hk, hu, im, pk, pm, re, tf, uk, wf, yt
     "expiry date",
     // bn, bt, by, cl, gr, gw, kr, mx, pt, rs, uz
     "expiration date",
@@ -1111,7 +1111,7 @@ class Parser
   {
     if (preg_match_all($this->getNameServersRegExp(), $subject ?? $this->data, $matches)) {
       return array_map(
-        fn($item) => strtolower(pregSplit("/[ \t]+/", $item, 2)[0]),
+        fn($item) => strtolower(preg_split("/[ \t]+/", $item, 2)[0]),
         array_values(array_unique(array_filter(array_map("trim", $matches[1])))),
       );
     }
@@ -1291,7 +1291,7 @@ class Parser
           ));
           break;
         default:
-          if (is_string($value) && in_array(strtolower($value), self::EMPTY_VALUES, true)) {
+          if (in_array(strtolower($value), self::EMPTY_VALUES, true)) {
             $this->$property = "";
           }
           break;

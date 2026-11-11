@@ -26,7 +26,7 @@ class WHOISWeb
     "cu" => ["cu"],
     "cy" => ["cy"],
     "dj" => ["dj"],
-    "dz" => ["dz", "الجزائر"],
+    "dz1" => ["الجزائر"],
     "gf" => ["gf", "mq"],
     "gm" => ["gm"],
     "gq" => ["gq"],
@@ -112,7 +112,7 @@ class WHOISWeb
       CURLOPT_USERAGENT => USER_AGENT,
     ];
 
-    curl_setopt_array($ch, array_replace($defaultOptions, $options));
+    curl_setopt_array($ch, array_replace($defaultOptions, $options, getServerCurlOptions($url)));
 
     $response = curl_exec($ch);
     if (is_bool($response)) {
@@ -366,14 +366,11 @@ class WHOISWeb
     return "Please visit https://dot.dj";
   }
 
-  private function getDZ(): string
+  private function getDZ1(): string
   {
-    $segment = $this->extension === "dz" ? "/" : "/arabic/";
-    $url = "https://api.nic.dz/v1" . $segment . "domains/" . $this->domain;
+    $url = "https://api.nic.dz/v1/arabic/domains/$this->domain";
 
-    $options = [CURLOPT_SSL_VERIFYPEER => false];
-
-    $jsonText = $this->request($url, $options);
+    $jsonText = $this->request($url);
 
     $json = json_decode($jsonText, true);
 
@@ -451,7 +448,7 @@ class WHOISWeb
       }
     }
 
-    return pregReplace("/ {2,}/", " ", $whois);
+    return preg_replace("/ {2,}/", " ", $whois);
   }
 
   private function getGM(): string
@@ -502,7 +499,7 @@ class WHOISWeb
 
     $xPath = new DOMXPath($document);
 
-    $csrf = $xPath->query("//input[@name='_csrf']")->item(0)?->attributes?->getNamedItem("value")?->value;
+    $csrf = $xPath->query("//input[@name='_csrf']")->item(0)?->attributes->getNamedItem("value")?->value;
 
     if (!$csrf) {
       return "";
@@ -617,7 +614,7 @@ class WHOISWeb
 
     $message = $xPath->query('//div[@class="caja caja-message"]')->item(0);
     if ($message) {
-      return trim(pregReplace("/ {2,}/", "", $message->textContent));
+      return trim(preg_replace("/ {2,}/", "", $message->textContent));
     }
 
     $whois = "";
@@ -626,7 +623,7 @@ class WHOISWeb
     if ($whoisNodeList->length === 2) {
       foreach ($whoisNodeList->item(0)->childNodes as $child) {
         if ($child->nodeName === "div") {
-          $class = $child->attributes?->getNamedItem("class")?->value;
+          $class = $child->attributes->getNamedItem("class")?->value;
           if ($class === "alert alert-success") {
             $h3 = $xPath->query(".//h3", $child)->item(0);
             if ($h3) {
@@ -645,15 +642,15 @@ class WHOISWeb
           } elseif ($class === "form-stack") {
             $expiration = $xPath->query(".//strong", $child)->item(0);
             if ($expiration) {
-              $whois .= trim(pregReplace(["/\n/", "/ +/"], ["", " "], $expiration->textContent)) . "\n";
+              $whois .= trim(preg_replace(["/\n/", "/ +/"], ["", " "], $expiration->textContent)) . "\n";
             } else {
               foreach ($xPath->query('.//div[@class="form-field"]', $child) as $field) {
-                $whois .= "  " . trim(pregReplace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
+                $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
               }
             }
           } elseif ($class === "form-field") {
             foreach ($xPath->query(".//li", $child) as $nameServer) {
-              $whois .= "  " . trim(pregReplace(["/\n/", "/ +/"], ["", " "], $nameServer->textContent), " \n.") . "\n";
+              $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $nameServer->textContent), " \n.") . "\n";
             }
           }
         }
@@ -668,7 +665,7 @@ class WHOISWeb
 
           $fields = $xPath->query('.//div[@class="form-field"]', $child);
           foreach ($fields as $field) {
-            $whois .= "  " . trim(pregReplace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
+            $whois .= "  " . trim(preg_replace(["/\n/", "/ +/"], ["", " "], $field->textContent)) . "\n";
           }
         }
       }
@@ -755,8 +752,8 @@ class WHOISWeb
     if ($pre) {
       foreach ($pre->childNodes as $child) {
         if ($child->nodeName === "a") {
-          $class = $child->attributes?->getNamedItem("class")?->value;
-          $cfEmail = $child->attributes?->getNamedItem("data-cfemail")?->value;
+          $class = $child->attributes->getNamedItem("class")?->value;
+          $cfEmail = $child->attributes->getNamedItem("data-cfemail")?->value;
           if ($class === "__cf_email__" && $cfEmail) {
             $whois .= $this->decodeCFEmail($cfEmail);
           } else {
@@ -840,7 +837,7 @@ class WHOISWeb
     $xPath = new DOMXPath($document);
 
     $expression = "//select[@id='ddl']/option[normalize-space(text())='." . $this->domainParts[1] . "']";
-    $ddl = $xPath->query($expression)->item(0)?->attributes?->getNamedItem("value")?->value;
+    $ddl = $xPath->query($expression)->item(0)?->attributes->getNamedItem("value")?->value;
 
     $viewState = $document->getElementById("__VIEWSTATE")?->attributes->getNamedItem("value")?->value;
     $viewStateGenerator = $document->getElementById("__VIEWSTATEGENERATOR")?->attributes->getNamedItem("value")?->value;
@@ -1159,9 +1156,7 @@ class WHOISWeb
   {
     $url = "https://nic.pa:8080/whois/" . $this->domain;
 
-    $options = [CURLOPT_SSL_VERIFYPEER => false];
-
-    ["code" => $code, "body" => $jsonText] = $this->requestWithInfo($url, $options);
+    ["code" => $code, "body" => $jsonText] = $this->requestWithInfo($url);
 
     if ($code === 404) {
       return "Domain not found";
@@ -1242,7 +1237,7 @@ class WHOISWeb
 
     $button = $xPath->query("//strong[text()='$this->domain']/following-sibling::button[1]")->item(0);
     if ($button) {
-      $value = $button->attributes?->getNamedItem("onclick")?->value;
+      $value = $button->attributes->getNamedItem("onclick")?->value;
       if ($value && preg_match("/\((\d+)\)/", $value, $matches)) {
         $id = $matches[1];
       }

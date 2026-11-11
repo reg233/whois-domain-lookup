@@ -18,6 +18,9 @@ class WHOIS
 
   private const SERVERS_EXTRA = __DIR__ . "/data/whois-servers-extra.json";
 
+  /**
+   * @throws JsonException
+   */
   public function __construct(string $domain, string $extension, ?string $extensionTop)
   {
     $this->domain = $domain;
@@ -37,29 +40,23 @@ class WHOIS
     }
   }
 
-  /** @return array<string, string|array{host:string, query:string}> */
+  /**
+   * @return array<string, string|array{host:string, query:string}>
+   *
+   * @throws JsonException
+   */
   private function getServers(): array
   {
     $servers = [];
 
-    if (
-      file_exists(self::SERVERS_IANA) &&
-      ($json = file_get_contents(self::SERVERS_IANA)) !== false
-    ) {
-      $decoded = json_decode($json, true);
-      if (is_array($decoded)) {
-        $servers = array_merge($servers, $decoded);
+    foreach ([self::SERVERS_IANA, self::SERVERS_EXTRA] as $file) {
+      if (($jsonText = @file_get_contents($file)) === false) {
+        continue;
       }
-    }
 
-    if (
-      file_exists(self::SERVERS_EXTRA) &&
-      ($json = file_get_contents(self::SERVERS_EXTRA)) !== false
-    ) {
-      $decoded = json_decode($json, true);
-      if (is_array($decoded)) {
-        $servers = array_merge($servers, $decoded);
-      }
+      $json = json_decode($jsonText, true, flags: JSON_THROW_ON_ERROR);
+
+      $servers = array_merge($servers, $json);
     }
 
     return $servers;

@@ -17,7 +17,7 @@ class ParserIL extends Parser
   protected function getUpdatedDate(?string $subject = null): string
   {
     if (preg_match_all($this->getUpdatedDateRegExp(), $this->data, $matches)) {
-      return $matches[1][array_key_last($matches[1])] ?? "";
+      return $matches[1][array_key_last($matches[1])];
     }
 
     return "";

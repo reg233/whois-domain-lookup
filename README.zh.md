@@ -228,14 +228,14 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 39 | [cd](https://en.wikipedia.org/wiki/.cd) | ![](https://uptime.233333.best/api/badge/48/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 40 | [cf](https://en.wikipedia.org/wiki/.cf) | ![](https://uptime.233333.best/api/badge/49/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 41 | [cg](https://en.wikipedia.org/wiki/.cg) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 42 | [ch](https://en.wikipedia.org/wiki/.ch) | ![](https://uptime.233333.best/api/badge/50/status?label) | ![](https://uptime.233333.best/api/badge/51/status?label) | WHOIS: Forbidden |
+| 42 | [ch](https://en.wikipedia.org/wiki/.ch) | ![](https://uptime.233333.best/api/badge/50/status?label) | ![](https://uptime.233333.best/api/badge/51/status?label) | WHOIS: 禁止访问 |
 | 43 | [ci](https://en.wikipedia.org/wiki/.ci) | ![](https://uptime.233333.best/api/badge/52/status?label) | ![](https://uptime.233333.best/api/badge/53/status?label) |  |
 | 44 | [ck](https://en.wikipedia.org/wiki/.ck) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 45 | [cl](https://en.wikipedia.org/wiki/.cl) | ![](https://uptime.233333.best/api/badge/54/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) | WHOIS: No domain name |
+| 45 | [cl](https://en.wikipedia.org/wiki/.cl) | ![](https://uptime.233333.best/api/badge/54/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) | WHOIS: 无域名 |
 | 46 | [cm](https://en.wikipedia.org/wiki/.cm) | ![](https://uptime.233333.best/api/badge/55/status?label) | ![](https://uptime.233333.best/api/badge/56/status?label) |  |
 | 47 | [cn](https://en.wikipedia.org/wiki/.cn) | ![](https://uptime.233333.best/api/badge/57/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 48 | [co](https://en.wikipedia.org/wiki/.co) | ![](https://uptime.233333.best/api/badge/58/status?label) | ![](https://uptime.233333.best/api/badge/59/status?label) |  |
-| 49 | [cr](https://en.wikipedia.org/wiki/.cr) | ![](https://uptime.233333.best/api/badge/60/status?label) | ![](https://uptime.233333.best/api/badge/61/status?label) | RDAP: SSL certificate problem |
+| 49 | [cr](https://en.wikipedia.org/wiki/.cr) | ![](https://uptime.233333.best/api/badge/60/status?label) | ![](https://uptime.233333.best/api/badge/61/status?label) |  |
 | 50 | [cu](https://en.wikipedia.org/wiki/.cu) | ![](https://uptime.233333.best/api/badge/62/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 51 | [cv](https://en.wikipedia.org/wiki/.cv) | ![](https://uptime.233333.best/api/badge/63/status?label) | ![](https://uptime.233333.best/api/badge/64/status?label) |  |
 | 52 | [cw](https://en.wikipedia.org/wiki/.cw) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
@@ -247,13 +247,13 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 58 | [dk](https://en.wikipedia.org/wiki/.dk) | ![](https://uptime.233333.best/api/badge/71/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 59 | [dm](https://en.wikipedia.org/wiki/.dm) | ![](https://uptime.233333.best/api/badge/72/status?label) | ![](https://uptime.233333.best/api/badge/73/status?label) |  |
 | 60 | [do](https://en.wikipedia.org/wiki/.do) | ![](https://uptime.233333.best/api/badge/74/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 61 | [dz](https://en.wikipedia.org/wiki/.dz) | ![](https://uptime.233333.best/api/badge/75/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
+| 61 | [dz](https://en.wikipedia.org/wiki/.dz) | ![](https://uptime.233333.best/api/badge/75/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 62 | [ec](https://en.wikipedia.org/wiki/.ec) | ![](https://uptime.233333.best/api/badge/76/status?label) | ![](https://uptime.233333.best/api/badge/77/status?label) |  |
 | 63 | [ee](https://en.wikipedia.org/wiki/.ee) | ![](https://uptime.233333.best/api/badge/78/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 64 | [eg](https://en.wikipedia.org/wiki/.eg) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 65 | [er](https://en.wikipedia.org/wiki/.er) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 66 | [es](https://en.wikipedia.org/wiki/.es) | ![](https://uptime.233333.best/api/badge/79/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 67 | [et](https://en.wikipedia.org/wiki/.et) | ![](https://uptime.233333.best/api/badge/80/status?label) | ![](https://uptime.233333.best/api/badge/81/status?label) | RDAP: SSL certificate problem |
+| 67 | [et](https://en.wikipedia.org/wiki/.et) | ![](https://uptime.233333.best/api/badge/80/status?label) | ![](https://uptime.233333.best/api/badge/81/status?label) |  |
 | 68 | [eu](https://en.wikipedia.org/wiki/.eu) | ![](https://uptime.233333.best/api/badge/82/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 69 | [fi](https://en.wikipedia.org/wiki/.fi) | ![](https://uptime.233333.best/api/badge/83/status?label) | ![](https://uptime.233333.best/api/badge/84/status?label) |  |
 | 70 | [fj](https://en.wikipedia.org/wiki/.fj) | ![](https://uptime.233333.best/api/badge/85/status?label) | ![](https://uptime.233333.best/api/badge/86/status?label) |  |
@@ -271,7 +271,7 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 82 | [gi](https://en.wikipedia.org/wiki/.gi) | ![](https://uptime.233333.best/api/badge/101/status?label) | ![](https://uptime.233333.best/api/badge/102/status?label) |  |
 | 83 | [gl](https://en.wikipedia.org/wiki/.gl) | ![](https://uptime.233333.best/api/badge/103/status?label) | ![](https://uptime.233333.best/api/badge/104/status?label) |  |
 | 84 | [gm](https://en.wikipedia.org/wiki/.gm) | ![](https://uptime.233333.best/api/badge/105/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 85 | [gn](https://en.wikipedia.org/wiki/.gn) | ![](https://uptime.233333.best/api/badge/106/status?label) | ![](https://uptime.233333.best/api/badge/107/status?label) | RDAP: SSL certificate problem |
+| 85 | [gn](https://en.wikipedia.org/wiki/.gn) | ![](https://uptime.233333.best/api/badge/106/status?label) | ![](https://uptime.233333.best/api/badge/107/status?label) | RDAP: SSL 证书问题 |
 | 86 | [gp](https://en.wikipedia.org/wiki/.gp) | ![](https://uptime.233333.best/api/badge/108/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 87 | [gq](https://en.wikipedia.org/wiki/.gq) | ![](https://uptime.233333.best/api/badge/0/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 88 | [gr](https://en.wikipedia.org/wiki/.gr) | ![](https://uptime.233333.best/api/badge/109/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
@@ -314,7 +314,7 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 125 | [la](https://en.wikipedia.org/wiki/.la) | ![](https://uptime.233333.best/api/badge/157/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 126 | [lb](https://en.wikipedia.org/wiki/.lb) | ![](https://uptime.233333.best/api/badge/158/status?label) | ![](https://uptime.233333.best/api/badge/159/status?label) |  |
 | 127 | [lc](https://en.wikipedia.org/wiki/.lc) | ![](https://uptime.233333.best/api/badge/160/status?label) | ![](https://uptime.233333.best/api/badge/161/status?label) |  |
-| 128 | [li](https://en.wikipedia.org/wiki/.li) | ![](https://uptime.233333.best/api/badge/162/status?label) | ![](https://uptime.233333.best/api/badge/163/status?label) | WHOIS: Forbidden |
+| 128 | [li](https://en.wikipedia.org/wiki/.li) | ![](https://uptime.233333.best/api/badge/162/status?label) | ![](https://uptime.233333.best/api/badge/163/status?label) | WHOIS: 禁止访问 |
 | 129 | [lk](https://en.wikipedia.org/wiki/.lk) | ![](https://uptime.233333.best/api/badge/164/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 130 | [lr](https://en.wikipedia.org/wiki/.lr) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 131 | [ls](https://en.wikipedia.org/wiki/.ls) | ![](https://uptime.233333.best/api/badge/165/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
@@ -344,7 +344,7 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 155 | [mx](https://en.wikipedia.org/wiki/.mx) | ![](https://uptime.233333.best/api/badge/194/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 156 | [my](https://en.wikipedia.org/wiki/.my) | ![](https://uptime.233333.best/api/badge/195/status?label) | ![](https://uptime.233333.best/api/badge/196/status?label) |  |
 | 157 | [mz](https://en.wikipedia.org/wiki/.mz) | ![](https://uptime.233333.best/api/badge/197/status?label) | ![](https://uptime.233333.best/api/badge/198/status?label) |  |
-| 158 | [na](https://en.wikipedia.org/wiki/.na) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/199/status?label) | RDAP: Forbidden |
+| 158 | [na](https://en.wikipedia.org/wiki/.na) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/199/status?label) | RDAP: 禁止访问 |
 | 159 | [nc](https://en.wikipedia.org/wiki/.nc) | ![](https://uptime.233333.best/api/badge/200/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 160 | [ne](https://en.wikipedia.org/wiki/.ne) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 161 | [nf](https://en.wikipedia.org/wiki/.nf) | ![](https://uptime.233333.best/api/badge/201/status?label) | ![](https://uptime.233333.best/api/badge/202/status?label) |  |
@@ -356,7 +356,7 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 167 | [nr](https://en.wikipedia.org/wiki/.nr) | ![](https://uptime.233333.best/api/badge/211/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 168 | [nu](https://en.wikipedia.org/wiki/.nu) | ![](https://uptime.233333.best/api/badge/212/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 169 | [nz](https://en.wikipedia.org/wiki/.nz) | ![](https://uptime.233333.best/api/badge/213/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 170 | [om](https://en.wikipedia.org/wiki/.om) | ![](https://uptime.233333.best/api/badge/214/status?label) | ![](https://uptime.233333.best/api/badge/215/status?label) | RDAP: SSL certificate problem |
+| 170 | [om](https://en.wikipedia.org/wiki/.om) | ![](https://uptime.233333.best/api/badge/214/status?label) | ![](https://uptime.233333.best/api/badge/215/status?label) |  |
 | 171 | [pa](https://en.wikipedia.org/wiki/.pa) | ![](https://uptime.233333.best/api/badge/216/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 172 | [pe](https://en.wikipedia.org/wiki/.pe) | ![](https://uptime.233333.best/api/badge/217/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 173 | [pf](https://en.wikipedia.org/wiki/.pf) | ![](https://uptime.233333.best/api/badge/218/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
@@ -368,7 +368,7 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 179 | [pn](https://en.wikipedia.org/wiki/.pn) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/226/status?label) |  |
 | 180 | [pr](https://en.wikipedia.org/wiki/.pr) | ![](https://uptime.233333.best/api/badge/227/status?label) | ![](https://uptime.233333.best/api/badge/228/status?label) |  |
 | 181 | [ps](https://en.wikipedia.org/wiki/.ps) | ![](https://uptime.233333.best/api/badge/229/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
-| 182 | [pt](https://en.wikipedia.org/wiki/.pt) | ![](https://uptime.233333.best/api/badge/230/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) | WHOIS: IPv6 only |
+| 182 | [pt](https://en.wikipedia.org/wiki/.pt) | ![](https://uptime.233333.best/api/badge/230/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) | WHOIS: 仅限 IPv6 |
 | 183 | [pw](https://en.wikipedia.org/wiki/.pw) | ![](https://uptime.233333.best/api/badge/231/status?label) | ![](https://uptime.233333.best/api/badge/232/status?label) |  |
 | 184 | [py](https://en.wikipedia.org/wiki/.py) | ![](https://uptime.233333.best/api/badge/0/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 185 | [qa](https://en.wikipedia.org/wiki/.qa) | ![](https://uptime.233333.best/api/badge/233/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |

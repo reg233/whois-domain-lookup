@@ -17,6 +17,9 @@ class RDAP
 
   private const SERVERS_EXTRA = __DIR__ . "/data/rdap-servers-extra.json";
 
+  /**
+   * @throws JsonException
+   */
   public function __construct(string $domain, string $extension, ?string $extensionTop)
   {
     $this->domain = $domain;
@@ -36,18 +39,24 @@ class RDAP
     }
   }
 
-  /** @return array<string, string> */
+  /**
+   * @return array<string, string>
+   *
+   * @throws JsonException
+   */
   private function getServers(): array
   {
     $servers = [];
 
-    if (
-      file_exists(self::SERVERS_IANA) &&
-      ($json = file_get_contents(self::SERVERS_IANA)) !== false
-    ) {
-      $decoded = json_decode($json, true);
-      if (is_array($decoded)) {
-        foreach ($decoded["services"] as $service) {
+    foreach ([self::SERVERS_IANA, self::SERVERS_EXTRA] as $file) {
+      if (($jsonText = @file_get_contents($file)) === false) {
+        continue;
+      }
+
+      $json = json_decode($jsonText, true, flags: JSON_THROW_ON_ERROR);
+
+      if ($file === self::SERVERS_IANA) {
+        foreach ($json["services"] as $service) {
           $tlds = $service[0];
           $server = $service[1][0];
 
@@ -55,16 +64,8 @@ class RDAP
             $servers[$tld] = $server;
           }
         }
-      }
-    }
-
-    if (
-      file_exists(self::SERVERS_EXTRA) &&
-      ($json = file_get_contents(self::SERVERS_EXTRA)) !== false
-    ) {
-      $decoded = json_decode($json, true);
-      if (is_array($decoded)) {
-        $servers = array_merge($servers, $decoded);
+      } else {
+        $servers = array_merge($servers, $json);
       }
     }
 
@@ -95,13 +96,15 @@ class RDAP
 
     $ch = curl_init("$server/domain/$domain");
 
-    curl_setopt_array($ch, [
+    $defaultOptions = [
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_FOLLOWLOCATION => true,
       CURLOPT_CONNECTTIMEOUT => 10,
       CURLOPT_TIMEOUT => 10,
       CURLOPT_USERAGENT => USER_AGENT,
-    ]);
+    ];
+
+    curl_setopt_array($ch, array_replace($defaultOptions, getServerCurlOptions($server)));
 
     $response = curl_exec($ch);
     if (is_bool($response)) {
