@@ -1,9 +1,9 @@
 .root {
   max-width: 67rem;
-  padding-bottom: calc(3rem + env(safe-area-inset-bottom));
-  padding-left: calc(1.5rem + env(safe-area-inset-left));
-  padding-right: calc(1.5rem + env(safe-area-inset-right));
-  padding-top: calc(1rem + env(safe-area-inset-top));
+  padding: calc(1rem + env(safe-area-inset-top))
+    calc(1.5rem + env(safe-area-inset-right))
+    calc(3rem + env(safe-area-inset-bottom))
+    calc(1.5rem + env(safe-area-inset-left));
 }
 
 header {

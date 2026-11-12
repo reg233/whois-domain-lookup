@@ -1279,40 +1279,7 @@ class WHOISWeb
 
   private function getTJ(): string
   {
-    $url = "http://www.nic.tj/cgi/whois2?domain=" . substr($this->domain, 0, -3);
-
-    $html = $this->request($url);
-
-    $document = new DOMDocument();
-    $document->loadHTML($html);
-
-    $p = $document->getElementsByTagName("p")->item(0);
-    if ($p) {
-      return trim($p->textContent);
-    }
-
-    $whois = "";
-
-    $trs = $document->getElementsByTagName("tr");
-    foreach ($trs as $tr) {
-      $tds = $tr->getElementsByTagName("td");
-      if ($tds->length === 1) {
-        $whois .= "\n" . strtoupper(trim($tds->item(0)->textContent)) . "\n";
-      } elseif ($tds->length === 2) {
-        $key = trim($tds->item(0)->textContent);
-        if ($tds->item(0)->attributes->getNamedItem("class")?->value === "subfield") {
-          $key = "  $key";
-        } else {
-          $key = ucwords($key, " -");
-        }
-
-        $value = trim($tds->item(1)->textContent);
-
-        $whois .= ($value === html_entity_decode("&nbsp;") ? "$key" : "$key: $value") . "\n";
-      }
-    }
-
-    return $whois;
+    return "Please visit http://www.nic.tj/whoistj.html";
   }
 
   private function getTT(): string

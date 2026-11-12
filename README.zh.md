@@ -404,7 +404,7 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 215 | [tf](https://en.wikipedia.org/wiki/.tf) | ![](https://uptime.233333.best/api/badge/275/status?label) | ![](https://uptime.233333.best/api/badge/276/status?label) |  |
 | 216 | [tg](https://en.wikipedia.org/wiki/.tg) | ![](https://uptime.233333.best/api/badge/277/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 217 | [th](https://en.wikipedia.org/wiki/.th) | ![](https://uptime.233333.best/api/badge/278/status?label) | ![](https://uptime.233333.best/api/badge/279/status?label) |  |
-| 218 | [tj](https://en.wikipedia.org/wiki/.tj) | ![](https://uptime.233333.best/api/badge/280/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
+| 218 | [tj](https://en.wikipedia.org/wiki/.tj) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 219 | [tk](https://en.wikipedia.org/wiki/.tk) | ![](https://uptime.233333.best/api/badge/281/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 220 | [tl](https://en.wikipedia.org/wiki/.tl) | ![](https://uptime.233333.best/api/badge/282/status?label) | ![](https://uptime.233333.best/api/badge/283/status?label) |  |
 | 221 | [tm](https://en.wikipedia.org/wiki/.tm) | ![](https://uptime.233333.best/api/badge/284/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |

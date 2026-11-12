@@ -329,8 +329,6 @@ class Parser
     "domain unknown",
     // pl, za
     "no information",
-    // tj
-    "no records found",
     // tm
     "is available for purchase",
     // tt
@@ -360,8 +358,8 @@ class Parser
     // gl, gm, gn, gs, gt, gw, gy, hk, hm, hn, hr, ht, id, ie, im, in, io, iq, jo, jp, ke, ki, kn
     // kr, kw, ky, kz, la, lb, lc, lk, ly, ma, me, mg, ml, mm, mn, mo, mq, mr, ms, mu, mx, my, mz
     // nf, ng, ni, nl, no, np, nr, nz, om, pa, pe, pg, pr, ps, pw, qa, ro, rs, rw, sa, sb, sc, sd
-    // se, sg, sh, sl, sm, so, ss, st, sx, sy, tc, td, th, tj, tl, tn, to, tt, tv, ug, us, uz, vc
-    // vg, vn, vu, ws, ye, za, zm
+    // se, sg, sh, sl, sm, so, ss, st, sx, sy, tc, td, th, tl, tn, to, tt, tv, ug, us, uz, vc, vg
+    // vn, vu, ws, ye, za, zm
     "domain name",
     // ar, at, ax, be, br, cr, cz, de, dk, eu, fi, fr, gg, gr, hu, il, ir, is, it, je, ls, lt, lv
     // mc, mk, mw, nc, nu, pk, pm, pt, re, ru, si, sk, sr, su, tf, tg, tm, tz, ua, ve, wf, yt
@@ -447,8 +445,8 @@ class Parser
     // gh, gi, gl, gm, gn, gs, gy, hm, hn, hr, ht, hu, id, ie, in, io, iq, je, jo, ke, ki, kn, kw
     // ky, la, lb, lc, ls, lt, ly, ma, mc, md, me, mg, mk, ml, mm, mn, mr, ms, mu, mw, mx, my, mz
     // nc, nf, ng, nu, nz, om, pg, pm, pr, ps, pw, qa, re, ro, rs, ru, rw, sb, sc, sd, se, sg, sh
-    // si, sn, so, ss, st, su, sx, td, tf, tg, th, tj, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn
-    // vu, wf, ws, ye, yt, za, zm
+    // si, sn, so, ss, st, su, sx, td, tf, tg, th, tl, tn, to, tv, tz, us, uz, vc, ve, vg, vn, vu
+    // wf, ws, ye, yt, za, zm
     "registrar",
     // ae, au, cl, hk, il
     "registrar name",
@@ -576,7 +574,7 @@ class Parser
     "created",
     // bd, bo
     "activation date",
-    // bt, nr, rs, sm, tj, tt
+    // bt, nr, rs, sm, tt
     "registration date",
     // cn
     "registration time",
@@ -1093,7 +1091,7 @@ class Parser
     // ar, at, ax, br, cr, cz, de, ee, fi, fr, il, ir, is, ls, lu, lv, mc, mk, mw, nu, pm, re, ru
     // se, su, tf, tz, ua, ve, wf, yt
     "nserver",
-    // dk, tj
+    // dk
     "hostname",
     // gr, lt, md, ro, si, sk, ug
     "nameserver",

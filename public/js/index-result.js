@@ -122,7 +122,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const getData = async (subdomain) => {
       queryButton.disabled = true;
-      queryButton.dataset.loading = true;
+      queryButton.dataset.loading = "true";
       multiStatus.dataset.statusType = "loading";
 
       if (controller.abort) {
