@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2026-11-10_11-23-57_UTC
-// COMMIT: 3db7776283b0874634fea8b01168f785360d64f2
+// VERSION: 2026-11-11_10-02-15_UTC
+// COMMIT: 30fc8284a94748db751ba4825229b35c0afebeaf
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -16389,6 +16389,10 @@ now.sh
 // VeryPositive SIA : http://very.lv
 // Submitted by Danko Aleksejevs <danko@very.lv>
 2038.io
+
+// VibeKit : https://vibekit.bot/
+// Submitted by Brian Boisjoli <info@vibekit.bot>
+vibekit.page
 
 // Virtual-Info : https://www.virtual-info.info/
 // Submitted by Adnan RIHAN <hostmaster@v-info.info>
