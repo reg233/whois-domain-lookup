@@ -38,16 +38,22 @@ jobs:
           whois_updated=$(git diff --quiet src/data/whois-servers-iana.json; echo $?)
 
           if [[ $psl_updated == 1 || $rdap_updated == 1 || $whois_updated == 1 ]]; then
-            base_tag="v$(date -u +%Y.%-m.%-d)"
-            tag="${base_tag}"
-            i=1
-            while git rev-parse "${tag}" >/dev/null 2>&1; do
-              tag="${base_tag}+${i}"
-              ((i++))
-            done
+            release=false
 
-            sed -i "s/^const VERSION = \".*\";$/const VERSION = \"${tag}\";/" config/version.php
-            git add config/version.php
+            if [[ $rdap_updated == 1 || $whois_updated == 1 ]]; then
+              release=true
+
+              base_tag="v$(date -u +%Y.%-m.%-d)"
+              tag="${base_tag}"
+              i=1
+              while git rev-parse "${tag}" >/dev/null 2>&1; do
+                tag="${base_tag}+${i}"
+                ((i++))
+              done
+
+              sed -i "s/^const VERSION = \".*\";$/const VERSION = \"${tag}\";/" config/version.php
+              git add config/version.php
+            fi
 
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -77,13 +83,19 @@ jobs:
               fi
             fi
 
-            commit_message="Update ${commit_message} and version"
+            if [[ $release == true ]]; then
+              commit_message="Update ${commit_message} and version"
+            else
+              commit_message="Update ${commit_message}"
+            fi
 
             git commit -m "${commit_message}"
             git push
 
-            git tag "${tag}"
-            git push origin "${tag}"
+            if [[ $release == true ]]; then
+              git tag "${tag}"
+              git push origin "${tag}"
+            fi
           else
             echo "No updates detected."
           fi
