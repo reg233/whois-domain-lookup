@@ -20,7 +20,7 @@ const appleTheme = (theme) => {
   );
 
   themeColor.content = getComputedStyle(document.documentElement)
-    .getPropertyValue("--surface-page-start")
+    .getPropertyValue("--surface-page")
     .trim();
 };
 

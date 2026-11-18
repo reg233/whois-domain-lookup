@@ -808,18 +808,31 @@ class Parser
       $endDate = new DateTime($end, $timezone);
       $interval = $startDate->diff($endDate);
 
-      $parts = [];
-      if ($interval->y) {
-        $parts[] = "{$interval->y}Y";
-      }
-      if ($interval->m) {
-        $parts[] = "{$interval->m}Mo";
-      }
-      if ($interval->d) {
-        $parts[] = "{$interval->d}D";
+      $sign = $interval->invert ? "-" : "";
+
+      if (!$interval->y && !$interval->m && !$interval->d) {
+        if ($interval->h) {
+          return "$sign$interval->h " . ($interval->h === 1 ? "hour" : "hours");
+        }
+
+        return "$sign$interval->i " . ($interval->i === 1 ? "minute" : "minutes");
       }
 
-      return ($interval->invert ? "-" : "") . ($parts ? implode(" ", $parts) : "0D");
+      $parts = [];
+      if ($interval->y) {
+        $parts[] = $interval->y . ($interval->y === 1 ? " year" : " years");
+      }
+      if ($interval->m) {
+        $parts[] = $interval->m . ($interval->m === 1 ? " month" : " months");
+      }
+      if ($interval->d) {
+        $parts[] = $interval->d . ($interval->d === 1 ? " day" : " days");
+      }
+
+      $diffText = $sign . implode(" ", $parts);
+      $daysText = "$sign$interval->days " . ($interval->days === 1 ? "day" : "days");
+
+      return $diffText === $daysText ? $diffText : "$diffText ($daysText)";
     } catch (Throwable) {
       return "";
     }

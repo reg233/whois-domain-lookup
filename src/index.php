@@ -311,10 +311,10 @@ $ogImage = $origin . BASE . "public/images/og.png";
 </head>
 
 <body>
-  <!-- Set app bar color for safari 26+ -->
+  <!-- Set top bar color for safari 26+ -->
   <!-- https://github.com/andesco/safari-color-tinting -->
   <!-- https://github.com/klmkyo/ios-safari-restore-meta-theme-color -->
-  <div class="safari-26-app-bar-color" aria-hidden="true"></div>
+  <div class="safari-26-top-bar-color" aria-hidden="true"></div>
   <div class="root">
     <header>
       <div class="theme-switcher-container">
@@ -589,9 +589,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
                   </div>
                   <?php if ($parser->createdAgo): ?>
                     <div class="card-item-value-tertiary">
-                      <span id="createdAgo" data-seconds="<?= $parser->createdAgoSeconds; ?>">
-                        <?= $parser->createdAgo; ?> ago
-                      </span>
+                      <span><?= $parser->createdAgo; ?> ago</span>
                     </div>
                   <?php endif; ?>
                 </div>
@@ -610,9 +608,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
                   </div>
                   <?php if ($parser->expiresIn): ?>
                     <div class="card-item-value-tertiary">
-                      <span id="expiresIn" data-seconds="<?= $parser->expiresInSeconds; ?>">
-                        <?= $parser->expiresIn; ?> remaining
-                      </span>
+                      <span><?= $parser->expiresIn; ?> remaining</span>
                     </div>
                   <?php endif; ?>
                 </div>
@@ -631,9 +627,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
                   </div>
                   <?php if ($parser->updatedAgo): ?>
                     <div class="card-item-value-tertiary">
-                      <span id="updatedAgo" data-seconds="<?= $parser->updatedAgoSeconds; ?>">
-                        <?= $parser->updatedAgo; ?> ago
-                      </span>
+                      <span><?= $parser->updatedAgo; ?> ago</span>
                     </div>
                   <?php endif; ?>
                 </div>
@@ -652,9 +646,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
                   </div>
                   <?php if ($parser->availableIn): ?>
                     <div class="card-item-value-tertiary">
-                      <span id="availableIn" data-seconds="<?= $parser->availableInSeconds; ?>">
-                        <?= $parser->availableIn; ?> remaining
-                      </span>
+                      <span><?= $parser->availableIn; ?> remaining</span>
                     </div>
                   <?php endif; ?>
                 </div>
@@ -728,12 +720,12 @@ $ogImage = $origin . BASE . "public/images/og.png";
                 <div class="raw-data-title"><?= $whoisData ? "WHOIS" : "RDAP"; ?></div>
               <?php endif; ?>
               <div class="raw-data-buttons<?= $whoisData ? " raw-data-buttons-only-copy" : ""; ?>" id="raw-data-buttons">
-                <button class="expand-all-button" id="expand-all-button" data-tippy-content="Expand All">
+                <button class="expand-all-button" id="expand-all-button" data-tippy-content="Expand all">
                   <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
                     <path d="m480-198 152-152q11-11 25.5-11t25.5 11q11 11 11 25.5T683-299L531-147q-21 21-51 21t-51-21L277-299q-11-11-10.5-25.5T278-350q11-11 25.5-11t25.5 11l151 152Zm0-564L328-610q-11 11-25.5 11T277-610q-11-11-11-25.5t11-25.5l152-152q21-21 51-21t51 21l152 152q11 11 11 25t-11 25q-11 11-25.5 11T632-611L480-762Z" />
                   </svg>
                 </button>
-                <button class="collapse-all-button" id="collapse-all-button" data-tippy-content="Collapse All">
+                <button class="collapse-all-button" id="collapse-all-button" data-tippy-content="Collapse all">
                   <svg width="1em" height="1em" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
                     <path d="M480-285 314-120q-11 11-25 11t-25-11q-11-11-11-25t11-25l165-166q21-21 51-21t51 21l165 166q11 11 11 25t-11 25q-11 11-25 11t-25-11L480-285Zm0-390 166-165q11-11 25-11t25 11q11 11 11 25t-11 25L531-624q-21 21-51 21t-51-21L264-790q-11-11-11-25t11-25q11-11 25-11t25 11l166 165Z" />
                   </svg>

@@ -40,26 +40,6 @@ window.addEventListener("DOMContentLoaded", () => {
   updateDateElementText("updated-date");
   updateDateElementText("available-date");
 
-  const updateDaysElementText = (elementId) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      const seconds = element.dataset.seconds;
-      if (seconds) {
-        let days = Math.trunc(seconds / 24 / 60 / 60);
-        if (seconds < 0 && days === 0) {
-          days = "-0";
-        }
-
-        element.innerText = `${element.innerText} (${days} days)`;
-      }
-    }
-  };
-
-  updateDaysElementText("createdAgo");
-  updateDaysElementText("expiresIn");
-  updateDaysElementText("updatedAgo");
-  updateDaysElementText("availableIn");
-
   const setupDNSRecords = () => {
     const view = document.getElementById("dns-records-view");
     const dialog = document.getElementById("dns-records-dialog");

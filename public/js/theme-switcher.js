@@ -7,6 +7,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   themeButtons.forEach((themeButton) => {
     themeButton.addEventListener("click", () => {
+      dropdown.hide();
+
       if (themeButton.dataset.selected) {
         return;
       }
@@ -77,7 +79,7 @@ window.addEventListener("DOMContentLoaded", () => {
     },
   };
 
-  tippy("#theme-switcher", {
+  const [dropdown] = tippy("#theme-switcher", {
     arrow: false,
     content: document.getElementById("theme-switcher-content"),
     interactive: true,

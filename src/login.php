@@ -185,10 +185,10 @@ $ogImage = $origin . BASE . "public/images/og.png";
 </head>
 
 <body>
-  <!-- Set app bar color for safari 26+ -->
+  <!-- Set top bar color for safari 26+ -->
   <!-- https://github.com/andesco/safari-color-tinting -->
   <!-- https://github.com/klmkyo/ios-safari-restore-meta-theme-color -->
-  <div class="safari-26-app-bar-color" aria-hidden="true"></div>
+  <div class="safari-26-top-bar-color" aria-hidden="true"></div>
   <div class="root">
     <main>
       <div class="theme-switcher-container">
