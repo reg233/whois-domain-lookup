@@ -2,3 +2,5 @@
 .vercel/
 .vscode/
 test/
+vendor/
+.DS_Store

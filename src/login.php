@@ -79,7 +79,7 @@ $ogImage = $origin . BASE . "public/images/og.png";
   <meta name="twitter:title" content="<?= $title; ?>">
   <meta name="twitter:description" content="<?= SITE_DESCRIPTION; ?>">
   <meta name="twitter:image" content="<?= $ogImage; ?>">
-  <link rel="shortcut icon" href="public/favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico">
   <link rel="icon" href="public/images/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="public/images/apple-icon-180.png">
   <link rel="apple-touch-startup-image" href="public/images/apple-splash-2064-2752.jpg" media="(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">

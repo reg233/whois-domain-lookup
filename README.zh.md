@@ -51,6 +51,11 @@
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
 
+> [!IMPORTANT]
+> 如果您的项目部署于 **v2026.11.21** 之前，需要在 Vercel 控制台中将项目的 Framework Preset 改为 **Container**（Project → Settings → Build and Deployment → Framework Settings），然后重新部署。
+>
+> 由于 vercel-php 运行时已停止维护，此版本起改用 Vercel Container 部署。
+
 ### Docker Compose
 
 #### 部署
@@ -76,6 +81,10 @@ docker compose up -d
 
 - PHP >= 8.1
 - PHP curl 扩展
+- PHP dom 扩展
+- PHP filter 扩展
+- PHP intl 扩展
+- PHP libxml 扩展
 - PHP mbstring 扩展
 
 下载[发布版本](https://github.com/reg233/whois-domain-lookup/releases/latest/download/whois-domain-lookup.zip)，解压后上传到网站的根目录。

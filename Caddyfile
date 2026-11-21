@@ -1,0 +1,12 @@
+:{$PORT:80} {
+	root * /app
+	encode zstd gzip
+	php_server
+
+	rewrite / /src/index.php
+	rewrite /api/ /src/index.php?{query}&json=1
+	rewrite /dns-records /src/dns-records.php
+	rewrite /health /src/health.php
+	rewrite /login /src/login.php
+	rewrite /manifest /src/manifest.php
+}

@@ -2,11 +2,10 @@
 .idea
 .vscode
 test
+vendor
+.editorconfig
 .htaccess
 .vercelignore
-composer.json
-composer.lock
 docker-compose.yml
-Dockerfile
 phpstan.neon
 README*.md

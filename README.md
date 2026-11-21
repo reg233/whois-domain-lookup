@@ -51,6 +51,11 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
 
+> [!IMPORTANT]
+> If your project was deployed before **v2026.11.21**, change the project's Framework Preset to **Container** in the Vercel dashboard (Project → Settings → Build and Deployment → Framework Settings), then redeploy.
+>
+> The unmaintained vercel-php runtime has been replaced by Vercel Container as of this version.
+
 ### Docker Compose
 
 #### Deploy
@@ -76,6 +81,10 @@ Requirements:
 
 - PHP >= 8.1
 - PHP curl extension
+- PHP dom extension
+- PHP filter extension
+- PHP intl extension
+- PHP libxml extension
 - PHP mbstring extension
 
 Download the [release](https://github.com/reg233/whois-domain-lookup/releases/latest/download/whois-domain-lookup.zip), unzip it, and then upload it to the root directory of your website.

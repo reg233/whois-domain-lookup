@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Login to Docker Hub
         uses: docker/login-action@v4
@@ -36,6 +36,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: reg233/whois-domain-lookup:latest
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-dev --no-interaction --no-progress --optimize-autoloader
 
       - name: Set up release zip file
         run: zip -r whois-domain-lookup.zip config/ public/ src/ vendor/ .htaccess favicon.ico
