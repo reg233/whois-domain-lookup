@@ -1083,7 +1083,7 @@ class WHOISWeb
       "whois" => "Submit",
     ];
 
-    $url = "https://www.cenpac.net.nr/dns/whois.html?" . http_build_query($params);
+    $url = "https://nrweb.cenpac.net.nr/dns/whois.html?" . http_build_query($params);
 
     $html = $this->request($url);
 
