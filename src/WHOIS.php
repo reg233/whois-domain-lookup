@@ -73,7 +73,7 @@ class WHOIS
     $server = $this->servers[$extension] ?? "";
 
     if (!$server && !WHOISWeb::isSupported($this->extension)) {
-      throw new RuntimeException("No WHOIS server found for '$this->domain'.");
+      throw new NoServerFoundException("No WHOIS server found for '$this->domain'.");
     }
 
     return $server;

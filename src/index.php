@@ -17,9 +17,11 @@ require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/utils.php";
 
 spl_autoload_register(function (string $class) {
-  $filename = str_starts_with($class, "Parser")
-    ? __DIR__ . "/Parsers/$class.php"
-    : __DIR__ . "/$class.php";
+  $filename = match (true) {
+    str_ends_with($class, "Exception") => __DIR__ . "/Exceptions/$class.php",
+    str_starts_with($class, "Parser") => __DIR__ . "/Parsers/$class.php",
+    default => __DIR__ . "/$class.php",
+  };
 
   if (is_file($filename)) {
     require_once $filename;
@@ -99,14 +101,7 @@ if ($domain) {
     $rdapData = $lookup->rdapData;
     $parser = $lookup->parser;
 
-    if ($parser->rateLimited) {
-      $errorPrefix = match ($dataSource) {
-        ["whois"] => "WHOIS lookup",
-        ["rdap"] => "RDAP lookup",
-        default => "WHOIS and RDAP lookups",
-      };
-      $error = "$errorPrefix failed for '$domain': temporarily unavailable due to rate limiting.";
-    }
+    $error = $lookup->getError() ?: null;
   } catch (SyntaxError | UnableToResolveDomain) {
     $error = "'$domain' is not a valid domain.";
   } catch (Throwable $t) {
@@ -115,7 +110,11 @@ if ($domain) {
 
   if ($echoJSON) {
     if ($error) {
-      $value = ["code" => 1, "msg" => $error, "data" => $parser->rateLimited ? $parser : null];
+      $value = [
+        "code" => 1,
+        "msg" => $error,
+        "data" => $parser->whoisData || $parser->rdapData || $parser->rateLimited ? $parser : null,
+      ];
     } else {
       $value = ["code" => 0, "msg" => "Query successful.", "data" => $parser];
     }

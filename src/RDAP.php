@@ -82,7 +82,7 @@ class RDAP
     $server = $this->servers[$extension] ?? "";
 
     if (empty($server)) {
-      throw new RuntimeException("No RDAP server found for '$this->domain'.");
+      throw new NoServerFoundException("No RDAP server found for '$this->domain'.");
     }
 
     return $server;
@@ -113,9 +113,6 @@ class RDAP
     }
 
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if ($code >= 400 && $code !== 404 && $code !== 429) {
-      throw new RuntimeException("RDAP lookup failed for '$this->domain': HTTP $code.");
-    }
 
     $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
     if (!is_string($contentType) || !preg_match("/^application\/(rdap\+)?json/i", $contentType)) {

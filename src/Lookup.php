@@ -35,6 +35,8 @@ class Lookup
 
   public Parser $parser;
 
+  private string $error = "";
+
   /**
    * @param list<'whois'|'rdap'> $dataSource
    *
@@ -97,9 +99,6 @@ class Lookup
     }
   }
 
-  /**
-   * @throws Throwable
-   */
   private function getWHOIS(): void
   {
     try {
@@ -120,10 +119,10 @@ class Lookup
       }
     } catch (Throwable $t) {
       if ($this->dataSource === ["whois"]) {
-        throw $t;
+        $this->parser = $this->fallbackParser();
       }
 
-      if ($t->getMessage() === "No WHOIS server found for '$this->domain'.") {
+      if ($t instanceof NoServerFoundException) {
         $this->whoisUnknown = $t->getMessage();
       } else {
         $this->whoisError = $t->getMessage();
@@ -131,9 +130,6 @@ class Lookup
     }
   }
 
-  /**
-   * @throws Throwable
-   */
   private function getRDAP(): void
   {
     try {
@@ -141,6 +137,10 @@ class Lookup
       [$code, $data] = $rdap->getData();
 
       $this->rdapData = $data;
+
+      if ($code >= 400 && $code !== 404 && $code !== 429) {
+        throw new RuntimeException("RDAP lookup failed for '$this->domain': HTTP $code.");
+      }
 
       $parser = new ParserRDAP($rdap->extension, $code, $data);
       if ($this->dataSource === ["rdap"]) {
@@ -154,10 +154,10 @@ class Lookup
       }
     } catch (Throwable $t) {
       if ($this->dataSource === ["rdap"]) {
-        throw $t;
+        $this->parser = $this->fallbackParser();
       }
 
-      if ($t->getMessage() === "No RDAP server found for '$this->domain'.") {
+      if ($t instanceof NoServerFoundException) {
         $this->rdapUnknown = $t->getMessage();
       } else {
         $this->rdapError = $t->getMessage();
@@ -165,32 +165,32 @@ class Lookup
     }
   }
 
+  private function fallbackParser(): Parser
+  {
+    $parser = new Parser("");
+    $parser->whoisData = $this->whoisData ?? "";
+    $parser->rdapData = $this->rdapData ?? "";
+
+    return $parser;
+  }
+
   private function merge(): void
   {
-    if ($this->whoisUnknown && $this->rdapUnknown) {
-      throw new RuntimeException("No WHOIS or RDAP server found for '$this->domain'.");
-    }
-
-    if ($this->whoisError && $this->rdapError) {
-      throw new RuntimeException("WHOIS and RDAP lookups failed for '$this->domain'.");
-    }
-
-    if ($this->whoisError && $this->rdapUnknown) {
-      throw new RuntimeException($this->whoisError);
-    }
-
-    if ($this->whoisUnknown && $this->rdapError) {
-      throw new RuntimeException($this->rdapError);
-    }
-
     if ($this->whoisParser && $this->rdapParser) {
       $this->mergeParser($this->whoisParser, $this->rdapParser);
     } elseif ($this->whoisParser) {
       $this->parser = $this->whoisParser;
+      $this->parser->rdapData = $this->rdapData ?? "";
     } elseif ($this->rdapParser) {
       $this->parser = $this->rdapParser;
     } else {
-      throw new RuntimeException("No WHOIS or RDAP parser is available for '$this->domain'.");
+      $this->error = match (true) {
+        $this->whoisUnknown && $this->rdapUnknown => "No WHOIS or RDAP server found for '$this->domain'.",
+        $this->whoisError && $this->rdapError => "WHOIS and RDAP lookups failed for '$this->domain'.",
+        $this->whoisError !== "" => $this->whoisError,
+        default => $this->rdapError,
+      };
+      $this->parser = $this->fallbackParser();
     }
   }
 
@@ -347,5 +347,26 @@ class Lookup
     } finally {
       fclose($stream);
     }
+  }
+
+  public function getError(): string
+  {
+    if ($this->parser->rateLimited) {
+      $prefix = match ($this->dataSource) {
+        ["whois"] => "WHOIS lookup",
+        ["rdap"] => "RDAP lookup",
+        default => "WHOIS and RDAP lookups",
+      };
+
+      return "$prefix failed for '$this->domain': temporarily unavailable due to rate limiting.";
+    }
+
+    $error = match ($this->dataSource) {
+      ["whois"] => $this->whoisError ?: $this->whoisUnknown,
+      ["rdap"] => $this->rdapError ?: $this->rdapUnknown,
+      default => $this->error,
+    };
+
+    return $error === "" ? "" : rtrim($error, ".") . ".";
   }
 }
