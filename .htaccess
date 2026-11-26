@@ -1,18 +1,31 @@
 Options -Indexes
 
-RewriteEngine On
-
 CGIPassAuth On
 
-# Uncomment the four lines below to enable force https.
-# RewriteCond %{HTTP:X-Forwarded-Proto} !https
-# RewriteCond %{HTTPS} off
-# RewriteCond %{HTTP:CF-Visitor} !{"scheme":"https"}
-# RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+<IfModule mod_headers.c>
+  <If "%{REQUEST_URI} =~ m#^/assets/#">
+    Header set Cache-Control "public, max-age=31536000, s-maxage=31536000, immutable"
+  </If>
+  <FilesMatch "^favicon\.ico$">
+    Header set Cache-Control "public, max-age=604800, s-maxage=604800"
+  </FilesMatch>
+  <FilesMatch "^robots\.txt$">
+    Header set Cache-Control "public, max-age=86400, s-maxage=86400"
+  </FilesMatch>
+</IfModule>
 
-RewriteRule ^$ src/index.php [B,L,QSA]
-RewriteRule ^api/$ src/index.php?json=1 [B,L,QSA]
-RewriteRule ^dns-records$ src/dns-records.php [B,L,QSA]
-RewriteRule ^health$ src/health.php [B,L,QSA]
-RewriteRule ^login$ src/login.php [B,L,QSA]
-RewriteRule ^manifest$ src/manifest.php [B,L,QSA]
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+#  Uncomment the four lines below to enable force https.
+#  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+#  RewriteCond %{HTTPS} off
+#  RewriteCond %{HTTP:CF-Visitor} !{"scheme":"https"}
+#  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  RewriteRule ^$ src/index.php [B,L,QSA]
+  RewriteRule ^api/$ src/index.php?json=1 [B,L,QSA]
+  RewriteRule ^dns-records$ src/dns-records.php [B,L,QSA]
+  RewriteRule ^login$ src/login.php [B,L,QSA]
+  RewriteRule ^manifest$ src/manifest.php [B,L,QSA]
+</IfModule>

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/utils.php";
 
 header("Content-Type: application/json");
 
@@ -21,25 +22,25 @@ $manifest = [
   "name" => $name,
   "icons" => [
     [
-      "src" => BASE . "public/images/manifest-icon-192.maskable.png",
+      "src" => BASE . asset("public/images/manifest-icon-192.maskable.png"),
       "sizes" => "192x192",
       "type" => "image/png",
       "purpose" => "any",
     ],
     [
-      "src" => BASE . "public/images/manifest-icon-192.maskable.png",
+      "src" => BASE . asset("public/images/manifest-icon-192.maskable.png"),
       "sizes" => "192x192",
       "type" => "image/png",
       "purpose" => "maskable",
     ],
     [
-      "src" => BASE . "public/images/manifest-icon-512.maskable.png",
+      "src" => BASE . asset("public/images/manifest-icon-512.maskable.png"),
       "sizes" => "512x512",
       "type" => "image/png",
       "purpose" => "any",
     ],
     [
-      "src" => BASE . "public/images/manifest-icon-512.maskable.png",
+      "src" => BASE . asset("public/images/manifest-icon-512.maskable.png"),
       "sizes" => "512x512",
       "type" => "image/png",
       "purpose" => "maskable",
@@ -52,26 +53,26 @@ $manifest = [
   "description" => SITE_DESCRIPTION,
   "screenshots" => [
     [
-      "src" => BASE . "public/images/manifest-screenshot-narrow.png",
-      "sizes" => "1290x2796",
+      "src" => BASE . asset("public/images/manifest-screenshot-narrow.png"),
+      "sizes" => "1320x2868",
       "type" => "image/png",
       "form_factor" => "narrow",
     ],
     [
-      "src" => BASE . "public/images/manifest-screenshot-narrow-dark.png",
-      "sizes" => "1290x2796",
+      "src" => BASE . asset("public/images/manifest-screenshot-narrow-dark.png"),
+      "sizes" => "1320x2868",
       "type" => "image/png",
       "form_factor" => "narrow",
     ],
     [
-      "src" => BASE . "public/images/manifest-screenshot-wide.png",
-      "sizes" => "3024x1890",
+      "src" => BASE . asset("public/images/manifest-screenshot-wide.png"),
+      "sizes" => "2752x2064",
       "type" => "image/png",
       "form_factor" => "wide",
     ],
     [
-      "src" => BASE . "public/images/manifest-screenshot-wide-dark.png",
-      "sizes" => "3024x1890",
+      "src" => BASE . asset("public/images/manifest-screenshot-wide-dark.png"),
+      "sizes" => "2752x2064",
       "type" => "image/png",
       "form_factor" => "wide",
     ],

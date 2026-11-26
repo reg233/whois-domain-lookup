@@ -44,10 +44,13 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --no-dev --no-interaction --no-progress --optimize-autoloader
+        run: composer install --no-dev --no-interaction --no-progress --optimize-autoloader --prefer-dist
+
+      - name: Generate hashed assets
+        run: sh scripts/hash-assets.sh
 
       - name: Set up release zip file
-        run: zip -r whois-domain-lookup.zip config/ public/ src/ vendor/ .htaccess favicon.ico
+        run: zip -rq whois-domain-lookup.zip assets/ config/ src/ vendor/ .htaccess favicon.ico robots.txt
 
       - name: Create Release
         uses: softprops/action-gh-release@v3

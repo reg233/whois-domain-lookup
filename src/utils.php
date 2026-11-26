@@ -2,6 +2,18 @@
 
 declare(strict_types=1);
 
+function asset(string $path): string
+{
+  static $manifest = null;
+
+  if ($manifest === null) {
+    $file = __DIR__ . "/../assets/manifest.php";
+    $manifest = is_file($file) ? require $file : [];
+  }
+
+  return $manifest[$path] ?? $path;
+}
+
 function isPasswordValid(): bool
 {
   if (!SITE_PASSWORD) {

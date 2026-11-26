@@ -1,6 +1,7 @@
 .idea/
 .vercel/
 .vscode/
+assets/
 test/
 vendor/
 .DS_Store
