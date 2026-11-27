@@ -1,8 +1,8 @@
 [简体中文 README](README.zh.md)
 
-<img alt="WHOIS domain lookup" src="public/images/favicon.svg" width="80" />
+<img alt="WHOIS Domain Lookup" src="public/images/favicon.svg" width="80" />
 
-# WHOIS domain lookup
+# WHOIS Domain Lookup
 
 A simple WHOIS domain lookup website with strong TLD compatibility.
 
@@ -37,32 +37,22 @@ A simple WHOIS domain lookup website with strong TLD compatibility.
 
 ## Features
 
-- Simple, Clear UI
+- Simple and clear UI
 - Strong TLD compatibility, including most ccTLDs and a few private domains
 - WHOIS and RDAP support
-- Display domain days, and other information
-- Highlight url and email in raw data
+- Show domain age (days since registration) and other information
+- Highlight URLs and email addresses in raw data
 - API support
 - Access control
 
 ## Deployment
-
-### Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
-
-> [!IMPORTANT]
-> If your project was deployed before **v2026.11.21**, change the project's Framework Preset to **Container** in the Vercel dashboard (Project → Settings → Build and Deployment → Framework Settings), then redeploy.
->
-> The unmaintained vercel-php runtime has been replaced by Vercel Container as of this version.
 
 ### Docker Compose
 
 #### Deploy
 
 ```sh
-mkdir whois-domain-lookup
-cd whois-domain-lookup
+mkdir whois-domain-lookup && cd whois-domain-lookup
 wget https://raw.githubusercontent.com/reg233/whois-domain-lookup/main/docker-compose.yml
 docker compose up -d
 ```
@@ -70,12 +60,12 @@ docker compose up -d
 #### Update
 
 ```sh
-docker compose down
 docker compose pull
+docker compose down
 docker compose up -d
 ```
 
-### Web Hosting
+### Shared Hosting
 
 Requirements:
 
@@ -89,9 +79,11 @@ Requirements:
 
 Download the [release](https://github.com/reg233/whois-domain-lookup/releases/latest/download/whois-domain-lookup.zip), unzip it, and then upload it to the root directory of your website.
 
-### Nginx
+### Web Server Configuration
 
-The basic configuration:
+#### Nginx
+
+This section applies when running the project on your own server with Nginx + PHP-FPM. It is not needed for Shared Hosting, Docker Compose, or Vercel deployments. The configuration below assumes the site is deployed at the domain root and that PHP-FPM listens on `localhost:9000`. Adjust it accordingly if you use a Unix socket or deploy under a subpath.
 
 ```
 server {
@@ -102,28 +94,47 @@ server {
 
   merge_slashes off;
 
+  location ~ /\.(?!well-known) {
+    deny all;
+  }
+
+  location ^~ /assets/ {
+    add_header Cache-Control "public, max-age=31536000, s-maxage=31536000, immutable";
+    try_files $uri =404;
+  }
+
+  location = /favicon.ico {
+    add_header Cache-Control "public, max-age=604800, s-maxage=604800";
+    try_files $uri =404;
+  }
+
+  location = /robots.txt {
+    add_header Cache-Control "public, max-age=86400, s-maxage=86400";
+    try_files $uri =404;
+  }
+
   location / {
     try_files $uri @rewrite_index;
   }
 
   location @rewrite_index {
-    rewrite ^/(.*)$ /src/index.php?domain=$1&$args last;
+    rewrite ^/(.*)$ /src/index.php?domain=$1 last;
   }
 
   location ^~ /api/ {
-    rewrite ^/api/(.*)$ /src/index.php?domain=$1&json=1&$args last;
-  }
-
-  location = /login {
-    rewrite ^ /src/login.php?$args last;
-  }
-
-  location = /manifest {
-    rewrite ^ /src/manifest.php?$args last;
+    rewrite ^/api/(.*)$ /src/index.php?domain=$1&json=1 last;
   }
 
   location = /dns-records {
-    rewrite ^ /src/dns-records.php?$args last;
+    rewrite ^ /src/dns-records.php last;
+  }
+
+  location = /login {
+    rewrite ^ /src/login.php last;
+  }
+
+  location = /manifest {
+    rewrite ^ /src/manifest.php last;
   }
 
   location ~ \.php$ {
@@ -131,29 +142,34 @@ server {
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     include fastcgi_params;
   }
-
-  location ~ /\.ht {
-    deny all;
-  }
 }
 ```
+
+### Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
+
+> [!IMPORTANT]
+> If your project was deployed before **v2026.11.21**, change the project's Framework Preset to **Container** in the Vercel dashboard (Project → Settings → Build and Deployment → Framework Settings), then redeploy.
+>
+> The unmaintained vercel-php runtime has been replaced by Vercel Container as of this version.
 
 ## Env Variables
 
 | Key | Description | Example | Default |
 | :-- | :-- | :-- | :-- |
-| `SITE_TITLE` | Title of the website. | `WHOIS lookup` | `WHOIS domain lookup` |
-| `SITE_SHORT_TITLE` | Short title of the website, used for the mobile home screen. | `RDAP` | `WHOIS` |
-| `SITE_DESCRIPTION` | Description of the website, used for SEO | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
-| `SITE_PASSWORD` | Password of the website, used for access control | `233` |  |
-| `BASE` | The `href` attribute of the `base` tag in the HTML. | `/whois/` | `/` |
-| `CUSTOM_HEAD` | Custom content to insert before `</head>` on the home page (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
-| `CUSTOM_SCRIPT` | Custom content to insert before `</body>` on the home page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
-| `CUSTOM_HEAD_LOGIN` | Custom content to insert before `</head>` on the login page (e.g., styles or meta tags). | `<style>h1{color:red}</style>` |  |
-| `CUSTOM_SCRIPT_LOGIN` | Custom content to insert before `</body>` on the login page (e.g., JS scripts). | `<script>alert('Welcome')</script>` |  |
-| `USER_AGENT` | HTTP User-Agent header for WHOISWeb/RDAP lookups. | `Mozilla/5.0` | `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36` |
+| `SITE_TITLE` | Title of the website | `WHOIS lookup` | `WHOIS Domain Lookup` |
+| `SITE_SHORT_TITLE` | Short title of the website | `RDAP` | `WHOIS` |
+| `SITE_DESCRIPTION` | Description of the website | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
+| `SITE_PASSWORD` | Password of the website | `233` |  |
+| `BASE` | Base path, set when deploying under a subpath | `/whois/` | `/` |
+| `CUSTOM_HEAD` | Custom content to insert before `</head>` on the home page (e.g., styles or meta tags) | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT` | Custom content to insert before `</body>` on the home page (e.g., JS scripts) | `<script>alert('Welcome')</script>` |  |
+| `CUSTOM_HEAD_LOGIN` | Custom content to insert before `</head>` on the login page (e.g., styles or meta tags) | `<style>h1{color:red}</style>` |  |
+| `CUSTOM_SCRIPT_LOGIN` | Custom content to insert before `</body>` on the login page (e.g., JS scripts) | `<script>alert('Welcome')</script>` |  |
+| `USER_AGENT` | HTTP User-Agent header for WHOISWeb/RDAP lookups | `Mozilla/5.0` | `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36` |
 
-If you deploy using `web hosting`, you should modify the `config/config.php` file, like this:
+If you deploy using `Shared Hosting`, you should modify the `config/config.php` file, like this:
 
 ```php
 <?php
@@ -168,9 +184,15 @@ define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
 URL: `https://whois.233333.best/api/`
 
-Params: `domain` , `whois` , `rdap` , `whois-server` , `rdap-server`
-
 Method: `GET`
+
+| Param | Description | Example |
+| :-- | :-- | :-- |
+| `domain` | The domain to look up | `233333.best` |
+| `whois` | Query WHOIS only (if neither `whois` nor `rdap` is set, both are queried) | `1` |
+| `rdap` | Query RDAP only (if neither `whois` nor `rdap` is set, both are queried) | `1` |
+| `whois-server` | Use the specified WHOIS server | `whois.spaceship.com` |
+| `rdap-server` | Use the specified RDAP server | `https://rdap.spaceship.com/` |
 
 Example 1: https://whois.233333.best/api/?domain=233333.best
 
@@ -182,13 +204,17 @@ Example 4: https://whois.233333.best/api/?domain=233333.best&whois-server=whois.
 
 Example 5: https://whois.233333.best/api/?domain=233333.best&rdap-server=https://rdap.spaceship.com/
 
-If you have set a `SITE_PASSWORD` , you need to add `Authorization` in the request headers, like this:
+If you have set a `SITE_PASSWORD`, you need to add `Authorization` in the request headers, like this:
 
 ```
 Authorization: Bearer <SHA256(SITE_PASSWORD)>
 ```
 
-Example: `Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381f57160b5c5b86426`
+Example (when `SITE_PASSWORD` is `233`):
+
+```
+Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381f57160b5c5b86426
+```
 
 [SHA256 online tool](https://emn178.github.io/online-tools/sha256.html)
 
@@ -413,7 +439,7 @@ Example: `Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381
 | 215 | [tf](https://en.wikipedia.org/wiki/.tf) | ![](https://uptime.233333.best/api/badge/275/status?label) | ![](https://uptime.233333.best/api/badge/276/status?label) |  |
 | 216 | [tg](https://en.wikipedia.org/wiki/.tg) | ![](https://uptime.233333.best/api/badge/277/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 217 | [th](https://en.wikipedia.org/wiki/.th) | ![](https://uptime.233333.best/api/badge/278/status?label) | ![](https://uptime.233333.best/api/badge/279/status?label) |  |
-| 218 | [tj](https://en.wikipedia.org/wiki/.tj) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
+| 218 | [tj](https://en.wikipedia.org/wiki/.tj) | ![](https://uptime.233333.best/api/badge/0/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 219 | [tk](https://en.wikipedia.org/wiki/.tk) | ![](https://uptime.233333.best/api/badge/281/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 220 | [tl](https://en.wikipedia.org/wiki/.tl) | ![](https://uptime.233333.best/api/badge/282/status?label) | ![](https://uptime.233333.best/api/badge/283/status?label) |  |
 | 221 | [tm](https://en.wikipedia.org/wiki/.tm) | ![](https://uptime.233333.best/api/badge/284/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
@@ -447,6 +473,6 @@ Example: `Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381
 
 ## Collaboration
 
-If you know the missing WHOIS or RDAP server addresses for this project, feel free to collaborate with us!
+If you know the missing WHOIS or RDAP server addresses for this project, contributions are welcome!
 
 If you encounter any issues, feel free to open a [new issue](https://github.com/reg233/whois-domain-lookup/issues).

@@ -1299,29 +1299,44 @@ class WHOISWeb
     $html = $this->request($url, $options);
 
     $document = new DOMDocument();
-    $document->loadHTML(str_replace("&nbsp", " ", $html));
+    $document->loadHTML($html);
 
     $xPath = new DOMXPath($document);
 
-    $message = $xPath->query("//div[@class='main']/text()")->item(0);
-    if ($message) {
-      return trim($message->textContent);
-    }
-
     $whois = "";
 
-    $trs = $document->getElementsByTagName("tr");
-    foreach ($trs as $tr) {
-      $tds = $tr->getElementsByTagName("td");
-      if ($tds->length === 2) {
-        $key = trim($tds->item(0)->textContent);
-        $value = trim($tds->item(1)->textContent);
+    $notice = $xPath->query("//div[starts-with(@class, 'notice ')]/div/p[1]")->item(0);
+    if ($notice) {
+      $whois .= trim($notice->textContent) . "\n";
+    }
 
-        $whois .= "$key: $value\n";
+    $dl = $xPath->query("//dl[@class='rec']")->item(0);
+    if ($dl) {
+      $whois .= "\n";
+
+      foreach ($dl->childNodes as $child) {
+        switch ($child->nodeName) {
+          case "dt":
+            $whois .= trim($child->textContent) . ": ";
+            break;
+          case "dd":
+            $ul = $xPath->query("./ul", $child)->item(0);
+            if ($ul) {
+              $values = [];
+              foreach ($xPath->query("./li", $ul) as $li) {
+                $values[] = trim($li->textContent);
+              }
+
+              $whois .= implode(", ", $values) . "\n";
+            } else {
+              $whois .= trim($child->textContent) . "\n";
+            }
+            break;
+        }
       }
     }
 
-    return str_replace(" (owner can view under Retrieve->Domain Details)", "", $whois);
+    return str_replace(" (owner can view under View → Domain Details)", "", $whois);
   }
 
   /**

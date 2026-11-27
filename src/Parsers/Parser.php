@@ -228,7 +228,7 @@ class Parser
     // fuck.hn, fuck.ht, 233.ke, fuck.ki, ac.kn, 233.ly, a.ma, mg.mg, xxx.mr, xxx.ms, fuck.nf
     // 233.ng, pe.pe, xxx.rw, fuck.sb, a.sl, a.so, ss.ss, xxx.tc, fuck.tl
     "prohibited string",
-    // bd.bd
+    // gov.bd
     "reserved word",
     // a.be
     "status:\tnot allowed",
@@ -256,7 +256,7 @@ class Parser
     "name is restricted",
     // id.lv
     "status: unavailable",
-    // google.mc, rs.rs, co.tt, ac.ug
+    // google.mc, rs.rs, ac.ug
     "domain is reserved",
     // com.mm
     "is a reserved name",
@@ -331,8 +331,6 @@ class Parser
     "no information",
     // tm
     "is available for purchase",
-    // tt
-    "domain name is available",
     // tw
     "no found",
   ];

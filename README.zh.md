@@ -1,6 +1,6 @@
 [English README](README.md)
 
-<img alt="WHOIS domain lookup" src="public/images/favicon.svg" width="80" />
+<img alt="WHOIS Domain Lookup" src="public/images/favicon.svg" width="80" />
 
 # WHOIS 域名查询
 
@@ -31,38 +31,28 @@
   </tr>
 </table>
 
-[在线体验1](https://whois.233333.best)
+[在线体验 1](https://whois.233333.best)
 
-[在线体验2](https://whois1.233333.best)
+[在线体验 2](https://whois1.233333.best)
 
 ## 特性
 
 - 简约、清晰的用户界面
 - 强大的 TLD 兼容性，包括大多数 ccTLD 和少数私有域名
 - 支持 WHOIS 和 RDAP
-- 显示域名天数以及其他信息
+- 显示域名注册天数及其他信息
 - 高亮显示原始数据中的网址和电子邮件
 - 支持 API
 - 访问控制
 
 ## 部署
 
-### Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
-
-> [!IMPORTANT]
-> 如果您的项目部署于 **v2026.11.21** 之前，需要在 Vercel 控制台中将项目的 Framework Preset 改为 **Container**（Project → Settings → Build and Deployment → Framework Settings），然后重新部署。
->
-> 由于 vercel-php 运行时已停止维护，此版本起改用 Vercel Container 部署。
-
 ### Docker Compose
 
 #### 部署
 
 ```sh
-mkdir whois-domain-lookup
-cd whois-domain-lookup
+mkdir whois-domain-lookup && cd whois-domain-lookup
 wget https://raw.githubusercontent.com/reg233/whois-domain-lookup/main/docker-compose.yml
 docker compose up -d
 ```
@@ -70,12 +60,12 @@ docker compose up -d
 #### 更新
 
 ```sh
-docker compose down
 docker compose pull
+docker compose down
 docker compose up -d
 ```
 
-### 网站托管
+### 虚拟主机
 
 要求：
 
@@ -89,9 +79,11 @@ docker compose up -d
 
 下载[发布版本](https://github.com/reg233/whois-domain-lookup/releases/latest/download/whois-domain-lookup.zip)，解压后上传到网站的根目录。
 
-### Nginx
+### Web 服务器配置
 
-基本配置：
+#### Nginx
+
+本节适用于在自己的服务器上通过 Nginx + PHP-FPM 部署本项目的场景，虚拟主机、Docker Compose 和 Vercel 部署无需此配置。以下配置假设站点部署在域名根路径，且 PHP-FPM 监听 `localhost:9000`；如使用 Unix socket 或子路径部署，请按实际情况调整。
 
 ```
 server {
@@ -102,28 +94,47 @@ server {
 
   merge_slashes off;
 
+  location ~ /\.(?!well-known) {
+    deny all;
+  }
+
+  location ^~ /assets/ {
+    add_header Cache-Control "public, max-age=31536000, s-maxage=31536000, immutable";
+    try_files $uri =404;
+  }
+
+  location = /favicon.ico {
+    add_header Cache-Control "public, max-age=604800, s-maxage=604800";
+    try_files $uri =404;
+  }
+
+  location = /robots.txt {
+    add_header Cache-Control "public, max-age=86400, s-maxage=86400";
+    try_files $uri =404;
+  }
+
   location / {
     try_files $uri @rewrite_index;
   }
 
   location @rewrite_index {
-    rewrite ^/(.*)$ /src/index.php?domain=$1&$args last;
+    rewrite ^/(.*)$ /src/index.php?domain=$1 last;
   }
 
   location ^~ /api/ {
-    rewrite ^/api/(.*)$ /src/index.php?domain=$1&json=1&$args last;
-  }
-
-  location = /login {
-    rewrite ^ /src/login.php?$args last;
-  }
-
-  location = /manifest {
-    rewrite ^ /src/manifest.php?$args last;
+    rewrite ^/api/(.*)$ /src/index.php?domain=$1&json=1 last;
   }
 
   location = /dns-records {
-    rewrite ^ /src/dns-records.php?$args last;
+    rewrite ^ /src/dns-records.php last;
+  }
+
+  location = /login {
+    rewrite ^ /src/login.php last;
+  }
+
+  location = /manifest {
+    rewrite ^ /src/manifest.php last;
   }
 
   location ~ \.php$ {
@@ -131,29 +142,34 @@ server {
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     include fastcgi_params;
   }
-
-  location ~ /\.ht {
-    deny all;
-  }
 }
 ```
+
+### Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Freg233%2Fwhois-domain-lookup&demo-title=WHOIS%20domain%20lookup&demo-description=A%20simple%20WHOIS%20domain%20lookup%20website%20with%20strong%20TLD%20compatibility.&demo-url=https%3A%2F%2Fwhois.233333.best)
+
+> [!IMPORTANT]
+> 如果您的项目部署于 **v2026.11.21** 之前，需要在 Vercel 控制台中将项目的 Framework Preset 改为 **Container**（Project → Settings → Build and Deployment → Framework Settings），然后重新部署。
+>
+> 由于 vercel-php 运行时已停止维护，此版本起改用 Vercel Container 部署。
 
 ## 环境变量
 
 | 键 | 描述 | 示例值 | 默认值 |
 | :-- | :-- | :-- | :-- |
-| `SITE_TITLE` | 网站的标题 | `WHOIS lookup` | `WHOIS domain lookup` |
-| `SITE_SHORT_TITLE` | 网站的短标题，用于移动端的主屏幕 | `RDAP` | `WHOIS` |
-| `SITE_DESCRIPTION` | 网站的描述，用于搜索引擎优化 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
-| `SITE_PASSWORD` | 网站的密码，用于访问控制 | `233` |  |
-| `BASE` | HTML 中 `base` 标签的 `href` 属性 | `/whois/` | `/` |
+| `SITE_TITLE` | 网站的标题 | `WHOIS lookup` | `WHOIS Domain Lookup` |
+| `SITE_SHORT_TITLE` | 网站的短标题 | `RDAP` | `WHOIS` |
+| `SITE_DESCRIPTION` | 网站的描述 | `A simple WHOIS domain lookup website.` | `A simple WHOIS domain lookup website with strong TLD compatibility.` |
+| `SITE_PASSWORD` | 网站的密码 | `233` |  |
+| `BASE` | 基础路径，子路径部署时设置 | `/whois/` | `/` |
 | `CUSTOM_HEAD` | 插入到首页中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT` | 插入到首页中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
 | `CUSTOM_HEAD_LOGIN` | 插入到登录页中 `</head>` 之前的自定义内容（如样式或元标签） | `<style>h1{color:red}</style>` |  |
 | `CUSTOM_SCRIPT_LOGIN` | 插入到登录页中 `</body>` 之前的自定义内容（如 JS 脚本） | `<script>alert('Welcome')</script>` |  |
 | `USER_AGENT` | WHOISWeb/RDAP 查询使用的 HTTP User-Agent 请求头 | `Mozilla/5.0` | `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36` |
 
-如果您使用 `网站托管` 部署，您需要修改 `config/config.php` 文件，如下所示：
+如果您使用 `虚拟主机` 部署，您需要修改 `config/config.php` 文件，如下所示：
 
 ```php
 <?php
@@ -168,9 +184,15 @@ define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
 地址：`https://whois.233333.best/api/`
 
-参数：`domain` ，`whois` ，`rdap` ，`whois-server` ，`rdap-server`
-
 方法：`GET`
+
+| 参数 | 描述 | 示例值 |
+| :-- | :-- | :-- |
+| `domain` | 要查询的域名 | `233333.best` |
+| `whois` | 仅查询 WHOIS（若 `whois` 和 `rdap` 均未设置，则两者都查询） | `1` |
+| `rdap` | 仅查询 RDAP（若 `whois` 和 `rdap` 均未设置，则两者都查询） | `1` |
+| `whois-server` | 使用指定的 WHOIS 服务器 | `whois.spaceship.com` |
+| `rdap-server` | 使用指定的 RDAP 服务器 | `https://rdap.spaceship.com/` |
 
 示例 1：https://whois.233333.best/api/?domain=233333.best
 
@@ -182,13 +204,17 @@ define("SITE_TITLE", getenv("SITE_TITLE") ?: "WHOIS Domain Lookup");
 
 示例 5：https://whois.233333.best/api/?domain=233333.best&rdap-server=https://rdap.spaceship.com/
 
-如果您设置了 `SITE_PASSWORD` ，您需要在请求头中加上 `Authorization` ，如下所示：
+如果您设置了 `SITE_PASSWORD`，您需要在请求头中加上 `Authorization`，如下所示：
 
 ```
 Authorization: Bearer <SHA256(SITE_PASSWORD)>
 ```
 
-示例：`Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381f57160b5c5b86426`
+示例（`SITE_PASSWORD` 为 `233` 时）：
+
+```
+Authorization: Bearer c0509a487a18b003ba05e505419ebb63e57a29158073e381f57160b5c5b86426
+```
 
 [SHA256 在线工具](https://emn178.github.io/online-tools/sha256.html)
 
@@ -413,7 +439,7 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 | 215 | [tf](https://en.wikipedia.org/wiki/.tf) | ![](https://uptime.233333.best/api/badge/275/status?label) | ![](https://uptime.233333.best/api/badge/276/status?label) |  |
 | 216 | [tg](https://en.wikipedia.org/wiki/.tg) | ![](https://uptime.233333.best/api/badge/277/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 217 | [th](https://en.wikipedia.org/wiki/.th) | ![](https://uptime.233333.best/api/badge/278/status?label) | ![](https://uptime.233333.best/api/badge/279/status?label) |  |
-| 218 | [tj](https://en.wikipedia.org/wiki/.tj) | ![](https://uptime.233333.best/api/badge/0/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
+| 218 | [tj](https://en.wikipedia.org/wiki/.tj) | ![](https://uptime.233333.best/api/badge/0/status?label=Web) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 219 | [tk](https://en.wikipedia.org/wiki/.tk) | ![](https://uptime.233333.best/api/badge/281/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
 | 220 | [tl](https://en.wikipedia.org/wiki/.tl) | ![](https://uptime.233333.best/api/badge/282/status?label) | ![](https://uptime.233333.best/api/badge/283/status?label) |  |
 | 221 | [tm](https://en.wikipedia.org/wiki/.tm) | ![](https://uptime.233333.best/api/badge/284/status?label) | ![](https://uptime.233333.best/api/badge/0/status?label) |  |
@@ -449,4 +475,4 @@ Authorization: Bearer <SHA256(SITE_PASSWORD)>
 
 如果您知道这个项目缺少的 WHOIS 或 RDAP 服务器地址，欢迎与我们合作！
 
-如果遇到任何问题，欢迎创建一个[新问题](https://github.com/reg233/whois-domain-lookup/issues)。
+如果遇到任何问题，欢迎提交 [issue](https://github.com/reg233/whois-domain-lookup/issues)。
