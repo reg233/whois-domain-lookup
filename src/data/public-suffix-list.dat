@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2026-11-26_18-39-01_UTC
-// COMMIT: 88b076a1fb2ae58cd2a6959d570f075e04d21867
+// VERSION: 2026-11-27_12-48-40_UTC
+// COMMIT: 73edc270543c9a079e6a21f310adc5744ee7c20d
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -11310,6 +11310,10 @@ adobeioruntime.net
 // Submitted by Gavin Brown <gavin.brown@centralnic.com>
 africa.com
 
+// agental : https://agental.io
+// Submitted by agental <squad@agental.io>
+agental.site
+
 // AgentbaseAI Inc. : https://assistant-ui.com
 // Submitted by Simon Farshid <security@assistant-ui.com>
 *.auiusercontent.com
@@ -11326,6 +11330,10 @@ beep.pl
 // Submitted by Aiven Security Team <security+appdomains@aiven.io>
 aiven.app
 *.aivencloud.com
+
+// AiWebInfra : https://aiwebinfra.com
+// Submitted by AiWebInfra <support@aiwebinfra.com>
+aiwebinfra.app
 
 // Akamai : https://www.akamai.com/
 // Submitted by Akamai Team <publicsuffixlist@akamai.com>
@@ -14623,6 +14631,10 @@ krellian.net
 // Abuse reports to <registry@kv-gmbh.de>
 co.de
 
+// Lambforge : https://lambforge.com
+// Submitted by Kristiyan Tachev <security@lambforge.com>
+lambforge.app
+
 // Laravel Holdings, Inc. : https://laravel.com
 // Submitted by André Valentin & James Brooks <security@laravel.com>
 shiptoday.app
@@ -15374,8 +15386,9 @@ omgs.page
 omg.lol
 
 // Omnibond Systems, LLC. : https://www.omnibond.com
-// Submitted by Cole Estep <cole@omnibond.com>
+// Submitted by Omnibond Support <support@omnibond.com>
 cloudycluster.net
+eureka.zone
 
 // OmniWe Limited : https://omniwe.com
 // Submitted by Vicary Archangel <vicary@omniwe.com>
@@ -16429,6 +16442,10 @@ telebit.io
 // Teleport : https://goteleport.com
 // Submitted by Rob Picard <security@goteleport.com>
 teleport.sh
+
+// TerraMaster : https://www.terra-master.com/
+// Submitted by TerraMaster Team <psl@terra-master.com>
+tnas.online
 
 // Terramind.com, Inc. : https://terramind.com
 // Submitted by Terramind Sites <sites@terramind.com>
